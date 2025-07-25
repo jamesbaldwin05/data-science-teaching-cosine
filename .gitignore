@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+*.log
+
+# Streamlit
+.streamlit/
+.streamlit-*
+# Data science
+.ipynb_checkpoints
+
+# Project
+.progress.json
+assets/
+.DS_Store
