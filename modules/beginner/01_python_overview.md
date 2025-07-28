@@ -404,4 +404,4 @@ print("Hello, Data Science!")
 - Mastering lists, dicts, comprehensions, generators, and classes is essential for readable, high-performance code.
 - Key ecosystem libraries like numpy, pandas, matplotlib, and scikit-learn are foundational—learn their idioms and APIs.
 - Robust workflow includes using virtual environments, testing, logging, and performance-aware coding.
-- Next: Dive into each core library module by module, starting with [Numpy](../02_numpy_basics.md).
+- Next: Dive into each core library module by module, starting with [Numpy](../intermediate/01_numpy_intro.md).
