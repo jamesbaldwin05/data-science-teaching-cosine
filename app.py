@@ -151,13 +151,9 @@ def main():
                 is_selected = (cur_paths[i] == selected_path)
                 button_key = f"select_{cat}_{i}"
                 btn_label = label
-                if is_selected:
-                    btn_label = f"**{label}**"
                 if st.button(btn_label, key=button_key):
                     st.session_state["selected_module"] = cur_paths[i]
                     st.experimental_rerun()
-                # Optionally, just display the selected module bolded
-                #st.markdown(f"- {btn_label}", unsafe_allow_html=True)
                 if is_selected:
                     chosen = (cat, mod)
     # Fallback if not chosen
