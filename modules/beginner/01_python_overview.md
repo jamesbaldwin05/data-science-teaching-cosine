@@ -283,19 +283,31 @@ groups = {k: list(g) for k, g in groupby(sorted(data), key=lambda x: x[0])}
 - *Classes* encapsulate data and methods, supporting inheritance and customization.
 - *DataClasses* (Python 3.7+) are specialized classes for simple data containers, generating boilerplate (e.g., `__init__`, `__repr__`) automatically.
 
-**Comparison:**
+Below are two equivalent ways to define a simple data container: a classic class and a dataclass.
 
-| Simple Class                                                        | Dataclass Equivalent                                     |
-|---------------------------------------------------------------------|---------------------------------------------------------|
-| ```python                                                           | ```python                                               |
-| class Measurement:                                                  | from dataclasses import dataclass                       |
-|     def __init__(self, id, value):                                  |                                                         |
-|         self.id = id                                                | @dataclass                                              |
-|         self.value = value                                          | class Measurement:                                      |
-| ```                                                                 |     id: int                                             |
-| m = Measurement(1, 3.2)                                             |     value: float                                        |
-|                                                                     | m = Measurement(1, 3.2)                                 |
-| ```                                                                 | ```                                                     |
+### Classic class example
+
+```python
+class Measurement:
+    def __init__(self, id, value):
+        self.id = id
+        self.value = value
+
+m = Measurement(1, 3.2)
+```
+
+### Dataclass equivalent
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class Measurement:
+    id: int
+    value: float
+
+m = Measurement(1, 3.2)
+```
 
 **You should be able to:**  
 - Write and use custom classes for encapsulating data/behavior  
@@ -605,9 +617,17 @@ model = LinearRegression().fit([[0], [1]], [0, 1])
 
 Scientific computing: stats, optimization, signal/image processing. Scipy extends numpy with a vast library of high-level scientific algorithms and utilities for statistics, optimization, integration, interpolation, and more.
 
+Scipy is organized into key submodules such as `scipy.optimize` (optimization and curve fitting), `scipy.stats` (statistical tests and distributions), `scipy.integrate` (numerical integration), `scipy.signal` (signal processing), and `scipy.sparse` (sparse matrices). Typical uses include fitting models to data, running hypothesis tests, integrating functions, or working with large, sparse datasets.
+
 ```python
 from scipy import stats
 print(stats.norm.cdf(0))
+
+# Example: Student's t-test for independent samples
+a = [1.1, 2.5, 3.3]
+b = [0.9, 2.1, 3.0]
+t_stat, p_value = stats.ttest_ind(a, b)
+print(f"t={t_stat:.3f}, p={p_value:.3g}")
 ```
 
 ---
@@ -616,9 +636,14 @@ print(stats.norm.cdf(0))
 
 Advanced statistical modeling (regression, time series, hypothesis tests). Statsmodels bridges the gap between pure machine learning and statistical inference, providing deep tools for classical statistics and model diagnostics.
 
+Statsmodels features a user-friendly formula API (like R's formulas) for specifying models with symbolic syntax (e.g., `"y ~ x1 + x2"`), as well as advanced tools for time-series analysis (ARIMA, SARIMAX, state space models). Its emphasis on statistical inference means you get p-values, confidence intervals, and detailed summaries—ideal for understanding model significance and diagnostics.
+
 ```python
-import statsmodels.api as sm
-model = sm.OLS([2, 4, 6], sm.add_constant([1, 2, 3])).fit()
+import statsmodels.formula.api as smf
+import pandas as pd
+
+df = pd.DataFrame({"y": [2, 4, 6], "x": [1, 2, 3]})
+model = smf.ols("y ~ x", data=df).fit()
 print(model.summary())
 ```
 
@@ -626,19 +651,21 @@ print(model.summary())
 
 ## Jupyter Notebooks
 
-Interactive, literate programming for data exploration and reporting. Jupyter notebooks allow you to mix code, output, and rich text—making them ideal for experiments, sharing results, and reproducible research.
+Jupyter Notebooks are powerful, interactive documents that combine live code, visualizations, and explanatory text. Widely used in data science, teaching, and research, notebooks allow you to interleave executable code (Python or other languages), formatted notes (Markdown), equations, and rich outputs (plots, tables, images) in a single, shareable file. Each notebook consists of "cells"—the two most common types are **code cells** (which you run to produce output) and **Markdown cells** (for formatted text, math, or instructions).
+
+When working in a notebook, you execute code cells individually, and the results—such as printed output, plots, or error messages—appear immediately below the cell. The underlying process that runs your code is called a **kernel**, which maintains the execution state and variables across cells (so earlier results can be reused later). Restarting the kernel clears this state. Notebooks are ideal for exploratory data analysis (EDA), rapid prototyping, teaching, and sharing reproducible reports or data workflows.
+
+Example of a code cell in a Jupyter Notebook:
 
 ```python
-# In a notebook cell:
 print("Hello, Data Science!")
 ```
 
 ---
 
-# Key Takeaways & Next Steps
+# Key Takeaways
 
 - Data science with Python builds on solid core language skills—review as needed!
 - Mastering lists, dicts, comprehensions, generators, and classes is essential for readable, high-performance code.
 - Key ecosystem libraries like numpy, pandas, matplotlib, and scikit-learn are foundational—learn their idioms and APIs.
 - Robust workflow includes using virtual environments, testing, logging, and performance-aware coding.
-- Next: Dive into each core library module by module, or continue with the [R Overview](02_r_overview.md) to broaden your toolkit.
