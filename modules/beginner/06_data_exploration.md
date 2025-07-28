@@ -1,4 +1,4 @@
-# 06 Data Exploration
+# Data Exploration
 
 **Concept**  
 Explore your data before modeling: check shapes, types, missing values, summary stats. Use `df.info()`, `df.describe()`, and value counts for quick insights.

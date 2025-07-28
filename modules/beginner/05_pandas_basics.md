@@ -1,4 +1,4 @@
-# 05 Pandas Basics
+# Pandas Basics
 
 **Concept**  
 A DataFrame is a table of data. You can select, filter, and manipulate columns and rows easily. Pandas is the foundation for most data work in Python.

@@ -1,4 +1,4 @@
-# 02 API Data Ingestion
+# API Data Ingestion
 
 **Concept**  
 Many real-world datasets come from APIs (web endpoints). Use `requests` to fetch JSON data, handling rate limits and errors. For this module, requests is optional.

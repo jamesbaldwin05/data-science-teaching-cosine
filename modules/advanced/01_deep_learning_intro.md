@@ -1,4 +1,4 @@
-# 01 Deep Learning Introduction
+# Deep Learning Introduction
 
 **Concept**  
 Deep learning uses neural networks with many layers. Python libraries like PyTorch and TensorFlow make building and training networks easier. For this module, torch is optional.

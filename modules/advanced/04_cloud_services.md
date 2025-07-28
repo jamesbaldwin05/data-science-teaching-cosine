@@ -1,4 +1,4 @@
-# 04 Cloud Services for Data Science
+# Cloud Services for Data Science
 
 **Concept**  
 Cloud platforms (AWS, GCP, Azure) offer scalable storage and compute. You can automate tasks, access data, and train models at scale. For this module, boto3 is optional.

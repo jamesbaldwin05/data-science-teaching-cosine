@@ -1,4 +1,4 @@
-# 07 Advanced Visualization
+# Advanced Visualization
 
 **Concept**  
 Advanced visualizations use color, style, and interactivity. Customize matplotlib/seaborn plots with labels, legends, color palettes, and subplots for more insight.

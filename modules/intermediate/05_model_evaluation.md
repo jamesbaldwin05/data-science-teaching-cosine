@@ -1,4 +1,4 @@
-# 05 Model Evaluation
+# Model Evaluation
 
 **Concept**  
 After training a model, evaluate its performance using metrics: accuracy (classification), mean squared error (regression), confusion matrix, ROC curves. Use test data for honest estimates.

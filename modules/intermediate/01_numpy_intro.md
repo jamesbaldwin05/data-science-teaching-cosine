@@ -1,4 +1,4 @@
-# 01 NumPy Introduction
+# NumPy Introduction
 
 **Concept**  
 NumPy provides fast array operations and is the core of numerical computing in Python. Arrays (`ndarray`) allow vectorized math and broadcasting, enabling efficient computation over large datasets.

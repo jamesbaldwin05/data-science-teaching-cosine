@@ -1,4 +1,4 @@
-# 08 SQL Basics
+# SQL Basics
 
 **Concept**  
 SQL is used to query and manipulate structured data. In data science, you often use SQL to pull data before analysis. With `sqlite3` you can run SQL on local files.

@@ -1,4 +1,4 @@
-# 02 Data Cleaning
+# Data Cleaning
 
 **Concept**  
 Data cleaning prepares raw data for analysis. Common steps: handling missing values (`df.isnull()`), removing duplicates, and detecting outliers. Clean data improves model accuracy.

@@ -1,4 +1,4 @@
-# 04 Supervised Learning
+# Supervised Learning
 
 **Concept**  
 Supervised learning uses labeled data to train models for classification (predicting categories) or regression (predicting numbers). Algorithms include logistic regression, decision trees, and random forests. Always split data into train/test sets.

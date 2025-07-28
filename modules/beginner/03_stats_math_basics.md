@@ -1,4 +1,4 @@
-# 03 Stats & Math Basics
+# Stats & Math Basics
 
 **Concept**  
 Descriptive statistics summarize data (mean, median, mode, std). Probability helps us reason about uncertainty. Visualizations like histograms and boxplots reveal distributions and outliers.

@@ -1,4 +1,4 @@
-# 06 Unsupervised Learning
+# Unsupervised Learning
 
 **Concept**  
 Unsupervised learning finds patterns in data without labels. Clustering (e.g., k-means) groups similar items; dimensionality reduction (PCA) simplifies features.

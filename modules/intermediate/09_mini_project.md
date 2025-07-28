@@ -1,4 +1,4 @@
-# 09 Mini Project: Titanic Survival
+# Mini Project: Titanic Survival
 
 **Concept**  
 Apply your skills: load Titanic data, engineer features, train and evaluate a model. This end-to-end process mirrors real-world data science.

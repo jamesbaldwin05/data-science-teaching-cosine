@@ -1,4 +1,4 @@
-# 02 R Overview for Data Science
+# R Overview for Data Science
 
 **Concept**  
 R is another popular language for data analysis and statistics, especially in academia. Its strengths are statistical modeling and visualization. Learn more at [R for Data Science](https://r4ds.had.co.nz/) and [CRAN documentation](https://cran.r-project.org/manuals.html).

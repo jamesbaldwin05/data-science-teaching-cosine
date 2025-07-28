@@ -1,4 +1,4 @@
-# 03 Feature Engineering
+# Feature Engineering
 
 **Concept**  
 Feature engineering creates new variables from raw data to help models learn better: scaling, encoding categories, or combining columns. For example, combining 'sibsp' and 'parch' into 'family_size'.

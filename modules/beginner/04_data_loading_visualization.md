@@ -1,4 +1,4 @@
-# 04 Data Loading & Visualization
+# Data Loading & Visualization
 
 **Concept**  
 Reading data from CSV or Excel is the first step. Use `pandas.read_csv()` or `read_excel()`. Visualization libraries like matplotlib let you plot data quickly.

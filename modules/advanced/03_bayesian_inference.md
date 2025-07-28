@@ -1,4 +1,4 @@
-# 03 Bayesian Inference
+# Bayesian Inference
 
 **Concept**  
 Bayesian inference updates probability based on evidence using Bayes' rule. It is fundamental for probabilistic modeling. For simple cases, you can compute by hand; for complex, use libraries like pymc.

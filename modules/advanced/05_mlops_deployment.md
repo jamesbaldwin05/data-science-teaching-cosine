@@ -1,4 +1,4 @@
-# 05 MLOps & Deployment
+# MLOps & Deployment
 
 **Concept**  
 MLOps is the practice of deploying, monitoring, and maintaining ML models in production. Key concepts: packaging (e.g., Docker), CI/CD pipelines, and monitoring performance.

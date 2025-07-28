@@ -1,4 +1,4 @@
-# 01 Python Overview for Data Science
+# Python Overview for Data Science
 
 **Concept**  
 Python is the dominant language for data science due to its readability and rich ecosystem. Key skills include working with lists, dictionaries, functions, and using libraries (like `pandas`, `numpy`). For more, see [Official Python Tutorial](https://docs.python.org/3/tutorial/) and [Real Python](https://realpython.com/).
