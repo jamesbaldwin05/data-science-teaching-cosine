@@ -23,6 +23,18 @@ If you answered "no" to any, consider reviewing Python fundamentals first.
 
 ---
 
+### Where to Brush Up
+
+Need to refresh your Python basics? Here are some excellent resources:
+
+- [Python Official Tutorial](https://docs.python.org/3/tutorial/)
+- [Harvard CS50’s Introduction to Programming with Python](https://cs50.harvard.edu/python/)
+- [Automate the Boring Stuff with Python](https://automatetheboringstuff.com/)
+- [Real Python – Python Basics](https://realpython.com/learn/python-first-steps/)
+- [Python for Everybody (Coursera)](https://www.coursera.org/specializations/python)
+
+---
+
 # Essential Python Features & Practices for Data Science
 
 A successful data scientist in Python needs fluency with the following language features. Each is presented below with a practical, data-science-flavored example.
@@ -33,6 +45,8 @@ A successful data scientist in Python needs fluency with the following language 
 
 **What/Why:** Lists hold collections of items (e.g., rows, feature values). List comprehensions enable concise, readable transformations—ubiquitous in data wrangling.
 
+**Python lists vs. C-style arrays:** Unlike C arrays, Python lists can store elements of any type and can grow or shrink dynamically. For large numerical arrays, consider using the `array` module (for numbers) or, more commonly in data science, NumPy arrays for efficiency and extra functionality.
+
 **Example:**
 
 ```python
@@ -41,13 +55,16 @@ temperatures_f = [c * 9/5 + 32 for c in temperatures_c]
 # [53.6, 64.4, 71.6, 59.0]
 ```
 
-**Depth:** Refresher; expect to write/read nested comprehensions.
+**You should be able to:**  
+- Create, access, and modify lists  
+- Write and read list comprehensions (including nested comprehensions)  
+- Recognize when to use lists versus numpy arrays for large, homogeneous data
 
 ---
 
 ## 2. Dictionaries & Nested Dicts
 
-**What/Why:** Dicts map keys to values—ideal for label-value pairs, config settings, and JSON-like data.
+**What/Why:** Dicts map keys to values—ideal for label-value pairs, config settings, and JSON-like data. Nested dicts are common when representing structured or hierarchical information.
 
 **Example:**
 
@@ -56,13 +73,50 @@ record = {"name": "Alice", "scores": {"math": 90, "bio": 87}}
 mean_score = sum(record["scores"].values()) / len(record["scores"])
 ```
 
-**Depth:** Refresher; nested dict manipulations common.
+**Nested dictionary manipulation:**
+
+```python
+# Add a new subject score
+record["scores"]["chem"] = 85
+
+# Update a value
+record["scores"]["math"] += 5
+
+# Iterate over nested dictionary
+for subject, score in record["scores"].items():
+    print(f"{subject}: {score}")
+```
+*This pattern is common when processing JSON data or configuring experiments.*
+
+**You should be able to:**  
+- Create, access, update, and iterate over (nested) dictionaries  
+- Handle missing keys gracefully  
+- Structure and manipulate JSON-like data
 
 ---
 
 ## 3. Tuples & Unpacking
 
-**What/Why:** Tuples are immutable sequences, used for fixed-size data (e.g., (x, y)), safe function returns, and unpacking.
+**What/Why:** Tuples are immutable sequences — once created, their contents cannot be changed. They’re ideal for fixed-size, heterogeneous data (e.g. coordinate pairs, function returns). Tuples support multiple assignment and “starred unpacking” for flexible splitting.
+
+**Tuple immutability:**  
+Once a tuple is created, you cannot change its contents:
+```python
+point = (2, 3)
+# point[0] = 5  # Raises TypeError!
+```
+
+**Multiple assignment and starred unpacking:**
+
+```python
+a, b = (1, 2)  # multiple assignment
+
+first, *rest = [10, 20, 30, 40]
+# first=10, rest=[20, 30, 40]
+
+x, y, *others = (5, 6, 7, 8)
+# x=5, y=6, others=[7, 8]
+```
 
 **Example:**
 
@@ -74,13 +128,16 @@ lo, hi = min_max([2, 8, 3])
 # lo=2, hi=8
 ```
 
-**Depth:** Refresher; comfortable with tuple unpacking in assignments and loops.
+**You should be able to:**  
+- Use tuples for multiple assignment, fixed-size records, and safe return values  
+- Unpack tuples (including using `*` for flexible assignment)  
+- Recognize tuple immutability and its implications
 
 ---
 
 ## 4. Sets
 
-**What/Why:** Sets store unique items; great for deduplication, membership testing, and set algebra (union/intersection).
+**What/Why:** Sets store unique items; great for deduplication, membership testing, and set algebra (union/intersection). Used often for label sets, removing duplicates, or fast lookups.
 
 **Example:**
 
@@ -89,13 +146,28 @@ labels = ["cat", "dog", "cat", "mouse"]
 unique_labels = set(labels)  # {'cat', 'dog', 'mouse'}
 ```
 
-**Depth:** Refresher.
+**You should be able to:**  
+- Create sets from lists or other iterables  
+- Perform set operations (union, intersection, difference)  
+- Use sets for fast membership tests and deduplication
 
 ---
 
 ## 5. Slicing & Indexing
 
-**What/Why:** Slicing extracts sublists/sublists—vital for data selection and windowing.
+**What/Why:** Slicing extracts sublists or substrings—vital for data selection and windowing.
+
+**Multi-level slicing:**  
+You can slice lists of lists (matrices) or strings:
+
+```python
+matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+row = matrix[1]      # [4, 5, 6]
+submatrix = [row[1:] for row in matrix[:2]]  # [[2, 3], [5, 6]]
+
+text = "data science"
+print(text[5:12])  # 'science'
+```
 
 **Example:**
 
@@ -105,13 +177,25 @@ window = data[2:5]  # [2, 3, 4]
 reversed_data = data[::-1]
 ```
 
-**Depth:** Refresher; must be comfortable with multi-level slicing.
+**You should be able to:**  
+- Use slicing for lists, strings, and (with libraries) numpy arrays  
+- Read and write multi-level slices  
+- Understand step and negative indexing
 
 ---
 
 ## 6. Comprehensions vs. Generator Expressions
 
-**What/Why:** Comprehensions (list/dict/set) eagerly build collections; generator expressions produce items lazily—important for efficiency with large data.
+**What/Why:**  
+Comprehensions (list/dict/set) eagerly build collections in memory; generator expressions produce items lazily—crucial for efficiency when dealing with large or streaming data sets.
+
+**Memory usage & lazy evaluation:**  
+- List comprehensions store the entire result in memory—fast for small/medium data, potentially inefficient for huge data.
+- Generator expressions yield one result at a time using lazy evaluation—consume less memory, suitable for pipelines or iterating over large data sets.
+
+**When to use:**  
+- Use comprehensions for transformations where you need the entire result at once.
+- Use generators when you process data one item at a time, or the result would be too large to fit in memory.
 
 **Example:**
 
@@ -120,67 +204,111 @@ squares = (x**2 for x in range(10))  # generator
 total = sum(squares)
 ```
 
-**Depth:** Refresher; able to read/write both patterns.
+**You should be able to:**  
+- Choose between comprehensions and generators based on data size and memory constraints  
+- Write both styles for data wrangling tasks  
+- Recognize generator exhaustion
 
 ---
 
 ## 7. Functions (including Lambdas)
 
-**What/Why:** Functions organize code; lambdas create small, anonymous functions—handy for sorting, filtering, or passing to library methods.
+**What/Why:** Functions organize code and logic; lambdas create small, anonymous functions—handy for sorting, filtering, or passing as arguments.
+
+**Positional vs. keyword arguments, defaults, and lambdas:**  
+- Positional arguments are matched by position; keyword arguments are matched by name.
+- You can specify default values for arguments, which users can override.
+- Lambdas are single-expression, anonymous functions (useful as arguments).
 
 **Example:**
 
 ```python
+def greet(name, msg="Hello"):
+    return f"{msg}, {name}!"
+
+print(greet("Data Scientist"))  # uses default msg
+print(greet("Data Scientist", msg="Welcome"))
+
 data = ["apple", "pear", "banana"]
 data.sort(key=lambda word: len(word))
 # ['pear', 'apple', 'banana']
 ```
 
-**Depth:** Refresher; use of first-class functions, optional/keyword arguments.
+**You should be able to:**  
+- Define and call functions with positional, keyword, and default arguments  
+- Use lambdas in appropriate contexts  
+- Pass functions as arguments (first-class functions)
 
 ---
 
 ## 8. itertools & functools
 
-**What/Why:** These standard libraries provide advanced iteration and functional utilities (e.g., grouping, mapping, accumulating).
+**What/Why:** These standard libraries provide advanced iteration and functional utilities (e.g., grouping, mapping, accumulating). Must-know tools include:
 
-**Example:**
+- `itertools.chain`: concatenate iterables  
+- `itertools.product`: cartesian product  
+- `itertools.combinations`: all possible pairs/groups  
+- `itertools.groupby`: group consecutive items  
+- `functools.reduce`: accumulate a result  
+- `functools.partial`: pre-fill function args
+
+**Examples:**
 
 ```python
-from itertools import groupby
+from functools import reduce
+
+numbers = [1, 2, 3, 4]
+product = reduce(lambda x, y: x * y, numbers)
+# product = 24
+```
+
+```python
+from itertools import groupby, chain
 data = ["a", "aa", "b", "bb", "b"]
 groups = {k: list(g) for k, g in groupby(sorted(data), key=lambda x: x[0])}
 # {'a': ['a', 'aa'], 'b': ['b', 'bb', 'b']}
 ```
 
-**Depth:** Advanced; know the most common tools (chain, groupby, accumulate).
+**You should be able to:**  
+- Use chain, product, combinations, groupby for iteration tasks  
+- Use reduce and partial for custom accumulation/function manipulation  
+- Recognize when built-in alternatives are preferable (e.g., sum/min/max)
 
 ---
 
 ## 9. Classes & DataClasses
 
-**What/Why:** Classes encapsulate data/behavior; dataclasses (Python 3.7+) make lightweight record types—popular for clear, type-safe data containers.
+**What/Why:**  
+- *Classes* encapsulate data and methods, supporting inheritance and customization.
+- *DataClasses* (Python 3.7+) are specialized classes for simple data containers, generating boilerplate (e.g., `__init__`, `__repr__`) automatically.
 
-**Example:**
+**Comparison:**
 
-```python
-from dataclasses import dataclass
+| Simple Class                                                        | Dataclass Equivalent                                     |
+|---------------------------------------------------------------------|---------------------------------------------------------|
+| ```python                                                           | ```python                                               |
+| class Measurement:                                                  | from dataclasses import dataclass                       |
+|     def __init__(self, id, value):                                  |                                                         |
+|         self.id = id                                                | @dataclass                                              |
+|         self.value = value                                          | class Measurement:                                      |
+| ```                                                                 |     id: int                                             |
+| m = Measurement(1, 3.2)                                             |     value: float                                        |
+|                                                                     | m = Measurement(1, 3.2)                                 |
+| ```                                                                 | ```                                                     |
 
-@dataclass
-class Measurement:
-    id: int
-    value: float
-
-m = Measurement(1, 3.2)
-```
-
-**Depth:** Refresher for classes, able to use dataclasses.
+**You should be able to:**  
+- Write and use custom classes for encapsulating data/behavior  
+- Use dataclasses for simple record types  
+- Decide when to use each based on project needs
 
 ---
 
 ## 10. Context Managers
 
 **What/Why:** Use `with` to manage resources (files, DB connections) safely—ensures cleanup even on error.
+
+**How it works:**  
+Context managers implement the `__enter__` and `__exit__` methods, which setup and teardown resources automatically. You can write them as classes or using `contextlib.contextmanager`.
 
 **Example:**
 
@@ -189,7 +317,27 @@ with open('results.txt', 'w') as f:
     f.write("Experiment complete.")
 ```
 
-**Depth:** Refresher; able to write custom context managers if needed.
+**Custom context manager with contextlib:**
+
+```python
+from contextlib import contextmanager
+
+@contextmanager
+def managed_resource():
+    print("Resource acquired")
+    try:
+        yield
+    finally:
+        print("Resource released")
+
+with managed_resource():
+    print("Do work")
+```
+
+**You should be able to:**  
+- Use `with` for file/database/network resource management  
+- Recognize and implement custom context managers (class or decorator style)  
+- Understand the role of `__enter__` and `__exit__`
 
 ---
 
@@ -197,33 +345,61 @@ with open('results.txt', 'w') as f:
 
 **What/Why:** Proper use of `try`/`except` ensures robust pipelines, especially with unpredictable data.
 
-**Example:**
+**Catching specific exceptions, raising new ones, and using all blocks:**
 
 ```python
 try:
     val = float("not a number")
 except ValueError as e:
     print(f"Conversion failed: {e}")
+    raise RuntimeError("Parsing error") from e
+else:
+    print("Conversion succeeded!")
+finally:
+    print("Cleanup actions (if any)")
 ```
 
-**Depth:** Refresher; comfortable with handling and raising exceptions.
+- `except` can catch specific exceptions for targeted error handling.
+- `else` runs if no exception was raised.
+- `finally` always runs, useful for cleanup.
+
+**You should be able to:**  
+- Catch specific exceptions and raise new ones appropriately  
+- Use try/except/else/finally for error-prone code  
+- Write robust, user-friendly error messages
 
 ---
 
 ## 12. Type Hints & the typing Module
 
-**What/Why:** Adding type hints improves code clarity, enables better IDE support, and supports static analysis.
+**What/Why:**  
+- Type hints clarify intent, improve code readability, and enable static analysis tools (e.g., mypy, IDEs).
+- The `typing` module offers generics (e.g., `List[T]`, `Dict[K, V]`), `Optional`, `Union`, and more.
+- Static analysis can catch bugs before runtime and aid code navigation in large projects.
 
-**Example:**
+**Examples:**
 
 ```python
-from typing import List
+from typing import List, Optional, Union, TypedDict
 
 def mean(values: List[float]) -> float:
     return sum(values) / len(values)
+
+def parse_score(val: Union[str, float]) -> Optional[float]:
+    try:
+        return float(val)
+    except ValueError:
+        return None
+
+class PersonDict(TypedDict):
+    name: str
+    age: int
 ```
 
-**Depth:** Refresher; familiarity with common types (List, Dict, Optional, Union).
+**You should be able to:**  
+- Add type hints to functions, classes, and variables  
+- Use common generics (`List`, `Dict`, `Optional`, `Union`) and TypedDict for structured data  
+- Run static type checks with mypy or similar tools
 
 ---
 
@@ -231,15 +407,26 @@ def mean(values: List[float]) -> float:
 
 **What/Why:** Isolating environments prevents package conflicts and ensures reproducibility.
 
+- Use `python -m venv` or `conda` to create isolated environments.
+- Use `pip install -r requirements.txt` to install dependencies from a file.
+- Use `pip install --upgrade package` to update.
+- For modern projects, `pyproject.toml` is also gaining traction for dependency management.
+
 **Example:**
 
 ```sh
 python -m venv .env
 source .env/bin/activate
 pip install numpy pandas
+pip install -r requirements.txt
+pip install --upgrade matplotlib
 ```
+`requirements.txt` and `pyproject.toml` help standardize and share dependencies.
 
-**Depth:** Refresher; expected to use venv, pip, and requirements.txt.
+**You should be able to:**  
+- Create/activate/deactivate virtual environments  
+- Install, upgrade, and freeze dependencies using pip  
+- Maintain requirements.txt or pyproject.toml
 
 ---
 
@@ -247,23 +434,34 @@ pip install numpy pandas
 
 **What/Why:** Tests catch regressions and document expectations. `pytest` is the de facto testing library.
 
-**Example:**
+**Example (arrange-act-assert):**
 
 ```python
+# test_math.py
 def add(x, y):
     return x + y
 
 def test_add():
-    assert add(2, 3) == 5
+    # Arrange
+    x, y = 2, 3
+    # Act
+    result = add(x, y)
+    # Assert
+    assert result == 5
 ```
 
-**Depth:** Refresher; able to write and run basic pytest functions.
+- Fixtures in pytest help you set up reusable test data and environments.
+
+**You should be able to:**  
+- Write simple unit tests using pytest  
+- Understand arrange/act/assert structure  
+- Use and recognize pytest fixtures
 
 ---
 
 ## 15. Logging
 
-**What/Why:** Logging (vs. print) enables scalable monitoring, diagnostics, and debugging.
+**What/Why:** Logging (vs. print) enables scalable monitoring, diagnostics, and debugging. Logging supports different levels (INFO, WARNING, ERROR), structured logs, and integrates with ML pipeline tools and experiment tracking.
 
 **Example:**
 
@@ -272,31 +470,64 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 logging.info("Data pipeline started")
+logging.warning("Missing value encountered in column 'age'")
 ```
 
-**Depth:** Refresher; able to configure and use logging basics.
+- Logging is configurable, can be captured to files, and is essential for traceability in production and research code.
+
+**You should be able to:**  
+- Replace print statements with logging  
+- Use different log levels appropriately  
+- Integrate logging with larger data workflows
 
 ---
 
 ## 16. Performance Tips (Vectorization, Generators, Memory Views)
 
-**What/Why:** Efficient code is crucial with large data. Prefer vectorized operations (with numpy/pandas), generators for streaming, and memory views for large binary data.
-
-**Example: Vectorization**
+**Vectorization:**  
+Perform operations on whole collections (arrays) at once using numpy/pandas. This avoids slow Python loops and leverages fast, compiled code underneath.
 
 ```python
 import numpy as np
 a = np.arange(1000000)
 b = a * 2  # vectorized, fast
 ```
+*Why crucial:* Vectorization massively speeds up code, especially with large datasets.
 
-**Depth:** Advanced; know when and how to avoid explicit loops.
+**Generators:**  
+Generators yield one item at a time, allowing you to process data streams or large files without loading everything into memory.
+
+```python
+def gen():
+    for i in range(1_000_000):
+        yield i**2
+
+for val in gen():
+    if val > 100:
+        break
+```
+*Why crucial:* Prevents memory overload and enables pipeline-style processing.
+
+**Memory Views:**  
+Memory views allow you to work efficiently with large binary data (e.g., images or raw byte buffers), avoiding unnecessary copying.
+
+```python
+buf = bytearray(b"abcdefgh")
+view = memoryview(buf)
+print(view[2:5].tobytes())  # b'cde'
+```
+*Why crucial:* Enables fast, zero-copy operations on large datasets.
+
+**You should be able to:**  
+- Use vectorized operations for numerical data  
+- Write and consume generators for large/streamed data  
+- Utilize memoryview for advanced binary data tasks
 
 ---
 
 ## 17. Debugging
 
-**What/Why:** Debuggers and assert statements are invaluable for inspecting data flows and catching subtle bugs.
+**What/Why:** Debuggers (`pdb`, IDE tools) and assert statements are invaluable for inspecting data flows and catching subtle bugs.
 
 **Example:**
 
@@ -307,11 +538,16 @@ def process(data):
     # breakpoint()
 ```
 
-**Depth:** Refresher; comfortable with Python debuggers (pdb, IDE tools).
+**You should be able to:**  
+- Use assert for sanity checks  
+- Set breakpoints and step through code  
+- Use pdb or IDE debuggers for troubleshooting
 
 ---
 
 # Python Ecosystem for Data Science
+
+These libraries are introduced briefly here — dedicated modules later will dive deep.
 
 Mastering Python for data science also means knowing the landscape of essential libraries. Each will be covered in-depth later, but here are the must-knows:
 
@@ -319,7 +555,7 @@ Mastering Python for data science also means knowing the landscape of essential 
 
 ## Numpy
 
-Numerical arrays, vectorized operations, linear algebra.
+Numerical arrays, vectorized operations, and linear algebra. Numpy underpins nearly all numerical computing in Python, offering fast, memory-efficient arrays and operations that standard Python lists cannot match. It is the foundation for most other data science libraries.
 
 ```python
 import numpy as np
@@ -331,7 +567,7 @@ print(arr.mean())
 
 ## Pandas
 
-Data frames, tabular data wrangling, CSV/Excel/SQL integration.
+Data frames, tabular data wrangling, CSV/Excel/SQL integration. Pandas provides powerful, flexible data structures (Series and DataFrame), making it easy to clean, filter, reshape, and analyze real-world datasets. It's the go-to tool for data manipulation.
 
 ```python
 import pandas as pd
@@ -343,7 +579,7 @@ print(df.describe())
 
 ## Matplotlib & Seaborn
 
-Visualization libraries for everything from quick plots to complex charts.
+Visualization libraries for everything from quick plots to complex charts. Matplotlib is the workhorse for static, animated, and interactive visualizations; Seaborn builds on it with higher-level API and prettier defaults for statistical graphics.
 
 ```python
 import matplotlib.pyplot as plt
@@ -355,7 +591,7 @@ plt.show()
 
 ## Scikit-learn
 
-Machine learning algorithms, preprocessing, and model evaluation.
+Machine learning algorithms, preprocessing, and model evaluation. Scikit-learn provides easy-to-use implementations of standard ML models (regression, classification, clustering), as well as tools for feature engineering, pipelines, and validation.
 
 ```python
 from sklearn.linear_model import LinearRegression
@@ -366,7 +602,7 @@ model = LinearRegression().fit([[0], [1]], [0, 1])
 
 ## Scipy
 
-Scientific computing: stats, optimization, signal/image processing.
+Scientific computing: stats, optimization, signal/image processing. Scipy extends numpy with a vast library of high-level scientific algorithms and utilities for statistics, optimization, integration, interpolation, and more.
 
 ```python
 from scipy import stats
@@ -377,7 +613,7 @@ print(stats.norm.cdf(0))
 
 ## Statsmodels
 
-Advanced statistical modeling (regression, time series, hypothesis tests).
+Advanced statistical modeling (regression, time series, hypothesis tests). Statsmodels bridges the gap between pure machine learning and statistical inference, providing deep tools for classical statistics and model diagnostics.
 
 ```python
 import statsmodels.api as sm
@@ -389,7 +625,7 @@ print(model.summary())
 
 ## Jupyter Notebooks
 
-Interactive, literate programming for data exploration and reporting.
+Interactive, literate programming for data exploration and reporting. Jupyter notebooks allow you to mix code, output, and rich text—making them ideal for experiments, sharing results, and reproducible research.
 
 ```python
 # In a notebook cell:
@@ -404,4 +640,4 @@ print("Hello, Data Science!")
 - Mastering lists, dicts, comprehensions, generators, and classes is essential for readable, high-performance code.
 - Key ecosystem libraries like numpy, pandas, matplotlib, and scikit-learn are foundational—learn their idioms and APIs.
 - Robust workflow includes using virtual environments, testing, logging, and performance-aware coding.
-- Next: Dive into each core library module by module, starting with [Numpy](../intermediate/01_numpy_intro.md).
+- Next: Dive into each core library module by module, or continue with the [R Overview](02_r_overview.md) to broaden your toolkit.
