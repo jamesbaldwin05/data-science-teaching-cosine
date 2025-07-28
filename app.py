@@ -9,12 +9,23 @@ MODULES_DIR = Path(__file__).resolve().parent / "modules"
 DATA_DIR = Path(__file__).resolve().parent / "data"
 PROGRESS_PATH = Path(__file__).resolve().parent / ".progress.json"
 
-def list_modules():
-    modules = sorted([f for f in MODULES_DIR.iterdir() if f.suffix == ".md"])
-    return modules
+CATEGORY_NAMES = {
+    "beginner": "Beginner",
+    "intermediate": "Intermediate",
+    "advanced": "Advanced"
+}
+
+def list_categories_and_modules():
+    categories = []
+    category_to_modules = {}
+    for category_dir in sorted(MODULES_DIR.iterdir()):
+        if category_dir.is_dir() and category_dir.name in CATEGORY_NAMES:
+            categories.append(category_dir.name)
+            md_files = sorted([f for f in category_dir.glob("*.md") if f.is_file()])
+            category_to_modules[category_dir.name] = md_files
+    return categories, category_to_modules
 
 def parse_markdown_sections(md_text):
-    # Returns dict: {section: content}
     sections = {}
     cur_section = None
     cur_lines = []
@@ -32,7 +43,6 @@ def parse_markdown_sections(md_text):
     return sections
 
 def parse_quiz_block(quiz_md):
-    # Parse question & choices & answer
     q_match = re.search(r"\*\*Question:\*\*\s*(.+)", quiz_md)
     answer_match = re.search(r"\*\*Answer:\*\*\s*([A-D])", quiz_md)
     choices = re.findall(r"^-\s*([A-D])\)\s*(.+)$", quiz_md, re.MULTILINE)
@@ -41,13 +51,11 @@ def parse_quiz_block(quiz_md):
     return question, choices, answer
 
 def extract_codeblock(md, section_name):
-    # Find the code block after a section heading (e.g., Example, Exercise)
     pattern = rf"###\s*{section_name}.*?```python(.*?)```"
     match = re.search(pattern, md, re.DOTALL)
     return match.group(1).strip() if match else ""
 
 def extract_exercise_instructions(md):
-    # Find triple-quoted instruction after ### Exercise
     pattern = r"###\s*Exercise\s*[\r\n]+\"\"\"(.*?)\"\"\""
     match = re.search(pattern, md, re.DOTALL)
     return match.group(1).strip() if match else ""
@@ -56,14 +64,35 @@ def main():
     st.set_page_config(page_title="Data Science for Developers", layout="wide")
     st.title("🧑‍💻 Data Science for Developers")
 
-    modules = list_modules()
-    module_names = [f"{i+1:02d}. {m.stem[3:].replace('_', ' ').title()}" for i, m in enumerate(modules)]
-    module_ids = [m.stem[:2] for m in modules]
+    categories, category_to_modules = list_categories_and_modules()
+
+    if not categories:
+        st.error("No modules found.")
+        return
 
     st.sidebar.title("Curriculum")
-    selected_idx = st.sidebar.radio("Module", list(enumerate(module_names)), format_func=lambda x: x[1], index=0)
-    selected_mod = modules[selected_idx[0]]
-    mod_id = module_ids[selected_idx[0]]
+
+    # First sidebar: category
+    category_idx = st.sidebar.radio(
+        "Section",
+        list(enumerate([CATEGORY_NAMES[c] for c in categories])),
+        format_func=lambda x: x[1],
+        index=0
+    )
+    selected_category = categories[category_idx[0]]
+    modules = category_to_modules[selected_category]
+    module_names = [f"{i+1:02d}. {m.stem[3:].replace('_', ' ').title()}" for i, m in enumerate(modules)]
+
+    # Second sidebar: module within category
+    module_idx = st.sidebar.radio(
+        "Module",
+        list(enumerate(module_names)),
+        format_func=lambda x: x[1],
+        index=0
+    )
+    selected_mod = modules[module_idx[0]]
+    # Progress key is f"{category[0]}_{file.stem[:2]}"
+    mod_id = f"{selected_category[0]}_{selected_mod.stem[:2]}"
 
     # Load progress
     progress = load_progress(PROGRESS_PATH)
@@ -72,7 +101,6 @@ def main():
     md_text = selected_mod.read_text(encoding="utf-8")
     sections = parse_markdown_sections(md_text)
 
-    # Lesson Concept (main body)
     st.markdown(md_text.split("### Example")[0])
 
     # Example code
@@ -121,15 +149,15 @@ def main():
                 save_progress(PROGRESS_PATH, progress)
             else:
                 st.error(f"❌ Incorrect. The correct answer is {answer})")
-        # Show status if attempted before
         if progress.get(mod_id, {}).get("quiz_completed"):
             st.info("You have completed this quiz.")
 
     # Progress summary
     st.sidebar.markdown("---")
     st.sidebar.markdown("### Progress")
+    total_modules = sum(len(ms) for ms in category_to_modules.values())
     completed = sum(1 for k, v in progress.items() if v.get("quiz_completed"))
-    st.sidebar.markdown(f"**Quizzes Completed:** {completed} / {len(modules)}")
+    st.sidebar.markdown(f"**Quizzes Completed:** {completed} / {total_modules}")
     total_ex = sum(v.get("exercise_runs", 0) for v in progress.values())
     st.sidebar.markdown(f"**Exercises Run:** {total_ex}")
 
