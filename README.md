@@ -25,8 +25,8 @@
    ```
 
 4. **Navigate curriculum in the sidebar**  
-   - The sidebar features a collapsible tree: each section (Beginner, Intermediate, Advanced) expands to list its modules.
-   - Modules and sections show a ✅ when their quizzes are completed.
+   - The sidebar features a collapsible tree: each section (Beginner, Intermediate, Advanced) expands to show buttons for its modules.
+   - Click a module to open it. Modules and sections show a ✅ when their quizzes are completed.
    - Your current selection is remembered per session.
    - Each module includes a lesson, runnable code example, interactive exercise, and a multi-question quiz.
    - Your progress is saved locally in `.progress.json`.
@@ -74,7 +74,8 @@
 #### Add/Modify Lessons
 
 1. Add a markdown file to the relevant subfolder in `modules/` (see format below).
-2. The app will auto-detect and display it in the sidebar.
+2. The app will auto-detect and display it in the sidebar.  
+3. To view or switch modules, simply click the module button in the sidebar.
 
 **Lesson markdown format:**
 
