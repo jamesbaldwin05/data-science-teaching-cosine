@@ -147,12 +147,9 @@ def main():
             for i, mod in enumerate(category_to_modules[cat]):
                 mod_id = f"{cat[0]}_{mod.stem[:2]}"
                 completed = progress.get(mod_id, {}).get("quiz_completed", False)
-                # Always show numeric prefix (i+1:02d) regardless of heading
-                # Remove any leading number and dot from stem-derived title
-                raw_title = mod.stem
-                # Remove leading numeric prefix and underscore(s)
-                title_no_prefix = re.sub(r"^\d+_+", '', raw_title)
-                label_text = f"{i+1:02d}. {title_no_prefix.replace('_', ' ').title()}"
+                # Always show numeric prefix (i+1:02d) and derive title from stem after first underscore
+                # This guarantees the numeric prefix is present and readable
+                label_text = f"{i+1:02d}. {' '.join(mod.stem.split('_')[1:]).title()}"
                 label = label_text + (" ✅" if completed else "")
                 is_selected = (cur_paths[i] == selected_path)
                 button_key = f"select_{cat}_{i}"
