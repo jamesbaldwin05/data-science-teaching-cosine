@@ -118,6 +118,20 @@ def main():
 
     # --- Sidebar tree UI ---
     st.sidebar.title("Curriculum")
+    # --- Improved sidebar module selection logic ---
+    # Determine selected category for radio
+    if selected_path and "/" in selected_path:
+        selected_category = selected_path.split("/")[0]
+    else:
+        selected_category = categories[0]
+
+    # --- Improved sidebar module selection logic ---
+    # Determine selected category for radio
+    if selected_path and "/" in selected_path:
+        selected_category = selected_path.split("/")[0]
+    else:
+        selected_category = categories[0]
+
     chosen = None
     for cat in categories:
         # Determine if all modules in this category are completed
@@ -128,33 +142,43 @@ def main():
                 cat_complete = False
                 break
         exp_label = f"{CATEGORY_NAMES[cat]} {'✅' if cat_complete else ''}"
-        with st.sidebar.expander(exp_label, expanded=(cat==categories[0])):
-            # Build module labels with checkmarks
-            radio_labels = []
-            for i, mod in enumerate(category_to_modules[cat]):
-                mod_id = f"{cat[0]}_{mod.stem[:2]}"
-                completed = progress.get(mod_id, {}).get("quiz_completed", False)
-                label = f"{i+1:02d}. {mod.stem[3:].replace('_', ' ').title()}" + (" ✅" if completed else "")
-                radio_labels.append(label)
-            # Figure out which is selected
+        with st.sidebar.expander(exp_label, expanded=(cat==selected_category)):
             cur_paths = cat_mods[cat]
-            try:
-                sel_idx = cur_paths.index(selected_path)
-            except Exception:
-                sel_idx = 0
-            sel = st.radio(
-                "Module",
-                list(enumerate(radio_labels)),
-                format_func=lambda x: x[1],
-                index=sel_idx if cat == selected_path.split("/")[0] else 0,
-                key=f"radio_{cat}",
-                label_visibility="collapsed"
-            )
-            # If user clicks this radio, update session_state
-            if cur_paths[sel[0]] != selected_path:
-                st.session_state["selected_module"] = cur_paths[sel[0]]
-            if cur_paths[sel[0]] == selected_path:
+            if cat == selected_category:
+                # Show radio for currently selected category
+                radio_labels = []
+                for i, mod in enumerate(category_to_modules[cat]):
+                    mod_id = f"{cat[0]}_{mod.stem[:2]}"
+                    completed = progress.get(mod_id, {}).get("quiz_completed", False)
+                    label = f"{i+1:02d}. {mod.stem[3:].replace('_', ' ').title()}" + (" ✅" if completed else "")
+                    radio_labels.append(label)
+                try:
+                    sel_idx = cur_paths.index(selected_path)
+                except Exception:
+                    sel_idx = 0
+                sel = st.radio(
+                    "Module",
+                    list(enumerate(radio_labels)),
+                    format_func=lambda x: x[1],
+                    index=sel_idx,
+                    key=f"radio_{cat}",
+                    label_visibility="collapsed"
+                )
+                if cur_paths[sel[0]] != selected_path:
+                    st.session_state["selected_module"] = cur_paths[sel[0]]
+                # Set chosen for currently selected module
                 chosen = (cat, category_to_modules[cat][sel[0]])
+            else:
+                # Show static bullet list with checkmarks and an optional select button
+                for i, mod in enumerate(category_to_modules[cat]):
+                    mod_id = f"{cat[0]}_{mod.stem[:2]}"
+                    completed = progress.get(mod_id, {}).get("quiz_completed", False)
+                    label = f"{i+1:02d}. {mod.stem[3:].replace('_', ' ').title()}" + (" ✅" if completed else "")
+                    st.markdown(f"- {label}", unsafe_allow_html=True)
+                    button_key = f"select_{cat}_{i}"
+                    if st.button(f"Select this module", key=button_key):
+                        st.session_state["selected_module"] = cur_paths[i]
+                        st.experimental_rerun()
     # Fallback if not chosen
     if not chosen:
         cat = categories[0]
