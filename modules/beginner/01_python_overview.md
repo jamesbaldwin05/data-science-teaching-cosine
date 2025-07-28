@@ -1,8 +1,8 @@
-# Python Refresher for Data Science Practitioners
+# Python in Data Science Overview
 
-## Who is This Module For?
+## Who is This Course For?
 
-This advanced refresher is designed for experienced Python programmers who are comfortable with core syntax and programming concepts but are new to data science. If you know your way around functions, classes, and built-in types, this module will help you bridge the gap to data-science-specific Python usage, highlighting language features and ecosystem tools you'll encounter in real-world pipelines.
+This course is designed for intermediate to experienced Python programmers who are comfortable with core syntax and programming concepts but are new to data science. If you know your way around functions, classes, and built-in types, this module will help you bridge the gap to data-science-specific Python usage, highlighting language features and ecosystem tools (including libraries) you'll encounter in real-world pipelines.
 
 ---
 
@@ -37,13 +37,13 @@ Need to refresh your Python basics? Here are some excellent resources:
 
 # Essential Python Features & Practices for Data Science
 
-A successful data scientist in Python needs fluency with the following language features. Each is presented below with a practical, data-science-flavored example.
+A successful data scientist in Python needs fluency with the following language features.
 
 ---
 
 ## 1. Lists & List Comprehensions
 
-**What/Why:** Lists hold collections of items (e.g., rows, feature values). List comprehensions enable concise, readable transformations—ubiquitous in data wrangling.
+**What/Why:** Lists are used in data science to store collections of data, such as rows in a dataset or individual feature values. List comprehensions provide a clear and compact way to create or transform these lists, making data manipulation tasks faster and more readable—an essential part of data wrangling.
 
 **Python lists vs. C-style arrays:** Unlike C arrays, Python lists can store elements of any type and can grow or shrink dynamically. For large numerical arrays, consider using the `array` module (for numbers) or, more commonly in data science, NumPy arrays for efficiency and extra functionality.
 
@@ -110,6 +110,7 @@ point = (2, 3)
 
 ```python
 a, b = (1, 2)  # multiple assignment
+# a=1, b=2
 
 first, *rest = [10, 20, 30, 40]
 # first=10, rest=[20, 30, 40]
