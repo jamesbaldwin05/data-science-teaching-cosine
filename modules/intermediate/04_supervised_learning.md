@@ -38,9 +38,12 @@ y = df["survived"]
 ```
 
 ### Quiz
-**Question:** Which library provides ready-to-use ML models in Python?
+**Q1:** Which library provides ready-to-use ML models in Python?
 - A) matplotlib
 - B) scikit-learn
 - C) seaborn
 - D) tensorflow
-**Answer:** B
+**A:** B
+
+**Q2:** What is the target variable called in supervised learning?
+**A:** label

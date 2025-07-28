@@ -27,9 +27,12 @@ Fetch the first 5 todos from jsonplaceholder.typicode.com and print their titles
 ```
 
 ### Quiz
-**Question:** What data format is most commonly returned by modern APIs?
+**Q1:** What data format is most commonly returned by modern APIs?
 - A) XML
 - B) CSV
 - C) JSON
 - D) YAML
-**Answer:** C
+**A:** C
+
+**Q2:** What Python library is commonly used to make HTTP requests?
+**A:** requests

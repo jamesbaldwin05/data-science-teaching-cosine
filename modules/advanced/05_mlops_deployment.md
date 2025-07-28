@@ -25,9 +25,12 @@ Write a bash command to build a Docker image from the above Dockerfile.
 ```
 
 ### Quiz
-**Question:** What does CI/CD stand for?
+**Q1:** What does CI/CD stand for?
 - A) Continuous Integration/Continuous Deployment
 - B) Code Inspection/Code Debugging
 - C) Compute Instance/Cloud Database
 - D) Cloud Integration/Cloud Delivery
-**Answer:** A
+**A:** A
+
+**Q2:** Which tool is commonly used to containerize Python apps?
+**A:** docker

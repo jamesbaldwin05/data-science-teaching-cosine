@@ -28,9 +28,12 @@ If the disease prevalence drops to 0.001, what is the new probability of disease
 ```
 
 ### Quiz
-**Question:** What is the core equation for Bayesian inference?
+**Q1:** What is the core equation for Bayesian inference?
 - A) Law of Large Numbers
 - B) Bayes' rule
 - C) Central Limit Theorem
 - D) Markov property
-**Answer:** B
+**A:** B
+
+**Q2:** In Bayes' theorem, what does P(D|T) represent?
+**A:** probability of disease given a positive test

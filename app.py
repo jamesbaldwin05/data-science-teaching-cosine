@@ -9,6 +9,7 @@ MODULES_DIR = Path(__file__).resolve().parent / "modules"
 DATA_DIR = Path(__file__).resolve().parent / "data"
 PROGRESS_PATH = Path(__file__).resolve().parent / ".progress.json"
 
+ORDER = ["beginner", "intermediate", "advanced"]
 CATEGORY_NAMES = {
     "beginner": "Beginner",
     "intermediate": "Intermediate",
@@ -18,11 +19,12 @@ CATEGORY_NAMES = {
 def list_categories_and_modules():
     categories = []
     category_to_modules = {}
-    for category_dir in sorted(MODULES_DIR.iterdir()):
-        if category_dir.is_dir() and category_dir.name in CATEGORY_NAMES:
-            categories.append(category_dir.name)
+    for cname in ORDER:
+        category_dir = MODULES_DIR / cname
+        if category_dir.is_dir():
+            categories.append(cname)
             md_files = sorted([f for f in category_dir.glob("*.md") if f.is_file()])
-            category_to_modules[category_dir.name] = md_files
+            category_to_modules[cname] = md_files
     return categories, category_to_modules
 
 def parse_markdown_sections(md_text):
@@ -43,12 +45,38 @@ def parse_markdown_sections(md_text):
     return sections
 
 def parse_quiz_block(quiz_md):
-    q_match = re.search(r"\*\*Question:\*\*\s*(.+)", quiz_md)
-    answer_match = re.search(r"\*\*Answer:\*\*\s*([A-D])", quiz_md)
-    choices = re.findall(r"^-\s*([A-D])\)\s*(.+)$", quiz_md, re.MULTILINE)
-    question = q_match.group(1).strip() if q_match else ""
-    answer = answer_match.group(1).strip() if answer_match else ""
-    return question, choices, answer
+    # Split into question blocks by **Q
+    blocks = re.split(r'(?=\*\*Q\d+:)', quiz_md)
+    result = []
+    for block in blocks:
+        block = block.strip()
+        if not block:
+            continue
+        # **Qn:** ...\n (question line)
+        qid_match = re.match(r"\*\*Q(\d+):\*\*\s*(.+)", block)
+        if not qid_match:
+            continue
+        qid = qid_match.group(1)
+        question = qid_match.group(2).strip()
+        # Find choices
+        choices = re.findall(r"^-\s*([A-D])\)\s*(.+)$", block, re.MULTILINE)
+        # Find answer (multi-choice: letter; text: string)
+        ans_match = re.search(r"\*\*A:\*\*\s*(.+)", block)
+        answer = ans_match.group(1).strip() if ans_match else ""
+        is_text = False
+        if choices:
+            # Multi-choice: answer is e.g. "B"
+            pass
+        else:
+            is_text = True
+        result.append({
+            "qid": qid,
+            "question": question,
+            "choices": choices,
+            "answer": answer,
+            "is_text": is_text
+        })
+    return result
 
 def extract_codeblock(md, section_name):
     pattern = rf"###\s*{section_name}.*?```python(.*?)```"
@@ -60,47 +88,87 @@ def extract_exercise_instructions(md):
     match = re.search(pattern, md, re.DOTALL)
     return match.group(1).strip() if match else ""
 
+def get_default_selection(categories, category_to_modules):
+    for cname in ORDER:
+        if category_to_modules.get(cname):
+            first_mod = category_to_modules[cname][0]
+            return f"{cname}/{first_mod.name}"
+    return ""
+
 def main():
     st.set_page_config(page_title="Data Science for Developers", layout="wide")
     st.title("🧑‍💻 Data Science for Developers")
 
     categories, category_to_modules = list_categories_and_modules()
-
-    if not categories:
-        st.error("No modules found.")
-        return
-
-    st.sidebar.title("Curriculum")
-
-    # First sidebar: category
-    category_idx = st.sidebar.radio(
-        "Section",
-        list(enumerate([CATEGORY_NAMES[c] for c in categories])),
-        format_func=lambda x: x[1],
-        index=0
-    )
-    selected_category = categories[category_idx[0]]
-    modules = category_to_modules[selected_category]
-    module_names = [f"{i+1:02d}. {m.stem[3:].replace('_', ' ').title()}" for i, m in enumerate(modules)]
-
-    # Second sidebar: module within category
-    module_idx = st.sidebar.radio(
-        "Module",
-        list(enumerate(module_names)),
-        format_func=lambda x: x[1],
-        index=0
-    )
-    selected_mod = modules[module_idx[0]]
-    # Progress key is f"{category[0]}_{file.stem[:2]}"
-    mod_id = f"{selected_category[0]}_{selected_mod.stem[:2]}"
-
-    # Load progress
     progress = load_progress(PROGRESS_PATH)
+
+    # Default selection, persisted in session_state
+    all_paths = []
+    cat_mods = {}
+    for cat in categories:
+        cat_mods[cat] = []
+        for mod in category_to_modules[cat]:
+            path_str = f"{cat}/{mod.name}"
+            cat_mods[cat].append(path_str)
+            all_paths.append(path_str)
+
+    if "selected_module" not in st.session_state:
+        st.session_state["selected_module"] = get_default_selection(categories, category_to_modules)
+    selected_path = st.session_state["selected_module"]
+
+    # --- Sidebar tree UI ---
+    st.sidebar.title("Curriculum")
+    chosen = None
+    for cat in categories:
+        # Determine if all modules in this category are completed
+        cat_complete = True
+        for mod in category_to_modules[cat]:
+            mod_id = f"{cat[0]}_{mod.stem[:2]}"
+            if not progress.get(mod_id, {}).get("quiz_completed"):
+                cat_complete = False
+                break
+        exp_label = f"{CATEGORY_NAMES[cat]} {'✅' if cat_complete else ''}"
+        with st.sidebar.expander(exp_label, expanded=(cat==categories[0])):
+            # Build module labels with checkmarks
+            radio_labels = []
+            for i, mod in enumerate(category_to_modules[cat]):
+                mod_id = f"{cat[0]}_{mod.stem[:2]}"
+                completed = progress.get(mod_id, {}).get("quiz_completed", False)
+                label = f"{i+1:02d}. {mod.stem[3:].replace('_', ' ').title()}" + (" ✅" if completed else "")
+                radio_labels.append(label)
+            # Figure out which is selected
+            cur_paths = cat_mods[cat]
+            try:
+                sel_idx = cur_paths.index(selected_path)
+            except Exception:
+                sel_idx = 0
+            sel = st.radio(
+                "Module",
+                list(enumerate(radio_labels)),
+                format_func=lambda x: x[1],
+                index=sel_idx if cat == selected_path.split("/")[0] else 0,
+                key=f"radio_{cat}",
+                label_visibility="collapsed"
+            )
+            # If user clicks this radio, update session_state
+            if cur_paths[sel[0]] != selected_path:
+                st.session_state["selected_module"] = cur_paths[sel[0]]
+            if cur_paths[sel[0]] == selected_path:
+                chosen = (cat, category_to_modules[cat][sel[0]])
+    # Fallback if not chosen
+    if not chosen:
+        cat = categories[0]
+        chosen = (cat, category_to_modules[cat][0])
+        st.session_state["selected_module"] = f"{cat}/{category_to_modules[cat][0].name}"
+
+    selected_category, selected_mod = chosen
+    mod_id = f"{selected_category[0]}_{selected_mod.stem[:2]}"
 
     # Read lesson
     md_text = selected_mod.read_text(encoding="utf-8")
     sections = parse_markdown_sections(md_text)
 
+    # --- Main lesson display ---
     st.markdown(md_text.split("### Example")[0])
 
     # Example code
@@ -131,24 +199,61 @@ def main():
             save_progress(PROGRESS_PATH, progress)
             st.success("Exercise run recorded!")
 
-    # Quiz
+    # Quiz (multi-question)
     if "quiz" in sections:
         st.subheader("Quiz")
-        q_md = sections["quiz"]
-        question, choices, answer = parse_quiz_block(q_md)
-        choice_labels = [f"{opt}) {txt}" for opt, txt in choices]
+        quiz_md = sections["quiz"]
+        quiz_questions = parse_quiz_block(quiz_md)
         quiz_key = f"quiz_{mod_id}"
-        user_choice = st.radio(question, choice_labels, key=quiz_key)
+        # Load user answers from session_state, or make new
+        if quiz_key not in st.session_state:
+            st.session_state[quiz_key] = {}
+        user_answers = st.session_state[quiz_key]
+        # Show all questions
+        for q in quiz_questions:
+            qid = q["qid"]
+            field_key = f"{quiz_key}_{qid}"
+            if q["choices"]:
+                options = [f"{c[0]}) {c[1]}" for c in q["choices"]]
+                answer_val = user_answers.get(qid, "")
+                idx = None
+                for i, opt in enumerate(q["choices"]):
+                    if answer_val == opt[0]:
+                        idx = i
+                choice = st.radio(q["question"], options, key=field_key, index=idx if idx is not None else 0)
+                # Save letter (e.g. 'A') on change
+                letter = choice.split(")")[0]
+                user_answers[qid] = letter
+            else:
+                answer_val = user_answers.get(qid, "")
+                resp = st.text_input(q["question"], value=answer_val, key=field_key)
+                user_answers[qid] = resp
+        # Quiz submit
         if st.button("Submit Quiz", key=f"submit_quiz_{mod_id}"):
-            chosen_letter = user_choice.split(")")[0]
-            if chosen_letter == answer:
-                st.success("✅ Correct!")
+            all_correct = True
+            results = []
+            for q in quiz_questions:
+                qid = q["qid"]
+                ua = user_answers.get(qid, "")
+                if not q["is_text"]:
+                    # Multi-choice
+                    correct = ua.upper().strip() == q["answer"].upper().strip()
+                else:
+                    correct = ua.strip().lower() == q["answer"].strip().lower()
+                results.append(correct)
+                if not correct:
+                    all_correct = False
+            if all_correct:
+                st.success("✅ All answers correct!")
                 mod_prog = progress.get(mod_id, {})
                 mod_prog["quiz_completed"] = True
                 progress[mod_id] = mod_prog
                 save_progress(PROGRESS_PATH, progress)
             else:
-                st.error(f"❌ Incorrect. The correct answer is {answer})")
+                for i, correct in enumerate(results):
+                    if not correct:
+                        st.error(f"❌ Q{i+1}: Incorrect.")
+                st.info("Please review the incorrect answers and try again.")
         if progress.get(mod_id, {}).get("quiz_completed"):
             st.info("You have completed this quiz.")
 

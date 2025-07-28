@@ -46,9 +46,12 @@ y_pred = model.predict(X_test)
 ```
 
 ### Quiz
-**Question:** Which metric shows both true/false positives and negatives for classification?
+**Q1:** Which metric shows both true/false positives and negatives for classification?
 - A) accuracy_score
 - B) confusion_matrix
 - C) mean_squared_error
 - D) roc_curve
-**Answer:** B
+**A:** B
+
+**Q2:** What function would you use to measure regression error?
+**A:** mean_squared_error

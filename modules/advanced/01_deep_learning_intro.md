@@ -49,9 +49,12 @@ Modify the MLP above to add another hidden layer (e.g., 16 → 8 → 3 units).
 ```
 
 ### Quiz
-**Question:** Which library is commonly used for deep learning in Python?
+**Q1:** Which library is commonly used for deep learning in Python?
 - A) scikit-learn
 - B) tensorflow
 - C) pandas
 - D) seaborn
-**Answer:** B
+**A:** B
+
+**Q2:** What does MLP stand for in neural networks?
+**A:** multilayer perceptron

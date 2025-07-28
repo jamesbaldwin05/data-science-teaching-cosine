@@ -30,9 +30,12 @@ df = pd.read_csv(Path(__file__).resolve().parents[2] / "data" / "titanic.csv")
 ```
 
 ### Quiz
-**Question:** Which statement retrieves all rows from a table?
+**Q1:** Which statement retrieves all rows from a table?
 - A) GET * FROM table
 - B) SELECT * FROM table
 - C) FETCH * FROM table
 - D) READ * FROM table
-**Answer:** B
+**A:** B
+
+**Q2:** Which built-in Python module lets you use SQL on local files?
+**A:** sqlite3

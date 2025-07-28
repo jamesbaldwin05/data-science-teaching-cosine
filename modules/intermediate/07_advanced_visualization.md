@@ -35,9 +35,12 @@ df = pd.read_csv(Path(__file__).resolve().parents[2] / "data" / "titanic.csv")
 ```
 
 ### Quiz
-**Question:** Which function sets a color palette in seaborn?
+**Q1:** Which function sets a color palette in seaborn?
 - A) sns.set_palette
 - B) plt.set_palette
 - C) sns.palette
 - D) plt.set_color
-**Answer:** A
+**A:** A
+
+**Q2:** Name a function to display a legend in matplotlib.
+**A:** legend

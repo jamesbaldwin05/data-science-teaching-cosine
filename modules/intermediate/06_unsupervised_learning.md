@@ -35,9 +35,12 @@ X = df[["age", "fare"]].dropna()
 ```
 
 ### Quiz
-**Question:** Which technique reduces a dataset to fewer dimensions while preserving variance?
+**Q1:** Which technique reduces a dataset to fewer dimensions while preserving variance?
 - A) Clustering
 - B) PCA
 - C) Regression
 - D) Filtering
-**Answer:** B
+**A:** B
+
+**Q2:** What is the goal of clustering?
+**A:** group similar data

@@ -27,9 +27,12 @@ df = pd.read_csv(Path(__file__).resolve().parents[2] / "data" / "titanic.csv")
 ```
 
 ### Quiz
-**Question:** Which pandas method removes duplicate rows?
+**Q1:** Which pandas method removes duplicate rows?
 - A) df.clean()
 - B) df.drop_duplicates()
 - C) df.remove()
 - D) df.unique()
-**Answer:** B
+**A:** B
+
+**Q2:** What value does pandas use to represent missing data?
+**A:** NaN

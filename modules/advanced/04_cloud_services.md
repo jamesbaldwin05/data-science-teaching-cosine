@@ -26,9 +26,12 @@ List all S3 bucket names (use boto3 and your AWS credentials).
 ```
 
 ### Quiz
-**Question:** Which AWS service is used for object storage?
+**Q1:** Which AWS service is used for object storage?
 - A) EC2
 - B) Lambda
 - C) S3
 - D) SageMaker
-**Answer:** C
+**A:** C
+
+**Q2:** What Python library is used for AWS automation?
+**A:** boto3

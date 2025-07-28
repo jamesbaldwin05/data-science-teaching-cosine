@@ -39,9 +39,12 @@ df = df.dropna(subset=["age"])
 ```
 
 ### Quiz
-**Question:** What is a typical first step in a real-world ML project?
+**Q1:** What is a typical first step in a real-world ML project?
 - A) Train a model immediately
 - B) Explore and clean the data
 - C) Export results to Excel
 - D) Tune hyperparameters
-**Answer:** B
+**A:** B
+
+**Q2:** True or False: Feature engineering often comes after initial data exploration.
+**A:** True

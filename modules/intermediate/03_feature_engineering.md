@@ -26,9 +26,12 @@ df = pd.read_csv(Path(__file__).resolve().parents[2] / "data" / "titanic.csv")
 ```
 
 ### Quiz
-**Question:** What is feature engineering?
+**Q1:** What is feature engineering?
 - A) Removing all missing data
 - B) Creating new variables from raw data
 - C) Training a machine learning model
 - D) Changing file formats
-**Answer:** B
+**A:** B
+
+**Q2:** True or False: Creating a new column by combining two features is feature engineering.
+**A:** True

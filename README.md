@@ -8,8 +8,8 @@
 
 1. **Clone the repo**  
    ```bash
-   git clone &lt;this_repo&gt;
-   cd &lt;this_repo&gt;
+   git clone <this_repo>
+   cd <this_repo>
    ```
 
 2. **Install requirements**  
@@ -25,8 +25,10 @@
    ```
 
 4. **Navigate curriculum in the sidebar**  
-   - First choose a section (Beginner, Intermediate, Advanced), then pick a module.
-   - Each module includes a lesson, runnable code example, interactive exercise, and a quiz.
+   - The sidebar features a collapsible tree: each section (Beginner, Intermediate, Advanced) expands to list its modules.
+   - Modules and sections show a ✅ when their quizzes are completed.
+   - Your current selection is remembered per session.
+   - Each module includes a lesson, runnable code example, interactive exercise, and a multi-question quiz.
    - Your progress is saved locally in `.progress.json`.
 
 ---
@@ -95,10 +97,13 @@ Task instructions here.
 ```
 
 ### Quiz
-**Question:** Your question here?
+**Q1:** What's the ...?
 - A) Option 1
 - B) Option 2
-**Answer:** B
+**A:** B
+
+**Q2:** Name the Pandas function to read CSV.
+**A:** read_csv
 ```
 
 ---

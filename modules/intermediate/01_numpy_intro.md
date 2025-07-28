@@ -26,9 +26,12 @@ arr = np.array([[1, 2, 3], [4, 5, 6]])
 ```
 
 ### Quiz
-**Question:** What is the main benefit of using NumPy arrays over Python lists for numeric data?
+**Q1:** What is the main benefit of using NumPy arrays over Python lists for numeric data?
 - A) Simpler syntax
 - B) Faster, vectorized computation
 - C) Better for text
 - D) Unlimited size
-**Answer:** B
+**A:** B
+
+**Q2:** Which function creates an array of zeros in NumPy?
+**A:** zeros
