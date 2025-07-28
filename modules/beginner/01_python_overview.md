@@ -655,14 +655,6 @@ Jupyter Notebooks are powerful, interactive documents that combine live code, vi
 
 When working in a notebook, you execute code cells individually, and the results—such as printed output, plots, or error messages—appear immediately below the cell. The underlying process that runs your code is called a **kernel**, which maintains the execution state and variables across cells (so earlier results can be reused later). Restarting the kernel clears this state. Notebooks are ideal for exploratory data analysis (EDA), rapid prototyping, teaching, and sharing reproducible reports or data workflows.
 
-Example of a code cell in a Jupyter Notebook:
-
-```python
-print("Hello, Data Science!")
-```
-
----
-
 # Key Takeaways
 
 - Data science with Python builds on solid core language skills—review as needed!
