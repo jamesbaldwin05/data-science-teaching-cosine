@@ -283,19 +283,31 @@ groups = {k: list(g) for k, g in groupby(sorted(data), key=lambda x: x[0])}
 - *Classes* encapsulate data and methods, supporting inheritance and customization.
 - *DataClasses* (Python 3.7+) are specialized classes for simple data containers, generating boilerplate (e.g., `__init__`, `__repr__`) automatically.
 
-**Comparison:**
+Below are two equivalent ways to define a simple data container: a classic class and a dataclass.
 
-| Simple Class                                                        | Dataclass Equivalent                                     |
-|---------------------------------------------------------------------|---------------------------------------------------------|
-| ```python                                                           | ```python                                               |
-| class Measurement:                                                  | from dataclasses import dataclass                       |
-|     def __init__(self, id, value):                                  |                                                         |
-|         self.id = id                                                | @dataclass                                              |
-|         self.value = value                                          | class Measurement:                                      |
-| ```                                                                 |     id: int                                             |
-| m = Measurement(1, 3.2)                                             |     value: float                                        |
-|                                                                     | m = Measurement(1, 3.2)                                 |
-| ```                                                                 | ```                                                     |
+### Classic class example
+
+```python
+class Measurement:
+    def __init__(self, id, value):
+        self.id = id
+        self.value = value
+
+m = Measurement(1, 3.2)
+```
+
+### Dataclass equivalent
+
+```python
+from dataclasses import dataclass
+
+@dataclass
+class Measurement:
+    id: int
+    value: float
+
+m = Measurement(1, 3.2)
+```
 
 **You should be able to:**  
 - Write and use custom classes for encapsulating data/behavior  
@@ -626,10 +638,25 @@ print(model.summary())
 
 ## Jupyter Notebooks
 
-Interactive, literate programming for data exploration and reporting. Jupyter notebooks allow you to mix code, output, and rich text—making them ideal for experiments, sharing results, and reproducible research.
+Jupyter Notebooks are powerful, interactive documents that combine live code, visualizations, and explanatory text. Widely used in data science, teaching, and research, notebooks allow you to interleave executable code (Python or other languages), formatted notes (Markdown), equations, and rich outputs (plots, tables, images) in a single, shareable file. Each notebook consists of "cells"—the two most common types are **code cells** (which you run to produce output) and **Markdown cells** (for formatted text, math, or instructions).
+
+When working in a notebook, you execute code cells individually, and the results—such as printed output, plots, or error messages—appear immediately below the cell. The underlying process that runs your code is called a **kernel**, which maintains the execution state and variables across cells (so earlier results can be reused later). Restarting the kernel clears this state. Notebooks are ideal for exploratory data analysis (EDA), rapid prototyping, teaching, and sharing reproducible reports or data workflows.
+
+You can run Jupyter Notebooks in several environments:
+- **JupyterLab**: A modern web-based interface for working with notebooks and other files.
+- **Classic Jupyter Notebook**: The original web UI.
+- **VS Code**: Integrated support for editing and running notebook files.
+- **Cloud platforms**: Services like Google Colab, Kaggle, and Binder let you use notebooks without installing anything locally.
+
+**Key benefits of Jupyter Notebooks:**
+- Mix code, results, and explanations for "literate programming"
+- Easy visualization and data exploration in-place
+- Shareable, reproducible research and reports
+- Supports many languages (via different kernels), not just Python
+
+Example of a code cell in a Jupyter Notebook:
 
 ```python
-# In a notebook cell:
 print("Hello, Data Science!")
 ```
 
@@ -641,4 +668,4 @@ print("Hello, Data Science!")
 - Mastering lists, dicts, comprehensions, generators, and classes is essential for readable, high-performance code.
 - Key ecosystem libraries like numpy, pandas, matplotlib, and scikit-learn are foundational—learn their idioms and APIs.
 - Robust workflow includes using virtual environments, testing, logging, and performance-aware coding.
-- Next: Dive into each core library module by module, or continue with the [R Overview](02_r_overview.md) to broaden your toolkit.
+- Next: Dive into each core library module by module, or continue with the [R Overview](./02_r_overview.md) to broaden your toolkit.
