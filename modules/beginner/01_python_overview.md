@@ -642,18 +642,6 @@ Jupyter Notebooks are powerful, interactive documents that combine live code, vi
 
 When working in a notebook, you execute code cells individually, and the results—such as printed output, plots, or error messages—appear immediately below the cell. The underlying process that runs your code is called a **kernel**, which maintains the execution state and variables across cells (so earlier results can be reused later). Restarting the kernel clears this state. Notebooks are ideal for exploratory data analysis (EDA), rapid prototyping, teaching, and sharing reproducible reports or data workflows.
 
-You can run Jupyter Notebooks in several environments:
-- **JupyterLab**: A modern web-based interface for working with notebooks and other files.
-- **Classic Jupyter Notebook**: The original web UI.
-- **VS Code**: Integrated support for editing and running notebook files.
-- **Cloud platforms**: Services like Google Colab, Kaggle, and Binder let you use notebooks without installing anything locally.
-
-**Key benefits of Jupyter Notebooks:**
-- Mix code, results, and explanations for "literate programming"
-- Easy visualization and data exploration in-place
-- Shareable, reproducible research and reports
-- Supports many languages (via different kernels), not just Python
-
 Example of a code cell in a Jupyter Notebook:
 
 ```python
