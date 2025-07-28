@@ -617,9 +617,17 @@ model = LinearRegression().fit([[0], [1]], [0, 1])
 
 Scientific computing: stats, optimization, signal/image processing. Scipy extends numpy with a vast library of high-level scientific algorithms and utilities for statistics, optimization, integration, interpolation, and more.
 
+Scipy is organized into key submodules such as `scipy.optimize` (optimization and curve fitting), `scipy.stats` (statistical tests and distributions), `scipy.integrate` (numerical integration), `scipy.signal` (signal processing), and `scipy.sparse` (sparse matrices). Typical uses include fitting models to data, running hypothesis tests, integrating functions, or working with large, sparse datasets.
+
 ```python
 from scipy import stats
 print(stats.norm.cdf(0))
+
+# Example: Student's t-test for independent samples
+a = [1.1, 2.5, 3.3]
+b = [0.9, 2.1, 3.0]
+t_stat, p_value = stats.ttest_ind(a, b)
+print(f"t={t_stat:.3f}, p={p_value:.3g}")
 ```
 
 ---
@@ -628,9 +636,14 @@ print(stats.norm.cdf(0))
 
 Advanced statistical modeling (regression, time series, hypothesis tests). Statsmodels bridges the gap between pure machine learning and statistical inference, providing deep tools for classical statistics and model diagnostics.
 
+Statsmodels features a user-friendly formula API (like R's formulas) for specifying models with symbolic syntax (e.g., `"y ~ x1 + x2"`), as well as advanced tools for time-series analysis (ARIMA, SARIMAX, state space models). Its emphasis on statistical inference means you get p-values, confidence intervals, and detailed summaries—ideal for understanding model significance and diagnostics.
+
 ```python
-import statsmodels.api as sm
-model = sm.OLS([2, 4, 6], sm.add_constant([1, 2, 3])).fit()
+import statsmodels.formula.api as smf
+import pandas as pd
+
+df = pd.DataFrame({"y": [2, 4, 6], "x": [1, 2, 3]})
+model = smf.ols("y ~ x", data=df).fit()
 print(model.summary())
 ```
 
@@ -656,4 +669,4 @@ print("Hello, Data Science!")
 - Mastering lists, dicts, comprehensions, generators, and classes is essential for readable, high-performance code.
 - Key ecosystem libraries like numpy, pandas, matplotlib, and scikit-learn are foundational—learn their idioms and APIs.
 - Robust workflow includes using virtual environments, testing, logging, and performance-aware coding.
-- Next: Dive into each core library module by module, or continue with the [R Overview](./02_r_overview.md) to broaden your toolkit.
+- Next: Dive into each core library module by module, or continue with the [R Overview](/02_r_overview.md) to broaden your toolkit.
