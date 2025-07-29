@@ -302,7 +302,7 @@ class Measurement:
         self.value = value
 
 m = Measurement(1, 3.2)
-print(m)
+print(m.value)
 ```
 
 ### Dataclass equivalent
@@ -316,7 +316,7 @@ class Measurement:
     value: float
 
 m = Measurement(1, 3.2)
-print(m)
+print(m.id)
 ```
 
 **You should be able to:**  
