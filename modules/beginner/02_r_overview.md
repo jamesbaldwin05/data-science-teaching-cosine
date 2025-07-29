@@ -1,34 +1,392 @@
-# R Overview for Data Science
+# R for Data Science: Beginner Overview
 
-**Concept**  
-R is another popular language for data analysis and statistics, especially in academia. Its strengths are statistical modeling and visualization. Learn more at [R for Data Science](https://r4ds.had.co.nz/) and [CRAN documentation](https://cran.r-project.org/manuals.html).
+## Who is This Course For?
 
-### Example
-```python
-# Python's pandas is inspired by R's data.frame.
-import pandas as pd
-from pathlib import Path
+This lesson is for programmers (Python, Java, C++, etc.) who are new to R and to data science workflows. If you’re
+comfortable with core programming concepts but want to learn R’s unique strengths for analysis, visualization, and
+modeling, this module is your gateway to idiomatic R and modern data science best practices.
 
-df = pd.read_csv(Path(__file__).resolve().parents[2] / "data" / "iris.csv")
-print(df.head())
+---
+
+## Where to Brush Up
+
+- [R for Data Science (free book)](https://r4ds.hadley.nz/)
+- [Swirl: Interactive R Learning](https://swirlstats.com/)
+- [RStudio Primers](https://posit.cloud/learn/primers)
+- [Quick-R Syntax Reference](https://www.statmethods.net/)
+- [CRAN Task Views (topic guides)](https://cran.r-project.org/web/views/)
+- [ModernDive: Statistical Inference via R](https://moderndive.com/)
+
+---
+
+# Essential R Features & Practices for Data Science
+
+---
+
+## Introduction to R for Data Science
+
+**What/Why:**  
+R is a language and environment designed for statistics, data analysis, and visualization. Used by researchers,
+analysts, and data scientists, R’s syntax and libraries make it easy to manipulate, model, and visualize data
+efficiently—from quick exploration to reproducible research and reports.
+
+---
+
+## R vs Other Languages (Python, etc.)
+
+**What/Why:**  
+R is vectorized and data-centric. It’s built for data exploration, statistical modeling, and producing
+publication-quality graphics. Unlike Python, which is multipurpose and often uses pandas, NumPy, and matplotlib,
+R’s base syntax and ecosystem (especially the tidyverse) are laser-focused on data workflows and EDA.
+R’s formula interface (`y ~ x1 + x2`) is especially concise for modeling.  
+**When to use R:**  
+- Exploratory data analysis, statistics, quick plotting, reproducible research (R Markdown, Quarto, Shiny)
+- When you want concise data wrangling and visualization
+
+---
+
+## Installing R and RStudio
+
+**What/Why:**  
+RStudio is the most popular IDE for R, providing a user-friendly environment for scripting, plotting, and
+reporting. You can also use R from the terminal or via VS Code (with the R extension).
+
+**How:**  
+- Download R from [CRAN](https://cran.r-project.org/)
+- Download RStudio Desktop (free) from [posit.co](https://posit.co/download/rstudio-desktop/)
+- (Optional) For VS Code, install the [R extension](https://marketplace.visualstudio.com/items?itemName=Ikuyadeu.r)
+- Open RStudio, create a new R script (`.R`), and you’re ready to go!
+
+---
+
+## CRAN & Installing Packages
+
+**What/Why:**  
+CRAN (Comprehensive R Archive Network) is the central repository for R packages, similar to PyPI for Python.
+You install packages with `install.packages("pkgname")` and load them with `library(pkgname)`.  
+Keep packages up to date with `update.packages()`.
+
+```r
+# Install and load tidyverse (run once per machine)
+install.packages("tidyverse")
+library(tidyverse)
 ```
+
+---
+
+## R Basics & Syntax
+
+**What/Why:**  
+R’s syntax is readable and expressive, with a focus on vectors and data frames. Assignment is usually `<-` but `=`
+also works. R features data types like vectors, matrices, lists, data frames, and factors (for categorical data).
+Indexing is 1-based (vs. 0-based in Python). Control structures (if, for, while) are available, but vectorized
+operations and the apply family are preferred. Functions can return multiple values in a list.
+
+**Comparison:**  
+Think of an R data frame as a pandas DataFrame, and R’s vectorization as similar to NumPy arrays.
+
+```r
+# Assignment and data types
+a <- 5
+b = c(1, 2, 3)           # numeric vector
+names <- c("Alice", "Bob")
+mat <- matrix(1:6, nrow = 2)
+lst <- list(score = 88, passed = TRUE)
+df <- data.frame(name = names, age = c(20, 22))
+df$age[2] <- df$age[2] + 1  # update value
+
+# Indexing and subsetting (1-based)
+x <- c(10, 20, 30)
+x[2]           # 20
+df[1, ]        # first row
+df$name        # column by name
+
+# Control structures
+for (val in b) {
+  print(val)
+}
+if (a > 3) {
+  print("a is large")
+}
+
+# Apply family (vectorized iteration)
+sums <- sapply(df[2], sum)
+
+# Functions with defaults and list return
+myfunc <- function(x, y = 2) {
+  z <- x * y
+  list(result = z, input = x)
+}
+out <- myfunc(3)
+```
+
+**You should be able to:**  
+- Assign variables, create and index data structures
+- Use vectorized operations and subsetting
+- Write functions with default args and return lists
+
+---
+
+## Data Manipulation with tidyverse
+
+**What/Why:**  
+The tidyverse is a collection of packages for modern, fluent data workflows. `dplyr` provides powerful "verbs"
+(filter, select, mutate, summarise, group_by). `tidyr` reshapes data. `readr` imports CSVs. `lubridate` works with dates.
+
+**Comparison:**  
+dplyr is analogous to pandas (but more readable for chainable operations); tidyr is like pandas’ melt/pivot.
+
+```r
+library(tidyverse)
+
+# dplyr verbs
+gapminder %>%
+  filter(year == 2007, continent != "Oceania") %>%
+  select(country, continent, lifeExp, gdpPercap) %>%
+  mutate(gdp_bil = gdpPercap * 1e-3) %>%
+  group_by(continent) %>%
+  summarise(med_life = median(lifeExp), .groups = "drop") %>%
+  arrange(desc(med_life))
+
+# tidyr reshaping
+wide <- tidyr::pivot_wider(gapminder, names_from = continent, values_from = pop, values_fill = 0)
+long <- tidyr::pivot_longer(wide, cols = -c(country, year), names_to = "continent", values_to = "pop")
+
+# Handling missing data
+df <- tibble(x = c(NA, 2, 3))
+df %>% mutate(x2 = if_else(is.na(x), 0, x))
+```
+
+**You should be able to:**  
+- Use dplyr verbs for filtering, transforming, summarizing
+- Reshape data with tidyr
+- Import data with readr, handle dates with lubridate
+
+---
+
+## Data Visualization
+
+**What/Why:**  
+`ggplot2` implements the grammar of graphics for layered, customizable plots. Create scatter, bar, histogram, box,
+and time-series plots. Themes, color, and facets enable publication-ready graphics.
+
+**Comparison:**  
+ggplot2 is to R what seaborn (or matplotlib) is to Python, but with a more consistent, layered grammar.
+
+```r
+library(ggplot2)
+
+# Scatter with color/facet
+ggplot(gapminder, aes(gdpPercap, lifeExp, color = continent)) +
+  geom_point(alpha = 0.5) +
+  scale_x_log10() +
+  facet_wrap(~ year) +
+  labs(title = "Life Expectancy vs. GDP per Capita")
+
+# Histogram and boxplot
+ggplot(gapminder, aes(lifeExp)) +
+  geom_histogram(bins = 30, fill = "skyblue") +
+  theme_minimal()
+
+ggplot(gapminder, aes(continent, lifeExp, fill = continent)) +
+  geom_boxplot() +
+  theme_classic()
+
+# Time series
+library(lubridate)
+gapminder %>%
+  group_by(year) %>%
+  summarise(mean_le = mean(lifeExp)) %>%
+  ggplot(aes(year, mean_le)) +
+  geom_line() +
+  labs(title = "Global Mean Life Expectancy")
+```
+
+**You should be able to:**  
+- Create basic and advanced plots
+- Customize plots with color, theme, and facets
+
+---
+
+## Working with Real Data
+
+**What/Why:**  
+R makes it easy to load, clean, and explore real datasets. Use `gapminder` (install with `install.packages("gapminder")`)
+or `nycflights13` for practical examples. Handle missing data, rename columns, and do quick EDA.
+
+```r
+library(gapminder)
+data(gapminder)
+
+# Basic exploration
+head(gapminder)
+summary(gapminder)
+str(gapminder)
+
+# Clean: remove missing, rename
+clean <- gapminder %>%
+  filter(!is.na(lifeExp)) %>%
+  rename(country_name = country)
+
+# Quick EDA: count by continent
+table(clean$continent)
+```
+
+**You should be able to:**  
+- Import and inspect real datasets
+- Clean data and handle missing values
+
+---
+
+## Exploratory Data Analysis (EDA)
+
+**What/Why:**  
+EDA helps you understand the structure and relationships in your data. Use summary stats, distribution plots,
+and correlation matrices. Visual EDA guides further analysis and modeling decisions.
+
+```r
+# Summary stats and correlation
+summary(gapminder)
+cor(gapminder$lifeExp, gapminder$gdpPercap)
+
+# Distribution plots
+library(GGally)
+ggpairs(gapminder[, c("lifeExp", "gdpPercap", "pop")])
+
+# Visual EDA tip: color by group
+ggplot(gapminder, aes(lifeExp, fill = continent)) +
+  geom_density(alpha = 0.4)
+```
+
+**You should be able to:**  
+- Compute summary statistics
+- Visualize distributions and relationships
+
+---
+
+## Basic Statistics
+
+**What/Why:**  
+R includes built-in functions for descriptive stats, t-tests, chi-squared, ANOVA, and regression. Use the
+`broom` package to tidy model outputs into data frames.
+
+```r
+# Descriptive stats
+mean(gapminder$lifeExp)
+sd(gapminder$lifeExp)
+
+# t-test
+t.test(lifeExp ~ continent, data = gapminder, subset = continent %in% c("Europe", "Asia"))
+
+# ANOVA
+aov_res <- aov(lifeExp ~ continent, data = gapminder)
+summary(aov_res)
+
+# Linear regression with tidy output
+library(broom)
+model <- lm(lifeExp ~ gdpPercap + continent, data = gapminder)
+tidy(model)
+```
+
+**You should be able to:**  
+- Run common statistical tests
+- Fit and interpret simple regression models
+
+---
+
+## Introduction to Modeling
+
+**What/Why:**  
+The `tidymodels` or `caret` packages provide unified APIs for machine learning. Split data, train models,
+evaluate with metrics. Try linear/logistic regression or decision trees.
+
+```r
+library(tidymodels)
+
+set.seed(42)
+split <- initial_split(gapminder, prop = 0.7)
+train <- training(split)
+test <- testing(split)
+
+# Linear regression
+lm_mod <- linear_reg() %>%
+  fit(lifeExp ~ gdpPercap + continent, data = train)
+
+pred <- predict(lm_mod, test)
+results <- bind_cols(test, pred)
+yardstick::rmse(results, truth = lifeExp, estimate = .pred)
+```
+
+**You should be able to:**  
+- Split data, fit and evaluate simple models
+
+---
+
+## R Markdown & Reporting
+
+**What/Why:**  
+R Markdown lets you combine code, output, and narrative in a single document—great for reports, research,
+and sharing results. Knit to HTML, PDF, or Word from within RStudio.
+
+- Start a new `.Rmd` file in RStudio, add code chunks with ```{r} ... ```
+- Render with the "Knit" button
+- Embed plots, tables, and narrative text
+
+---
+
+## Best Practices & Ecosystem
+
+**What/Why:**  
+Write idiomatic, well-commented code. Organize projects with RStudio Projects for reproducibility.
+Use Git for version control (RStudio has built-in support). Find packages on CRAN or GitHub; check
+documentation and vignettes. Share work with RMarkdown, Shiny, or Quarto.
+
+- Clean code: consistent naming, comments, avoid side-effects
+- Use `.Rproj` files and `here::here()` for file paths
+- Version control: [Happy Git with R](https://happygitwithr.com/)
+- Community: RStudio Community, Stack Overflow, R-Ladies
+
+---
+
+# Further Resources
+
+- [Advanced R](https://adv-r.hadley.nz/)
+- [Tidyverse documentation](https://tidyverse.tidyverse.org/)
+- [RStudio Community](https://community.rstudio.com/)
+- [ModernDive](https://moderndive.com/)
+- [R-bloggers](https://www.r-bloggers.com/)
+- [R for Data Science (book)](https://r4ds.hadley.nz/)
+- [CRAN Task Views](https://cran.r-project.org/web/views/)
+
+---
+
+# Key Takeaways
+
+- R is vectorized and data-centric, with syntax and tools for efficient data science.
+- The tidyverse enables powerful, readable data wrangling and visualization.
+- ggplot2 and R Markdown power publication-ready plots and reproducible reports.
+- Real-world data science in R means: import, clean, EDA, model, communicate.
+- The R ecosystem and community are deep and supportive—use their resources.
+
+---
 
 ### Exercise
-"""
-What is the equivalent of R's data.frame in Python? Print the type of 'df' after reading the CSV.
-"""
-```python
-import pandas as pd
-from pathlib import Path
 
-df = pd.read_csv(Path(__file__).resolve().parents[2] / "data" / "titanic.csv")
-# Your code here:
+"""
+Load the gapminder dataset, filter for year 2007, calculate median life expectancy per continent,
+and plot a bar chart of these medians (continent on x, median lifeExp on y).
+"""
+
+```r
+# Load and explore data
+library(tidyverse)
+library(gapminder)
+data(gapminder)
+
+# TODO: filter for 2007, group by continent, calculate median lifeExp, and plot bar chart
+gap_2007 <- 
+med_lifeExp <- 
+ggplot(med_lifeExp, aes(x = continent, y = median_lifeExp)) +
+  geom_col(fill = "skyblue") +
+  labs(title = "Median Life Expectancy by Continent, 2007")
 ```
-
-### Quiz
-**Question:** Which R function is used to read CSV files?
-- A) read.csv()
-- B) open_csv()
-- C) pd.read_csv()
-- D) load.csv()
-**Answer:** A
