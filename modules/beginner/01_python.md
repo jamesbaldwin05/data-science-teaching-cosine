@@ -1,4 +1,4 @@
-# Python in Data Science Overview
+# Python in Data Science
 
 ## Who is This Course For?
 
@@ -37,7 +37,7 @@ Need to refresh your Python basics? Here are some excellent resources:
 
 # Essential Python Features & Practices for Data Science
 
-A successful data scientist in Python needs fluency with the following language features.
+A successful data scientist in Python needs fluency with the following language features:
 
 ---
 
@@ -45,7 +45,7 @@ A successful data scientist in Python needs fluency with the following language 
 
 **What/Why:** Lists are used in data science to store collections of data, such as rows in a dataset or individual feature values. List comprehensions provide a clear and compact way to create or transform these lists, making data manipulation tasks faster and more readable—an essential part of data wrangling.
 
-**Python lists vs. C-style arrays:** Unlike C arrays, Python lists can store elements of any type and can grow or shrink dynamically. For large numerical arrays, consider using the `array` module (for numbers) or, more commonly in data science, NumPy arrays for efficiency and extra functionality.
+**Python lists vs. C-style arrays:** Unlike C arrays, Python lists can store elements of any type and can grow or shrink dynamically. For large numerical arrays, consider using the `array` module (for numbers) or, more commonly in data science, `numpy` arrays for efficiency and extra functionality.
 
 **Example:**
 
@@ -109,7 +109,7 @@ Once a tuple is created, you cannot change its contents:
 ```python
 # no-run
 point = (2, 3)
-# point[0] = 5  would raise a TypeError since you cannot eddit tuples
+# point[0] = 5 would raise a TypeError since you cannot edit tuples
 ```
 
 **Multiple assignment and starred unpacking:**
@@ -180,9 +180,10 @@ print(text[5:12])
 **Example:**
 
 ```python
+# no-run
 data = [0, 1, 2, 3, 4, 5]
-window = data[2:5]
-reversed_data = data[::-1]
+window = data[2:5] # window = [2, 3, 4]
+reversed_data = data[::-1] # reversed_data = [5, 4, 3, 2, 1]
 ```
 
 **You should be able to:**  
@@ -208,9 +209,9 @@ Comprehensions (list/dict/set) eagerly build collections in memory; generator ex
 **Example:**
 
 ```python
-squares = (x**2 for x in range(10))  # generator
-total = sum(squares)
-print(total)
+# no-run
+squares_comprehension = [x**2 for x in range(10)]
+squares_generator = (x**2 for x in range(10))
 ```
 
 **You should be able to:**  
@@ -237,10 +238,13 @@ def greet(name, msg="Hello"):
 
 print(greet("Data Scientist"))  # uses default msg
 print(greet("Data Scientist", msg="Welcome"))
+```
 
+**Lambda functions:**
+```python
 data = ["apple", "pear", "banana"]
 data.sort(key=lambda word: len(word))
-# data = ['pear', 'apple', 'banana']
+print(data)
 ```
 
 **You should be able to:**  
@@ -275,6 +279,7 @@ print(product)
 from itertools import groupby, chain
 data = ["a", "aa", "b", "bb", "b"]
 groups = {k: list(g) for k, g in groupby(sorted(data), key=lambda x: x[0])}
+print(groups)
 ```
 
 **You should be able to:**  
@@ -307,6 +312,7 @@ print(m.value)
 ### Dataclass equivalent
 
 ```python
+# no-run
 from dataclasses import dataclass
 
 @dataclass
@@ -315,7 +321,6 @@ class Measurement:
     value: float
 
 m = Measurement(1, 3.2)
-print(m.id)
 ```
 
 **You should be able to:**  
@@ -531,13 +536,14 @@ b = a * 2  # vectorized and therefore fast
 Generators yield one item at a time, allowing you to process data streams or large files without loading everything into memory.
 
 ```python
+# no-run
 def gen():
     for i in range(1_000_000):
         yield i**2
 
 for val in gen():
     if val > 100:
-        break
+        break # this will break when i=11, val=121 and not calculate val for any more values of i
 ```
 *Why crucial:* Prevents memory overload and enables pipeline-style processing.
 

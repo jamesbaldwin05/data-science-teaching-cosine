@@ -174,9 +174,9 @@ def main():
     sections = parse_markdown_sections(md_text)
 
     # --- Main lesson display ---
-    # --- (A) Inline code block runner for Python overview ---
+    # --- (A) Inline code block runner for Python ---
     import traceback
-    if selected_mod.stem == "01_python_overview":
+    if selected_mod.stem == "01_python":
         import matplotlib
         import matplotlib.pyplot as plt
         # Inline parse and render: markdown up to ### Exercise, with code block runners
