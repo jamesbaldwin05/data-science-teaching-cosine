@@ -732,7 +732,7 @@ When working in a notebook, you execute code cells individually, and the results
 
 ### Exercise
 """
-Generate a list containing the squares of numbers 1-10 using a list comprehension, then print the result.
+Generate a list `squares` containing the squares of numbers 1-10 using a list comprehension, then print the result.
 """
 ```python
 squares = []
