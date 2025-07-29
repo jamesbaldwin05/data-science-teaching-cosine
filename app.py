@@ -288,7 +288,7 @@ def main():
         exercise_key = f"exercise_{mod_id}"
         try:
             from streamlit_ace import st_ace
-            editor = st_ace(value=exercise_code, language="python", key=exercise_key, height=200, theme="twilight")
+            editor = st_ace(value=exercise_code, language="python", key=exercise_key, height=200, theme="twilight", auto_update=True)
         except ModuleNotFoundError:
             editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
         if st.button("Run Exercise", key=f"run_exercise_{mod_id}"):
