@@ -52,7 +52,7 @@ A successful data scientist in Python needs fluency with the following language 
 ```python
 temperatures_c = [12, 18, 22, 15]
 temperatures_f = [c * 9/5 + 32 for c in temperatures_c]
-# [53.6, 64.4, 71.6, 59.0]
+print(temperatures_f)
 ```
 
 **You should be able to:**  
@@ -71,11 +71,14 @@ temperatures_f = [c * 9/5 + 32 for c in temperatures_c]
 ```python
 record = {"name": "Alice", "scores": {"math": 90, "bio": 87}}
 mean_score = sum(record["scores"].values()) / len(record["scores"])
+print(mean_score)
 ```
 
 **Nested dictionary manipulation:**
 
 ```python
+record = {"name": "Alice", "scores": {"math": 90, "bio": 87}}
+
 # Add a new subject score
 record["scores"]["chem"] = 85
 
@@ -85,6 +88,8 @@ record["scores"]["math"] += 5
 # Iterate over nested dictionary
 for subject, score in record["scores"].items():
     print(f"{subject}: {score}")
+
+print(record["scores"])
 ```
 *This pattern is common when processing JSON data or configuring experiments.*
 
@@ -102,13 +107,15 @@ for subject, score in record["scores"].items():
 **Tuple immutability:**  
 Once a tuple is created, you cannot change its contents:
 ```python
+# no-run
 point = (2, 3)
-# point[0] = 5  # Raises TypeError!
+# point[0] = 5  would raise a TypeError since you cannot eddit tuples
 ```
 
 **Multiple assignment and starred unpacking:**
 
 ```python
+# no-run
 a, b = (1, 2)  # multiple assignment
 # a=1, b=2
 
@@ -126,7 +133,6 @@ def min_max(values):
     return min(values), max(values)
 
 lo, hi = min_max([2, 8, 3])
-# lo=2, hi=8
 ```
 
 **You should be able to:**  
@@ -144,7 +150,8 @@ lo, hi = min_max([2, 8, 3])
 
 ```python
 labels = ["cat", "dog", "cat", "mouse"]
-unique_labels = set(labels)  # {'cat', 'dog', 'mouse'}
+unique_labels = set(labels)
+print(unique_labels)
 ```
 
 **You should be able to:**  
@@ -163,18 +170,18 @@ You can slice lists of lists (matrices) or strings:
 
 ```python
 matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-row = matrix[1]      # [4, 5, 6]
-submatrix = [row[1:] for row in matrix[:2]]  # [[2, 3], [5, 6]]
+row = matrix[1]      # row = [4, 5, 6]
+submatrix = [row[1:] for row in matrix[:2]]  # submatrix = [[2, 3], [5, 6]]
 
 text = "data science"
-print(text[5:12])  # 'science'
+print(text[5:12])
 ```
 
 **Example:**
 
 ```python
 data = [0, 1, 2, 3, 4, 5]
-window = data[2:5]  # [2, 3, 4]
+window = data[2:5]
 reversed_data = data[::-1]
 ```
 
@@ -203,6 +210,7 @@ Comprehensions (list/dict/set) eagerly build collections in memory; generator ex
 ```python
 squares = (x**2 for x in range(10))  # generator
 total = sum(squares)
+print(total)
 ```
 
 **You should be able to:**  
@@ -232,7 +240,7 @@ print(greet("Data Scientist", msg="Welcome"))
 
 data = ["apple", "pear", "banana"]
 data.sort(key=lambda word: len(word))
-# ['pear', 'apple', 'banana']
+# data = ['pear', 'apple', 'banana']
 ```
 
 **You should be able to:**  
@@ -260,14 +268,13 @@ from functools import reduce
 
 numbers = [1, 2, 3, 4]
 product = reduce(lambda x, y: x * y, numbers)
-# product = 24
+print(product)
 ```
 
 ```python
 from itertools import groupby, chain
 data = ["a", "aa", "b", "bb", "b"]
 groups = {k: list(g) for k, g in groupby(sorted(data), key=lambda x: x[0])}
-# {'a': ['a', 'aa'], 'b': ['b', 'bb', 'b']}
 ```
 
 **You should be able to:**  
@@ -294,6 +301,7 @@ class Measurement:
         self.value = value
 
 m = Measurement(1, 3.2)
+print(m.value)
 ```
 
 ### Dataclass equivalent
@@ -307,6 +315,7 @@ class Measurement:
     value: float
 
 m = Measurement(1, 3.2)
+print(m.id)
 ```
 
 **You should be able to:**  
@@ -326,26 +335,32 @@ Context managers implement the `__enter__` and `__exit__` methods, which setup a
 **Example:**
 
 ```python
+# no-run
 with open('results.txt', 'w') as f:
-    f.write("Experiment complete.")
+    f.write("Experiment complete.") # This will overwrite the contents of results.txt with one line: Experiment complete
 ```
 
 **Custom context manager with contextlib:**
 
 ```python
 from contextlib import contextmanager
+import time
 
 @contextmanager
-def managed_resource():
-    print("Resource acquired")
+def timer(task_name: str):
+    start = time.perf_counter()
     try:
         yield
     finally:
-        print("Resource released")
+        elapsed = time.perf_counter() - start
+        print(f"{task_name} finished in {elapsed:.4f}s")
 
-with managed_resource():
-    print("Do work")
+# Usage
+with timer("Heavy computation"):
+    total = sum(i * i for i in range(10_000_000))
 ```
+
+*This context manager measures execution time for any block and prints the duration—handy for quick performance checks.*
 
 **You should be able to:**  
 - Use `with` for file/database/network resource management  
@@ -369,7 +384,7 @@ except ValueError as e:
 else:
     print("Conversion succeeded!")
 finally:
-    print("Cleanup actions (if any)")
+    print("This will print no matter what!")
 ```
 
 - `except` can catch specific exceptions for targeted error handling.
@@ -407,6 +422,8 @@ def parse_score(val: Union[str, float]) -> Optional[float]:
 class PersonDict(TypedDict):
     name: str
     age: int
+
+print(mean([1.0, 2.0, 4.0]))
 ```
 
 **You should be able to:**  
@@ -450,6 +467,7 @@ pip install --upgrade matplotlib
 **Example (arrange-act-assert):**
 
 ```python
+# no-run
 # test_math.py
 def add(x, y):
     return x + y
@@ -457,10 +475,12 @@ def add(x, y):
 def test_add():
     # Arrange
     x, y = 2, 3
+
     # Act
     result = add(x, y)
+
     # Assert
-    assert result == 5
+    assert result == 5 ## if result is not equal to 5 (i.e. the add function does not work as intended) then this will raise an error
 ```
 
 - Fixtures in pytest help you set up reusable test data and environments.
@@ -503,7 +523,7 @@ Perform operations on whole collections (arrays) at once using numpy/pandas. Thi
 ```python
 import numpy as np
 a = np.arange(1000000)
-b = a * 2  # vectorized, fast
+b = a * 2  # vectorized and therefore fast
 ```
 *Why crucial:* Vectorization massively speeds up code, especially with large datasets.
 
@@ -527,7 +547,7 @@ Memory views allow you to work efficiently with large binary data (e.g., images 
 ```python
 buf = bytearray(b"abcdefgh")
 view = memoryview(buf)
-print(view[2:5].tobytes())  # b'cde'
+print(view[2:5].tobytes())
 ```
 *Why crucial:* Enables fast, zero-copy operations on large datasets.
 
@@ -541,15 +561,6 @@ print(view[2:5].tobytes())  # b'cde'
 ## 17. Debugging
 
 **What/Why:** Debuggers (`pdb`, IDE tools) and assert statements are invaluable for inspecting data flows and catching subtle bugs.
-
-**Example:**
-
-```python
-def process(data):
-    assert isinstance(data, list), "data must be a list"
-    # or use built-in breakpoint()
-    # breakpoint()
-```
 
 **You should be able to:**  
 - Use assert for sanity checks  
@@ -579,11 +590,11 @@ import numpy as np
 data = np.arange(6).reshape(2, 3)
 mean_by_column = data.mean(axis=0)
 centered = data - mean_by_column
+print(centered)
 
 # Linear algebra: matrix multiplication and eigendecomposition
 product = data @ data.T
-eigenvalues, eigenvectors = np.linalg.eig(product)
-print("Eigenvalues:", eigenvalues)
+eigenvalues, eigenvectors = np.linalg.eig(product) # eigenvalues = [ 0.15496668 81.84503332] approx
 ```
 
 ---
@@ -706,3 +717,15 @@ When working in a notebook, you execute code cells individually, and the results
 - Mastering lists, dicts, comprehensions, generators, and classes is essential for readable, high-performance code.
 - Key ecosystem libraries like numpy, pandas, matplotlib, and scikit-learn are foundational—learn their idioms and APIs.
 - Robust workflow includes using virtual environments, testing, logging, and performance-aware coding.
+
+### Exercise
+"""
+Generate a list containing the squares of numbers 1-10 using a list comprehension, then print the result.
+"""
+```python
+# Write your solution below
+squares = [
+    # TODO: your code here
+]
+print(squares)
+```

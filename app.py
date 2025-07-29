@@ -133,6 +133,7 @@ def main():
         selected_category = categories[0]
 
     chosen = None
+    module_counter = 1  # Global module numbering across all categories
     for cat in categories:
         # Determine if all modules in this category are completed
         cat_complete = True
@@ -147,8 +148,8 @@ def main():
             for i, mod in enumerate(category_to_modules[cat]):
                 mod_id = f"{cat[0]}_{mod.stem[:2]}"
                 completed = progress.get(mod_id, {}).get("quiz_completed", False)
-                # Always show numeric prefix (i+1:02d)
-                label_text = f"{i+1:02d} {' '.join(mod.stem.split('_')[1:]).title()}"
+                # Global sequential numbering
+                label_text = f"{module_counter:02d} {' '.join(mod.stem.split('_')[1:]).title()}"
                 label = label_text + (" ✅" if completed else "")
                 is_selected = (cur_paths[i] == selected_path)
                 button_key = f"select_{cat}_{i}"
@@ -158,6 +159,7 @@ def main():
                     st.rerun()
                 if is_selected:
                     chosen = (cat, mod)
+                module_counter += 1
     # Fallback if not chosen
     if not chosen:
         cat = categories[0]
@@ -172,16 +174,84 @@ def main():
     sections = parse_markdown_sections(md_text)
 
     # --- Main lesson display ---
-    st.markdown(md_text.split("### Example")[0])
+    # --- (A) Inline code block runner for Python overview ---
+    import traceback
+    if selected_mod.stem == "01_python_overview":
+        import matplotlib
+        import matplotlib.pyplot as plt
+        # Inline parse and render: markdown up to ### Exercise, with code block runners
+        code_block_pattern = re.compile(r"```python(.*?)```", re.DOTALL)
+        exercise_idx = md_text.find("### Exercise")
+        if exercise_idx >= 0:
+            before_exercise = md_text[:exercise_idx]
+        else:
+            before_exercise = md_text
 
-    # Example code
-    example_code = extract_codeblock(md_text, "Example")
-    if example_code:
-        with st.expander("Show Example Code", expanded=True):
-            st.code(example_code, language="python")
-            if st.button("Run Example", key=f"run_ex_{mod_id}"):
-                output, error = run_code(example_code)
-                st.text_area("Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
+        def run_snippet(code, key):
+            import streamlit as st
+            import io, contextlib, traceback
+            import matplotlib.pyplot as plt
+            import warnings
+            display_code = code
+            st.code(display_code, language="python")
+            if st.button("Run", key=key):
+                with st.spinner("Running..."):
+                    stdout, stderr = io.StringIO(), io.StringIO()
+                    try:
+                        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                            exec(code, {})
+                    except Exception:
+                        st.error(traceback.format_exc())
+                        return
+                    # Display matplotlib figure if present
+                    if plt.get_fignums():
+                        st.pyplot(plt.gcf())
+                        plt.close("all")
+                    out = stdout.getvalue()
+                    err = stderr.getvalue()
+                    # Remove non-problematic Matplotlib Agg warning
+                    err = "".join([line for line in err.splitlines(keepends=True)
+                                   if "FigureCanvasAgg is non-interactive" not in line])
+                    if out or err:
+                        st.text_area("Output", out + err, height=150, key=f"out_{key}")
+
+        last_pos = 0
+        runner_idx = 0
+        for match in code_block_pattern.finditer(before_exercise):
+            pre_md = before_exercise[last_pos:match.start()]
+            if pre_md.strip():
+                st.markdown(pre_md)
+            code = match.group(1).strip()
+            code_lines = code.lstrip().splitlines()
+            # B) "no-run": remove line & display code, no button
+            if code_lines and code_lines[0].strip().startswith("# no-run"):
+                display_code = "\n".join(code_lines[1:]).lstrip() if len(code_lines) > 1 else ""
+                if display_code.strip():
+                    st.code(display_code, language="python")
+                else:
+                    st.code("# no-run", language="python")
+            else:
+                run_snippet(code, key=f"run_snip_{mod_id}_{runner_idx}")
+                runner_idx += 1
+            last_pos = match.end()
+        # Output remaining markdown up to Exercise
+        post_md = before_exercise[last_pos:]
+        if post_md.strip():
+            # Add a blank line to avoid heading merging
+            st.markdown(post_md + "\n")
+        # Do NOT output after_exercise markdown (no duplication)
+    else:
+        # --- Fallback: normal markdown render for non-python-overview lessons ---
+        st.markdown(md_text.split("### Example")[0])
+
+        # Example code (legacy block, only for non-overview lessons)
+        example_code = extract_codeblock(md_text, "Example")
+        if example_code:
+            with st.expander("Show Example Code", expanded=True):
+                st.code(example_code, language="python")
+                if st.button("Run Example", key=f"run_ex_{mod_id}"):
+                    output, error = run_code(example_code)
+                    st.text_area("Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
 
     # Exercise
     if "exercise" in sections:
@@ -191,8 +261,13 @@ def main():
             st.markdown(f"> {instructions}")
         exercise_code = extract_codeblock(md_text, "Exercise")
         exercise_key = f"exercise_{mod_id}"
-        user_code = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
+        try:
+            from streamlit_ace import st_ace
+            editor = st_ace(value=exercise_code, language="python", key=exercise_key, height=200, theme="twilight")
+        except ModuleNotFoundError:
+            editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
         if st.button("Run Exercise", key=f"run_exercise_{mod_id}"):
+            user_code = editor if editor is not None else exercise_code
             output, error = run_code(user_code)
             st.text_area("Exercise Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
             # Update progress
@@ -265,9 +340,9 @@ def main():
     st.sidebar.markdown("### Progress")
     total_modules = sum(len(ms) for ms in category_to_modules.values())
     completed = sum(1 for k, v in progress.items() if v.get("quiz_completed"))
+    # Re-add quizzes completed in sidebar
     st.sidebar.markdown(f"**Quizzes Completed:** {completed} / {total_modules}")
-    total_ex = sum(v.get("exercise_runs", 0) for v in progress.values())
-    st.sidebar.markdown(f"**Exercises Run:** {total_ex}")
+    # Do NOT add Exercises Run
 
 if __name__ == "__main__":
     main()
