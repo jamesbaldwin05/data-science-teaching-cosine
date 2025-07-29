@@ -344,6 +344,22 @@ with open('results.txt', 'w') as f:
 
 ```python
 from contextlib import contextmanager
+import time
+
+@contextmanager
+def timer(task_name: str):
+    start = time.perf_counter()
+    try:
+        yield
+    finally:
+        elapsed = time.perf_counter() - start
+        print(f"{task_name} finished in {elapsed:.4f}s")
+
+# Usage
+with timer("Heavy computation"):
+    total = sum(i*i for i in range(10_000_000))
+```
+*This context manager measures execution time for any block and prints the duration—handy for quick performance checks.*
 
 @contextmanager
 def managed_resource():

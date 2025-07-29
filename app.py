@@ -133,6 +133,7 @@ def main():
         selected_category = categories[0]
 
     chosen = None
+    module_counter = 1  # Global module numbering across all categories
     for cat in categories:
         # Determine if all modules in this category are completed
         cat_complete = True
@@ -147,8 +148,8 @@ def main():
             for i, mod in enumerate(category_to_modules[cat]):
                 mod_id = f"{cat[0]}_{mod.stem[:2]}"
                 completed = progress.get(mod_id, {}).get("quiz_completed", False)
-                # Always show numeric prefix (i+1:02d)
-                label_text = f"{i+1:02d} {' '.join(mod.stem.split('_')[1:]).title()}"
+                # Global sequential numbering
+                label_text = f"{module_counter:02d} {' '.join(mod.stem.split('_')[1:]).title()}"
                 label = label_text + (" ✅" if completed else "")
                 is_selected = (cur_paths[i] == selected_path)
                 button_key = f"select_{cat}_{i}"
@@ -158,6 +159,7 @@ def main():
                     st.rerun()
                 if is_selected:
                     chosen = (cat, mod)
+                module_counter += 1
     # Fallback if not chosen
     if not chosen:
         cat = categories[0]
@@ -173,7 +175,10 @@ def main():
 
     # --- Main lesson display ---
     # --- (A) Inline code block runner for Python overview ---
+    import traceback
     if selected_mod.stem == "01_python_overview":
+        import matplotlib
+        import matplotlib.pyplot as plt
         # Inline parse and render: markdown up to ### Exercise, with code block runners
         code_block_pattern = re.compile(r"```python(.*?)```", re.DOTALL)
         exercise_idx = md_text.find("### Exercise")
@@ -182,6 +187,29 @@ def main():
         else:
             before_exercise = md_text
 
+        def run_snippet(code, key):
+            # If # no-run present, handled outside
+            import streamlit as st
+            import traceback
+            import matplotlib.pyplot as plt
+            st.code(code, language="python")
+            if st.button("Run", key=key):
+                with st.spinner("Running..."):
+                    local_ns = {}
+                    try:
+                        exec(code, {}, local_ns)
+                    except Exception:
+                        st.error(traceback.format_exc())
+                        return
+                    # Display last matplotlib figure if present
+                    if plt.get_fignums():
+                        st.pyplot(plt.gcf())
+                        plt.close("all")
+                    # Capture stdout/stderr as well
+                    out, err = run_code(code)
+                    if out or err:
+                        st.text_area("Output", out + err, height=150, key=f"out_{key}")
+
         last_pos = 0
         runner_idx = 0
         for match in code_block_pattern.finditer(before_exercise):
@@ -189,20 +217,16 @@ def main():
             if pre_md.strip():
                 st.markdown(pre_md)
             code = match.group(1).strip()
-            # Skip blocks whose first non-blank line is "# no-run"
             code_lines = code.lstrip().splitlines()
+            # B) "no-run": remove line & display code, no button
             if code_lines and code_lines[0].strip().startswith("# no-run"):
-                st.code(code, language="python")
+                display_code = "\n".join(code_lines[1:]).lstrip() if len(code_lines) > 1 else ""
+                if display_code.strip():
+                    st.code(display_code, language="python")
+                else:
+                    st.code("# no-run", language="python")
             else:
-                st.code(code, language="python")
-                if st.button("Run", key=f"run_snip_{mod_id}_{runner_idx}"):
-                    output, error = run_code(code)
-                    st.text_area(
-                        "Output",
-                        output + (f"\n[Error]: {error}" if error else ""),
-                        height=150,
-                        key=f"out_snip_{mod_id}_{runner_idx}"
-                    )
+                run_snippet(code, key=f"run_snip_{mod_id}_{runner_idx}")
                 runner_idx += 1
             last_pos = match.end()
         # Output remaining markdown up to Exercise
@@ -231,8 +255,13 @@ def main():
             st.markdown(f"> {instructions}")
         exercise_code = extract_codeblock(md_text, "Exercise")
         exercise_key = f"exercise_{mod_id}"
-        user_code = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
+        try:
+            from st_ace import st_ace
+            editor = st_ace(value=exercise_code, language="python", key=exercise_key, height=200, theme="monokai")
+        except ModuleNotFoundError:
+            editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
         if st.button("Run Exercise", key=f"run_exercise_{mod_id}"):
+            user_code = editor if editor is not None else exercise_code
             output, error = run_code(user_code)
             st.text_area("Exercise Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
             # Update progress
