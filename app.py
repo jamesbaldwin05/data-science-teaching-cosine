@@ -192,14 +192,34 @@ def main():
             import io, contextlib, traceback
             import matplotlib.pyplot as plt
             import warnings
+            import types
+
+            def get_fallback_vars(gdict):
+                # Enumerate non-dunder, non-callable, non-module, user-defined globals
+                lines = []
+                for k, v in gdict.items():
+                    if k.startswith("__") and k.endswith("__"):
+                        continue
+                    if callable(v):
+                        continue
+                    if isinstance(v, types.ModuleType):
+                        continue
+                    try:
+                        val_repr = repr(v)
+                    except Exception:
+                        val_repr = "<unrepresentable>"
+                    lines.append(f"{k} = {val_repr}")
+                return "\n".join(lines)
+
             display_code = code
             st.code(display_code, language="python")
             if st.button("Run", key=key):
                 with st.spinner("Running..."):
                     stdout, stderr = io.StringIO(), io.StringIO()
+                    globals_dict = {}
                     try:
                         with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
-                            exec(code, {})
+                            exec(code, globals_dict)
                     except Exception:
                         st.error(traceback.format_exc())
                         return
@@ -212,7 +232,12 @@ def main():
                     # Remove non-problematic Matplotlib Agg warning
                     err = "".join([line for line in err.splitlines(keepends=True)
                                    if "FigureCanvasAgg is non-interactive" not in line])
-                    if out or err:
+                    # Fallback: if nothing to show, display variable state
+                    if (not out.strip()) and (not err.strip()):
+                        fallback = get_fallback_vars(globals_dict)
+                        if fallback.strip():
+                            st.text_area("Output", fallback, height=150, key=f"out_{key}")
+                    elif out or err:
                         st.text_area("Output", out + err, height=150, key=f"out_{key}")
 
         last_pos = 0
