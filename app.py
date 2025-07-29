@@ -262,7 +262,7 @@ def main():
         exercise_code = extract_codeblock(md_text, "Exercise")
         exercise_key = f"exercise_{mod_id}"
         try:
-            from st_ace import st_ace
+            from streamlit_ace import st_ace
             editor = st_ace(value=exercise_code, language="python", key=exercise_key, height=200, theme="github")
         except ModuleNotFoundError:
             editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
