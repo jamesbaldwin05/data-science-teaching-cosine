@@ -78,6 +78,7 @@ print(mean_score)
 
 ```python
 record = {"name": "Alice", "scores": {"math": 90, "bio": 87}}
+
 # Add a new subject score
 record["scores"]["chem"] = 85
 
@@ -108,7 +109,7 @@ Once a tuple is created, you cannot change its contents:
 ```python
 # no-run
 point = (2, 3)
-# point[0] = 5  # Raises TypeError!
+# point[0] = 5  would raise a TypeError since you cannot eddit tuples
 ```
 
 **Multiple assignment and starred unpacking:**
@@ -169,8 +170,8 @@ You can slice lists of lists (matrices) or strings:
 
 ```python
 matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
-row = matrix[1]      # [4, 5, 6]
-submatrix = [row[1:] for row in matrix[:2]]  # [[2, 3], [5, 6]]
+row = matrix[1]      # row = [4, 5, 6]
+submatrix = [row[1:] for row in matrix[:2]]  # submatrix = [[2, 3], [5, 6]]
 
 text = "data science"
 print(text[5:12])
@@ -239,7 +240,7 @@ print(greet("Data Scientist", msg="Welcome"))
 
 data = ["apple", "pear", "banana"]
 data.sort(key=lambda word: len(word))
-# ['pear', 'apple', 'banana']
+# data = ['pear', 'apple', 'banana']
 ```
 
 **You should be able to:**  
@@ -267,7 +268,6 @@ from functools import reduce
 
 numbers = [1, 2, 3, 4]
 product = reduce(lambda x, y: x * y, numbers)
-# product = 24
 print(product)
 ```
 
@@ -275,7 +275,6 @@ print(product)
 from itertools import groupby, chain
 data = ["a", "aa", "b", "bb", "b"]
 groups = {k: list(g) for k, g in groupby(sorted(data), key=lambda x: x[0])}
-# {'a': ['a', 'aa'], 'b': ['b', 'bb', 'b']}
 ```
 
 **You should be able to:**  
@@ -338,7 +337,7 @@ Context managers implement the `__enter__` and `__exit__` methods, which setup a
 ```python
 # no-run
 with open('results.txt', 'w') as f:
-    f.write("Experiment complete.")
+    f.write("Experiment complete.") # This will overwrite the contents of results.txt with one line: Experiment complete
 ```
 
 **Custom context manager with contextlib:**
@@ -380,7 +379,7 @@ except ValueError as e:
 else:
     print("Conversion succeeded!")
 finally:
-    print("Cleanup actions (if any)")
+    print("This will print no matter what!")
 ```
 
 - `except` can catch specific exceptions for targeted error handling.
@@ -419,7 +418,7 @@ class PersonDict(TypedDict):
     name: str
     age: int
 
-print(mean([1.0, 2.0, 3.0]))
+print(mean([1.0, 2.0, 4.0]))
 ```
 
 **You should be able to:**  
@@ -471,10 +470,12 @@ def add(x, y):
 def test_add():
     # Arrange
     x, y = 2, 3
+
     # Act
     result = add(x, y)
+
     # Assert
-    assert result == 5
+    assert result == 5 ## if result is not equal to 5 (i.e. the add function does not work as intended) then this will raise an error
 ```
 
 - Fixtures in pytest help you set up reusable test data and environments.
@@ -517,7 +518,7 @@ Perform operations on whole collections (arrays) at once using numpy/pandas. Thi
 ```python
 import numpy as np
 a = np.arange(1000000)
-b = a * 2  # vectorized, fast
+b = a * 2  # vectorized and therefore fast
 ```
 *Why crucial:* Vectorization massively speeds up code, especially with large datasets.
 
@@ -541,7 +542,7 @@ Memory views allow you to work efficiently with large binary data (e.g., images 
 ```python
 buf = bytearray(b"abcdefgh")
 view = memoryview(buf)
-print(view[2:5].tobytes())  # b'cde'
+print(view[2:5].tobytes())
 ```
 *Why crucial:* Enables fast, zero-copy operations on large datasets.
 
@@ -555,15 +556,6 @@ print(view[2:5].tobytes())  # b'cde'
 ## 17. Debugging
 
 **What/Why:** Debuggers (`pdb`, IDE tools) and assert statements are invaluable for inspecting data flows and catching subtle bugs.
-
-**Example:**
-
-```python
-def process(data):
-    assert isinstance(data, list), "data must be a list"
-    # or use built-in breakpoint()
-    # breakpoint()
-```
 
 **You should be able to:**  
 - Use assert for sanity checks  
@@ -597,8 +589,7 @@ print(centered)
 
 # Linear algebra: matrix multiplication and eigendecomposition
 product = data @ data.T
-eigenvalues, eigenvectors = np.linalg.eig(product)
-print("Eigenvalues:", eigenvalues)
+eigenvalues, eigenvectors = np.linalg.eig(product) # eigenvalues = [ 0.15496668 81.84503332] approx
 ```
 
 ---
