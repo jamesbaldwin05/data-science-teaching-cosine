@@ -78,6 +78,7 @@ print(mean_score)
 **Nested dictionary manipulation:**
 
 ```python
+record = {"name": "Alice", "scores": {"math": 90, "bio": 87}}
 # Add a new subject score
 record["scores"]["chem"] = 85
 
@@ -87,6 +88,8 @@ record["scores"]["math"] += 5
 # Iterate over nested dictionary
 for subject, score in record["scores"].items():
     print(f"{subject}: {score}")
+
+print(record["scores"])
 ```
 *This pattern is common when processing JSON data or configuring experiments.*
 
@@ -104,6 +107,7 @@ for subject, score in record["scores"].items():
 **Tuple immutability:**  
 Once a tuple is created, you cannot change its contents:
 ```python
+# no-run
 point = (2, 3)
 # point[0] = 5  # Raises TypeError!
 ```
@@ -111,6 +115,7 @@ point = (2, 3)
 **Multiple assignment and starred unpacking:**
 
 ```python
+# no-run
 a, b = (1, 2)  # multiple assignment
 # a=1, b=2
 
@@ -146,7 +151,7 @@ lo, hi = min_max([2, 8, 3])
 
 ```python
 labels = ["cat", "dog", "cat", "mouse"]
-unique_labels = set(labels)  # {'cat', 'dog', 'mouse'}
+unique_labels = set(labels)  # {'mouse', 'dog', 'cat'}
 print(unique_labels)
 ```
 
@@ -333,6 +338,7 @@ Context managers implement the `__enter__` and `__exit__` methods, which setup a
 **Example:**
 
 ```python
+# no-run
 with open('results.txt', 'w') as f:
     f.write("Experiment complete.")
 ```
@@ -459,6 +465,7 @@ pip install --upgrade matplotlib
 **Example (arrange-act-assert):**
 
 ```python
+# no-run
 # test_math.py
 def add(x, y):
     return x + y

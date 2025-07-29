@@ -15,8 +15,14 @@ def run_code(code: str):
         exec(code, globals_dict)
         out = stdout.getvalue()
         err = stderr.getvalue()
+        # Enhanced stderr handling: only treat as error if Traceback or Error (case-insensitive)
         if err:
-            return out, err
+            if ("traceback" not in err.lower()) and ("error" not in err.lower()):
+                # Not a "real" error: treat as output
+                out = out + err
+                err = ""
+            else:
+                return out, err
         if not out.strip():  # No output, no error
             # List all non-dunder globals, skip imports/functions/classes
             lines = []

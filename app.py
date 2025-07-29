@@ -179,35 +179,37 @@ def main():
         exercise_idx = md_text.find("### Exercise")
         if exercise_idx >= 0:
             before_exercise = md_text[:exercise_idx]
-            after_exercise = md_text[exercise_idx:]
         else:
             before_exercise = md_text
-            after_exercise = ""
 
         last_pos = 0
-        for i, match in enumerate(code_block_pattern.finditer(before_exercise)):
-            # Output markdown between previous and this code block
+        runner_idx = 0
+        for match in code_block_pattern.finditer(before_exercise):
             pre_md = before_exercise[last_pos:match.start()]
             if pre_md.strip():
                 st.markdown(pre_md)
             code = match.group(1).strip()
-            st.code(code, language="python")
-            if st.button("Run", key=f"run_snip_{mod_id}_{i}"):
-                output, error = run_code(code)
-                st.text_area(
-                    "Output",
-                    output + (f"\n[Error]: {error}" if error else ""),
-                    height=150,
-                    key=f"out_snip_{mod_id}_{i}"
-                )
+            # Skip blocks whose first non-blank line is "# no-run"
+            code_lines = code.lstrip().splitlines()
+            if code_lines and code_lines[0].strip().startswith("# no-run"):
+                st.code(code, language="python")
+            else:
+                st.code(code, language="python")
+                if st.button("Run", key=f"run_snip_{mod_id}_{runner_idx}"):
+                    output, error = run_code(code)
+                    st.text_area(
+                        "Output",
+                        output + (f"\n[Error]: {error}" if error else ""),
+                        height=150,
+                        key=f"out_snip_{mod_id}_{runner_idx}"
+                    )
+                runner_idx += 1
             last_pos = match.end()
         # Output remaining markdown up to Exercise
         post_md = before_exercise[last_pos:]
         if post_md.strip():
             st.markdown(post_md)
-        # Output rest of doc (Exercise, Quiz, etc) as normal
-        if after_exercise.strip():
-            st.markdown(after_exercise)
+        # Do NOT output after_exercise markdown (no duplication)
     else:
         # --- Fallback: normal markdown render for non-python-overview lessons ---
         st.markdown(md_text.split("### Example")[0])
@@ -303,20 +305,9 @@ def main():
     st.sidebar.markdown("### Progress")
     total_modules = sum(len(ms) for ms in category_to_modules.values())
     completed = sum(1 for k, v in progress.items() if v.get("quiz_completed"))
-    # ---- Remove Quizzes Completed and Exercises Run from sidebar, display Quizzes Completed in floating panel ----
-    # st.sidebar.markdown(f"**Quizzes Completed:** {completed} / {total_modules}")
-    # total_ex = sum(v.get("exercise_runs", 0) for v in progress.values())
-    # st.sidebar.markdown(f"**Exercises Run:** {total_ex}")
-
-    # Floating panel for Quizzes Completed (bottom right)
-    st.markdown(
-        f"""<div style='position:fixed; bottom:15px; right:15px; 
-                 background:#f0f2f6; padding:8px 14px; border-radius:6px; 
-                 box-shadow:0 2px 6px rgba(0,0,0,0.15); font-size:14px; z-index:9999;'>
-                ✅ Quizzes Completed: {completed} / {total_modules}
-            </div>""",
-        unsafe_allow_html=True,
-    )
+    # Re-add quizzes completed in sidebar
+    st.sidebar.markdown(f"**Quizzes Completed:** {completed} / {total_modules}")
+    # Do NOT add Exercises Run
 
 if __name__ == "__main__":
     main()
