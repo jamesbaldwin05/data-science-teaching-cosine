@@ -371,27 +371,6 @@ with timer("Heavy computation"):
 
 ## 11. Error Handling
 
-@contextmanager
-def managed_resource():
-    print("Resource acquired")
-    try:
-        yield
-    finally:
-        print("Resource released")
-
-with managed_resource():
-    print("Do work")
-```
-
-**You should be able to:**  
-- Use `with` for file/database/network resource management  
-- Recognize and implement custom context managers (class or decorator style)  
-- Understand the role of `__enter__` and `__exit__`
-
----
-
-## 11. Error Handling
-
 **What/Why:** Proper use of `try`/`except` ensures robust pipelines, especially with unpredictable data.
 
 **Catching specific exceptions, raising new ones, and using all blocks:**
