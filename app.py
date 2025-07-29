@@ -172,41 +172,54 @@ def main():
     sections = parse_markdown_sections(md_text)
 
     # --- Main lesson display ---
-    st.markdown(md_text.split("### Example")[0])
-
-    # --------- (C) Python Overview Code Snippet Runner ---------
-    # Only for the "01_python_overview" module
+    # --- (A) Inline code block runner for Python overview ---
     if selected_mod.stem == "01_python_overview":
-        # Find all python code blocks (regex, multiline, greedy)
-        code_block_matches = list(re.finditer(r"```python(.*?)```", md_text, re.DOTALL))
-        # To skip the Exercise code, ignore the last occurrence if it's after the "### Exercise" heading
-        exercise_pos = md_text.rfind("### Exercise")
-        filtered_blocks = []
-        for i, match in enumerate(code_block_matches):
-            # If this is the last block and it's within (or after) the Exercise section, skip it
-            if i == len(code_block_matches) - 1 and match.start() > exercise_pos >= 0:
-                continue
-            filtered_blocks.append(match.group(1).strip())
-        for i, code in enumerate(filtered_blocks):
-            with st.expander(f"Run Code Snippet {i+1}", expanded=False):
-                st.code(code, language="python")
-                if st.button("Run", key=f"run_snip_{mod_id}_{i}"):
-                    output, error = run_code(code)
-                    st.text_area(
-                        "Output",
-                        output + (f"\n[Error]: {error}" if error else ""),
-                        height=150,
-                        key=f"out_snip_{mod_id}_{i}"
-                    )
+        # Inline parse and render: markdown up to ### Exercise, with code block runners
+        code_block_pattern = re.compile(r"```python(.*?)```", re.DOTALL)
+        exercise_idx = md_text.find("### Exercise")
+        if exercise_idx >= 0:
+            before_exercise = md_text[:exercise_idx]
+            after_exercise = md_text[exercise_idx:]
+        else:
+            before_exercise = md_text
+            after_exercise = ""
 
-    # Example code (legacy block, not needed for Python overview if all code blocks are handled above)
-    example_code = extract_codeblock(md_text, "Example")
-    if example_code and selected_mod.stem != "01_python_overview":
-        with st.expander("Show Example Code", expanded=True):
-            st.code(example_code, language="python")
-            if st.button("Run Example", key=f"run_ex_{mod_id}"):
-                output, error = run_code(example_code)
-                st.text_area("Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
+        last_pos = 0
+        for i, match in enumerate(code_block_pattern.finditer(before_exercise)):
+            # Output markdown between previous and this code block
+            pre_md = before_exercise[last_pos:match.start()]
+            if pre_md.strip():
+                st.markdown(pre_md)
+            code = match.group(1).strip()
+            st.code(code, language="python")
+            if st.button("Run", key=f"run_snip_{mod_id}_{i}"):
+                output, error = run_code(code)
+                st.text_area(
+                    "Output",
+                    output + (f"\n[Error]: {error}" if error else ""),
+                    height=150,
+                    key=f"out_snip_{mod_id}_{i}"
+                )
+            last_pos = match.end()
+        # Output remaining markdown up to Exercise
+        post_md = before_exercise[last_pos:]
+        if post_md.strip():
+            st.markdown(post_md)
+        # Output rest of doc (Exercise, Quiz, etc) as normal
+        if after_exercise.strip():
+            st.markdown(after_exercise)
+    else:
+        # --- Fallback: normal markdown render for non-python-overview lessons ---
+        st.markdown(md_text.split("### Example")[0])
+
+        # Example code (legacy block, only for non-overview lessons)
+        example_code = extract_codeblock(md_text, "Example")
+        if example_code:
+            with st.expander("Show Example Code", expanded=True):
+                st.code(example_code, language="python")
+                if st.button("Run Example", key=f"run_ex_{mod_id}"):
+                    output, error = run_code(example_code)
+                    st.text_area("Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
 
     # Exercise
     if "exercise" in sections:

@@ -53,6 +53,7 @@ A successful data scientist in Python needs fluency with the following language 
 temperatures_c = [12, 18, 22, 15]
 temperatures_f = [c * 9/5 + 32 for c in temperatures_c]
 # [53.6, 64.4, 71.6, 59.0]
+print(temperatures_f)
 ```
 
 **You should be able to:**  
@@ -71,6 +72,7 @@ temperatures_f = [c * 9/5 + 32 for c in temperatures_c]
 ```python
 record = {"name": "Alice", "scores": {"math": 90, "bio": 87}}
 mean_score = sum(record["scores"].values()) / len(record["scores"])
+print(mean_score)
 ```
 
 **Nested dictionary manipulation:**
@@ -145,6 +147,7 @@ lo, hi = min_max([2, 8, 3])
 ```python
 labels = ["cat", "dog", "cat", "mouse"]
 unique_labels = set(labels)  # {'cat', 'dog', 'mouse'}
+print(unique_labels)
 ```
 
 **You should be able to:**  
@@ -203,6 +206,7 @@ Comprehensions (list/dict/set) eagerly build collections in memory; generator ex
 ```python
 squares = (x**2 for x in range(10))  # generator
 total = sum(squares)
+print(total)
 ```
 
 **You should be able to:**  
@@ -261,6 +265,7 @@ from functools import reduce
 numbers = [1, 2, 3, 4]
 product = reduce(lambda x, y: x * y, numbers)
 # product = 24
+print(product)
 ```
 
 ```python
@@ -294,6 +299,7 @@ class Measurement:
         self.value = value
 
 m = Measurement(1, 3.2)
+print(m)
 ```
 
 ### Dataclass equivalent
@@ -307,6 +313,7 @@ class Measurement:
     value: float
 
 m = Measurement(1, 3.2)
+print(m)
 ```
 
 **You should be able to:**  
@@ -407,6 +414,8 @@ def parse_score(val: Union[str, float]) -> Optional[float]:
 class PersonDict(TypedDict):
     name: str
     age: int
+
+print(mean([1.0, 2.0, 3.0]))
 ```
 
 **You should be able to:**  
@@ -579,6 +588,7 @@ import numpy as np
 data = np.arange(6).reshape(2, 3)
 mean_by_column = data.mean(axis=0)
 centered = data - mean_by_column
+print(centered)
 
 # Linear algebra: matrix multiplication and eigendecomposition
 product = data @ data.T
