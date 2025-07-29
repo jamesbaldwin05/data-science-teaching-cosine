@@ -614,16 +614,22 @@ Key capabilities include data alignment, grouping (via `groupby`), time series s
 ```python
 import pandas as pd
 
-# Create and inspect a DataFrame
-df = pd.DataFrame({'group': ['A', 'A', 'B', 'B'], 'value': [10, 15, 10, 25]})
-summary = df.groupby('group').agg(['mean', 'sum'])
+data = {
+    'Name': ['Alice', 'Bob', 'Charlie', 'David'],
+    'Age': [24, 30, 22, 35],
+    'City': ['New York', 'Los Angeles', 'Chicago', 'Houston']
+}
 
-# Handle missing values and filter data
-df.loc[2, 'value'] = None
-df['value'] = df['value'].fillna(df['value'].mean())
-filtered = df[df['value'] > 12]
+df = pd.DataFrame(data)
 
-print(filtered)
+print("Original DataFrame:")
+print(df)
+
+# Filter rows where Age is greater than 25
+filtered_df = df[df['Age'] > 25]
+
+print("\nFiltered DataFrame (Age > 25):")
+print(filtered_df)
 ```
 
 ---
