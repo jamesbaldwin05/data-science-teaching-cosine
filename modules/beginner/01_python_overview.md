@@ -342,7 +342,8 @@ with open('results.txt', 'w') as f:
 
 **Custom context manager with contextlib:**
 
-
+```python
+from contextlib import contextmanager
 import time
 
 @contextmanager
@@ -356,8 +357,9 @@ def timer(task_name: str):
 
 # Usage
 with timer("Heavy computation"):
-    total = sum(i*i for i in range(10_000_000))
+    total = sum(i * i for i in range(10_000_000))
 ```
+
 *This context manager measures execution time for any block and prints the duration—handy for quick performance checks.*
 
 @contextmanager
