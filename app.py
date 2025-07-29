@@ -188,25 +188,30 @@ def main():
             before_exercise = md_text
 
         def run_snippet(code, key):
-            # If # no-run present, handled outside
             import streamlit as st
-            import traceback
+            import io, contextlib, traceback
             import matplotlib.pyplot as plt
-            st.code(code, language="python")
+            import warnings
+            display_code = code
+            st.code(display_code, language="python")
             if st.button("Run", key=key):
                 with st.spinner("Running..."):
-                    local_ns = {}
+                    stdout, stderr = io.StringIO(), io.StringIO()
                     try:
-                        exec(code, {}, local_ns)
+                        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                            exec(code, {})
                     except Exception:
                         st.error(traceback.format_exc())
                         return
-                    # Display last matplotlib figure if present
+                    # Display matplotlib figure if present
                     if plt.get_fignums():
                         st.pyplot(plt.gcf())
                         plt.close("all")
-                    # Capture stdout/stderr as well
-                    out, err = run_code(code)
+                    out = stdout.getvalue()
+                    err = stderr.getvalue()
+                    # Remove non-problematic Matplotlib Agg warning
+                    err = "".join([line for line in err.splitlines(keepends=True)
+                                   if "FigureCanvasAgg is non-interactive" not in line])
                     if out or err:
                         st.text_area("Output", out + err, height=150, key=f"out_{key}")
 
@@ -232,7 +237,8 @@ def main():
         # Output remaining markdown up to Exercise
         post_md = before_exercise[last_pos:]
         if post_md.strip():
-            st.markdown(post_md)
+            # Add a blank line to avoid heading merging
+            st.markdown(post_md + "\n")
         # Do NOT output after_exercise markdown (no duplication)
     else:
         # --- Fallback: normal markdown render for non-python-overview lessons ---
@@ -257,7 +263,7 @@ def main():
         exercise_key = f"exercise_{mod_id}"
         try:
             from st_ace import st_ace
-            editor = st_ace(value=exercise_code, language="python", key=exercise_key, height=200, theme="monokai")
+            editor = st_ace(value=exercise_code, language="python", key=exercise_key, height=200, theme="github")
         except ModuleNotFoundError:
             editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
         if st.button("Run Exercise", key=f"run_exercise_{mod_id}"):
