@@ -362,6 +362,11 @@ with timer("Heavy computation"):
 
 *This context manager measures execution time for any block and prints the duration—handy for quick performance checks.*
 
+**You should be able to:**  
+- Use chain, product, combinations, groupby for iteration tasks  
+- Use reduce and partial for custom accumulation/function manipulation  
+- Recognize when built-in alternatives are preferable (e.g., sum/min/max)
+
 @contextmanager
 def managed_resource():
     print("Resource acquired")
