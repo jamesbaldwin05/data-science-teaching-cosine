@@ -342,8 +342,7 @@ with open('results.txt', 'w') as f:
 
 **Custom context manager with contextlib:**
 
-```python
-from contextlib import contextmanager
+
 import time
 
 @contextmanager
