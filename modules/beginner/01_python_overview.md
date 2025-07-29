@@ -52,7 +52,6 @@ A successful data scientist in Python needs fluency with the following language 
 ```python
 temperatures_c = [12, 18, 22, 15]
 temperatures_f = [c * 9/5 + 32 for c in temperatures_c]
-# [53.6, 64.4, 71.6, 59.0]
 print(temperatures_f)
 ```
 
@@ -133,7 +132,6 @@ def min_max(values):
     return min(values), max(values)
 
 lo, hi = min_max([2, 8, 3])
-# lo=2, hi=8
 ```
 
 **You should be able to:**  
@@ -151,7 +149,7 @@ lo, hi = min_max([2, 8, 3])
 
 ```python
 labels = ["cat", "dog", "cat", "mouse"]
-unique_labels = set(labels)  # {'mouse', 'dog', 'cat'}
+unique_labels = set(labels)
 print(unique_labels)
 ```
 
@@ -175,14 +173,14 @@ row = matrix[1]      # [4, 5, 6]
 submatrix = [row[1:] for row in matrix[:2]]  # [[2, 3], [5, 6]]
 
 text = "data science"
-print(text[5:12])  # 'science'
+print(text[5:12])
 ```
 
 **Example:**
 
 ```python
 data = [0, 1, 2, 3, 4, 5]
-window = data[2:5]  # [2, 3, 4]
+window = data[2:5]
 reversed_data = data[::-1]
 ```
 
