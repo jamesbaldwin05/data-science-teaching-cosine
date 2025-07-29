@@ -568,35 +568,68 @@ Mastering Python for data science also means knowing the landscape of essential 
 
 ## Numpy
 
-Numerical arrays, vectorized operations, and linear algebra. Numpy underpins nearly all numerical computing in Python, offering fast, memory-efficient arrays and operations that standard Python lists cannot match. It is the foundation for most other data science libraries.
+Numpy is the foundational package for numerical computing in Python, providing fast, efficient arrays and a wealth of mathematical functions. It’s essential for scientific and data-intensive work, powering the core of nearly every other data science library in the Python ecosystem.
+
+Numpy’s ndarrays enable vectorized, element-wise operations and support broadcasting, making them far more powerful and efficient than native Python lists. Key submodules include `numpy.linalg` for linear algebra, `numpy.random` for random sampling, and `numpy.fft` for signal processing. Common use-cases include numerical simulations, matrix operations, and rapid prototyping of algorithms.
 
 ```python
 import numpy as np
-arr = np.array([1, 2, 3])
-print(arr.mean())
+
+# Create a 2D array and perform vectorized operations
+data = np.arange(6).reshape(2, 3)
+mean_by_column = data.mean(axis=0)
+centered = data - mean_by_column
+
+# Linear algebra: matrix multiplication and eigendecomposition
+product = data @ data.T
+eigenvalues, eigenvectors = np.linalg.eig(product)
+print("Eigenvalues:", eigenvalues)
 ```
 
 ---
 
 ## Pandas
 
-Data frames, tabular data wrangling, CSV/Excel/SQL integration. Pandas provides powerful, flexible data structures (Series and DataFrame), making it easy to clean, filter, reshape, and analyze real-world datasets. It's the go-to tool for data manipulation.
+Pandas is the go-to library for working with structured (tabular) data in Python, offering intuitive and powerful tools for data wrangling, cleaning, and analysis. Its DataFrame and Series objects make it easy to handle everything from small datasets to large-scale data manipulations.
+
+Key capabilities include data alignment, grouping (via `groupby`), time series support, merging/joining datasets, and seamless reading/writing to formats like CSV, Excel, and SQL. Typical use-cases involve cleaning messy data, summarizing statistics, reshaping tables (pivot, melt), and preparing features for machine learning.
 
 ```python
 import pandas as pd
-df = pd.DataFrame({'a': [1, 2], 'b': [3, 4]})
-print(df.describe())
+
+# Create and inspect a DataFrame
+df = pd.DataFrame({'group': ['A', 'A', 'B', 'B'], 'value': [10, 15, 10, 25]})
+summary = df.groupby('group').agg(['mean', 'sum'])
+
+# Handle missing values and filter data
+df.loc[2, 'value'] = None
+df['value'] = df['value'].fillna(df['value'].mean())
+filtered = df[df['value'] > 12]
+
+print(filtered)
 ```
 
 ---
 
 ## Matplotlib & Seaborn
 
-Visualization libraries for everything from quick plots to complex charts. Matplotlib is the workhorse for static, animated, and interactive visualizations; Seaborn builds on it with higher-level API and prettier defaults for statistical graphics.
+Matplotlib and Seaborn are the cornerstones of data visualization in Python. Matplotlib provides granular control over every aspect of a figure, suitable for both quick plots and publication-quality graphics. Seaborn builds on Matplotlib with a high-level API and attractive default styles, making statistical plots and data exploration faster and more intuitive.
+
+With these libraries, you can create a wide range of visualizations: scatter plots, line charts, barplots, heatmaps, and regression plots. Seaborn’s integration with pandas DataFrames enables rapid EDA (exploratory data analysis), while Matplotlib’s flexibility allows for custom layouts, annotations, and advanced figures.
 
 ```python
 import matplotlib.pyplot as plt
-plt.plot([1, 2, 3], [4, 5, 6])
+import seaborn as sns
+
+# Load a built-in dataset and visualize relationships
+tips = sns.load_dataset("tips")
+sns.scatterplot(data=tips, x="total_bill", y="tip", hue="time")
+sns.regplot(data=tips, x="total_bill", y="tip", scatter=False, color="red")
+
+plt.title("Tip vs. Total Bill")
+plt.xlabel("Total Bill ($)")
+plt.ylabel("Tip ($)")
+plt.tight_layout()
 plt.show()
 ```
 
@@ -604,11 +637,23 @@ plt.show()
 
 ## Scikit-learn
 
-Machine learning algorithms, preprocessing, and model evaluation. Scikit-learn provides easy-to-use implementations of standard ML models (regression, classification, clustering), as well as tools for feature engineering, pipelines, and validation.
+Scikit-learn is the standard library for machine learning in Python, offering accessible APIs for a wide range of models and tools. It empowers you to quickly build, train, and evaluate machine learning pipelines, covering tasks from simple regression to complex classification and clustering.
+
+The library includes modules for preprocessing (scaling, encoding), feature selection, model selection (train/test split, cross-validation), and metrics. Pipelines make it easy to chain transformations and estimators, ensuring reproducible ML workflows. Common use-cases include rapid prototyping, automated model tuning, and benchmarking algorithms on standard datasets.
 
 ```python
-from sklearn.linear_model import LinearRegression
-model = LinearRegression().fit([[0], [1]], [0, 1])
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import cross_val_score
+from sklearn.preprocessing import StandardScaler
+from sklearn.pipeline import make_pipeline
+from sklearn.ensemble import RandomForestClassifier
+
+# Load data and build a pipeline: scale → fit model
+X, y = load_breast_cancer(return_X_y=True)
+pipeline = make_pipeline(StandardScaler(), RandomForestClassifier(n_estimators=100, random_state=0))
+scores = cross_val_score(pipeline, X, y, cv=5)
+
+print(f"Mean CV accuracy: {scores.mean():.2%}")
 ```
 
 ---
