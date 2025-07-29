@@ -174,9 +174,34 @@ def main():
     # --- Main lesson display ---
     st.markdown(md_text.split("### Example")[0])
 
-    # Example code
+    # --------- (C) Python Overview Code Snippet Runner ---------
+    # Only for the "01_python_overview" module
+    if selected_mod.stem == "01_python_overview":
+        # Find all python code blocks (regex, multiline, greedy)
+        code_block_matches = list(re.finditer(r"```python(.*?)```", md_text, re.DOTALL))
+        # To skip the Exercise code, ignore the last occurrence if it's after the "### Exercise" heading
+        exercise_pos = md_text.rfind("### Exercise")
+        filtered_blocks = []
+        for i, match in enumerate(code_block_matches):
+            # If this is the last block and it's within (or after) the Exercise section, skip it
+            if i == len(code_block_matches) - 1 and match.start() > exercise_pos >= 0:
+                continue
+            filtered_blocks.append(match.group(1).strip())
+        for i, code in enumerate(filtered_blocks):
+            with st.expander(f"Run Code Snippet {i+1}", expanded=False):
+                st.code(code, language="python")
+                if st.button("Run", key=f"run_snip_{mod_id}_{i}"):
+                    output, error = run_code(code)
+                    st.text_area(
+                        "Output",
+                        output + (f"\n[Error]: {error}" if error else ""),
+                        height=150,
+                        key=f"out_snip_{mod_id}_{i}"
+                    )
+
+    # Example code (legacy block, not needed for Python overview if all code blocks are handled above)
     example_code = extract_codeblock(md_text, "Example")
-    if example_code:
+    if example_code and selected_mod.stem != "01_python_overview":
         with st.expander("Show Example Code", expanded=True):
             st.code(example_code, language="python")
             if st.button("Run Example", key=f"run_ex_{mod_id}"):
@@ -265,9 +290,20 @@ def main():
     st.sidebar.markdown("### Progress")
     total_modules = sum(len(ms) for ms in category_to_modules.values())
     completed = sum(1 for k, v in progress.items() if v.get("quiz_completed"))
-    st.sidebar.markdown(f"**Quizzes Completed:** {completed} / {total_modules}")
-    total_ex = sum(v.get("exercise_runs", 0) for v in progress.values())
-    st.sidebar.markdown(f"**Exercises Run:** {total_ex}")
+    # ---- Remove Quizzes Completed and Exercises Run from sidebar, display Quizzes Completed in floating panel ----
+    # st.sidebar.markdown(f"**Quizzes Completed:** {completed} / {total_modules}")
+    # total_ex = sum(v.get("exercise_runs", 0) for v in progress.values())
+    # st.sidebar.markdown(f"**Exercises Run:** {total_ex}")
+
+    # Floating panel for Quizzes Completed (bottom right)
+    st.markdown(
+        f"""<div style='position:fixed; bottom:15px; right:15px; 
+                 background:#f0f2f6; padding:8px 14px; border-radius:6px; 
+                 box-shadow:0 2px 6px rgba(0,0,0,0.15); font-size:14px; z-index:9999;'>
+                ✅ Quizzes Completed: {completed} / {total_modules}
+            </div>""",
+        unsafe_allow_html=True,
+    )
 
 if __name__ == "__main__":
     main()

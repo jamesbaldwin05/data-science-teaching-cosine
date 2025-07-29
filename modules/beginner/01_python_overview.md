@@ -706,3 +706,15 @@ When working in a notebook, you execute code cells individually, and the results
 - Mastering lists, dicts, comprehensions, generators, and classes is essential for readable, high-performance code.
 - Key ecosystem libraries like numpy, pandas, matplotlib, and scikit-learn are foundational—learn their idioms and APIs.
 - Robust workflow includes using virtual environments, testing, logging, and performance-aware coding.
+
+### Exercise
+"""
+Generate a list containing the squares of numbers 1-10 using a list comprehension, then print the result.
+"""
+```python
+# Write your solution below
+squares = [
+    # TODO: your code here
+]
+print(squares)
+```
