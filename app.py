@@ -308,22 +308,26 @@ def main():
                 except Exception:
                     exception = traceback.format_exc()
 
-                squares_correct = False
-                squares_val = None
                 squares_expected = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
                 has_squares = "squares" in globals_dict
+                squares_val = globals_dict["squares"] if has_squares else None
+                squares_correct = has_squares and squares_val == squares_expected
 
-                if not exception:
-                    if has_squares:
-                        squares_val = globals_dict["squares"]
-                        if squares_val == squares_expected:
-                            squares_correct = True
+                stdout_val = stdout.getvalue()
+                err_val = stderr.getvalue()
+                # Remove non-problematic Matplotlib Agg warning
+                err_val = "".join([line for line in err_val.splitlines(keepends=True)
+                                   if "FigureCanvasAgg is non-interactive" not in line])
 
-                # Feedback message (above output box)
+                printed_correct = squares_correct and str(squares_val) in stdout_val
+
+                # Feedback logic
                 if exception:
                     st.error("❌ Your code raised an exception:\n\n" + exception)
-                elif squares_correct:
-                    st.success("✅ Correct! Great job generating the squares.")
+                elif squares_correct and printed_correct:
+                    st.success("✅ Correct! Great job generating and printing the squares.")
+                elif squares_correct and not printed_correct:
+                    st.error("⚠️ You created the correct list but didn't print it. Please add `print(squares)`.")
                 else:
                     msg = "❌ Incorrect – make sure `squares` contains the squares of 1-10."
                     if has_squares:
@@ -333,13 +337,9 @@ def main():
                     st.error(msg)
 
                 # Show captured output (stdout+stderr) for debugging
-                out = stdout.getvalue()
-                err = stderr.getvalue()
-                # Remove non-problematic Matplotlib Agg warning
-                err = "".join([line for line in err.splitlines(keepends=True)
-                               if "FigureCanvasAgg is non-interactive" not in line])
-                if out or err:
-                    st.text_area("Exercise Output", out + err, height=150)
+                if stdout_val or err_val:
+                    st.text_area("Exercise Output", stdout_val + err_val, height=150)
+
                 # Record attempt regardless of result
                 mod_prog = progress.get(mod_id, {})
                 mod_prog["exercise_runs"] = mod_prog.get("exercise_runs", 0) + 1
