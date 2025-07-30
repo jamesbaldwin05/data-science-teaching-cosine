@@ -538,6 +538,7 @@ def main():
                 mod_prog["quiz_completed"] = True
                 progress[mod_id] = mod_prog
                 save_progress(PROGRESS_PATH, progress)
+                st.experimental_rerun()
             else:
                 for i, correct in enumerate(results):
                     if not correct:
