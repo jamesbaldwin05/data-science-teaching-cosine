@@ -1,13 +1,78 @@
 import streamlit as st
 import os
 import re
+import sys
 from pathlib import Path
 from utils.code_runner import run_code
-from utils.progress import load_progress, save_progress
+from utils.auth import (
+    USERS_PATH, load_users, save_users, hash_password,
+    password_valid, verify_credentials, register_user,
+    get_user_progress, save_user_progress, ensure_user_exists
+)
+
+DEV_MODE = '--dev' in sys.argv
+
+def handle_auth():
+    """Streamlit UI for login/register/logout. Sets st.session_state['logged_in'] and ['username']."""
+    if DEV_MODE:
+        st.session_state['logged_in'] = True
+        st.session_state['username'] = 'dev'
+        return
+    if st.session_state.get('logged_in'):
+        # Sidebar logout button (not in dev mode)
+        with st.sidebar:
+            if st.button("Logout", key="logout_btn", help="Log out of your account"):
+                st.session_state.pop('logged_in', None)
+                st.session_state.pop('username', None)
+                st.rerun()
+        return
+
+    # Login/Register UI
+    tabs = st.tabs(["Login", "Register"])
+    login_tab, register_tab = tabs
+
+    with login_tab:
+        login_user = st.text_input("Username", key="login_user")
+        login_pw = st.text_input("Password", type="password", key="login_pw")
+        login_btn = st.button("Login", key="login_btn")
+        if login_btn:
+            if not login_user or not login_pw:
+                st.error("Please enter both username and password.")
+            elif verify_credentials(login_user, login_pw):
+                st.session_state['logged_in'] = True
+                st.session_state['username'] = login_user
+                st.success("Login successful!")
+                st.rerun()
+            else:
+                st.error("Invalid username or password.")
+
+    with register_tab:
+        reg_user = st.text_input("Username", key="reg_user")
+        reg_pw = st.text_input("Password", type="password", key="reg_pw")
+        reg_pw2 = st.text_input("Confirm Password", type="password", key="reg_pw2")
+        reg_btn = st.button("Register", key="reg_btn")
+        if reg_btn:
+            if not reg_user or not reg_pw or not reg_pw2:
+                st.error("Please fill in all fields.")
+            elif reg_pw != reg_pw2:
+                st.error("Passwords do not match.")
+            else:
+                success, msg = register_user(reg_user, reg_pw)
+                if success:
+                    st.session_state['logged_in'] = True
+                    st.session_state['username'] = reg_user
+                    st.success("Registration successful! You are now logged in.")
+                    st.rerun()
+                else:
+                    st.error(msg)
+
+    # At the end, if not logged in, halt app execution
+    if not st.session_state.get('logged_in'):
+        st.stop()
 
 MODULES_DIR = Path(__file__).resolve().parent / "modules"
 DATA_DIR = Path(__file__).resolve().parent / "data"
-PROGRESS_PATH = Path(__file__).resolve().parent / ".progress.json"
+
 
 ORDER = ["beginner", "intermediate", "advanced"]
 CATEGORY_NAMES = {
@@ -101,10 +166,21 @@ def get_default_selection(categories, category_to_modules):
 
 def main():
     st.set_page_config(page_title="Data Science for Developers", layout="wide")
+    handle_auth()  # Require login/register before showing rest of UI
     st.title("🧑‍💻 Data Science for Developers")
 
     categories, category_to_modules = list_categories_and_modules()
-    progress = load_progress(PROGRESS_PATH)
+
+    username = st.session_state.get('username', 'dev')
+    if DEV_MODE:
+        progress = st.session_state.setdefault('dev_progress', {})
+        def persist():
+            st.session_state['dev_progress'] = progress
+    else:
+        ensure_user_exists(username)
+        progress = get_user_progress(username)
+        def persist():
+            save_user_progress(username, progress)
 
     # Default selection, persisted in session_state
     all_paths = []
@@ -151,7 +227,7 @@ def main():
             cur_paths = cat_mods[cat]
             for i, mod in enumerate(category_to_modules[cat]):
                 mod_id = f"{cat[0]}_{mod.stem[:2]}"
-                completed = progress.get(mod_id, {}).get("quiz_completed", False)
+                completed = progress.get(mod_id, {}).get("exercise_completed") or progress.get(mod_id, {}).get("quiz_completed")
                 # Global sequential numbering
                 label_text = f"{module_counter:02d} {' '.join(mod.stem.split('_')[1:]).title()}"
                 label = label_text + (" ✅" if completed else "")
@@ -393,6 +469,12 @@ def main():
                     st.error("❌ Your code raised an exception:\n\n" + exception)
                 elif squares_correct and printed_correct:
                     st.success("✅ Correct! Great job generating and printing the squares.")
+                    # Mark exercise as completed and persist
+                    mod_prog = progress.get(mod_id, {})
+                    mod_prog["exercise_completed"] = True
+                    progress[mod_id] = mod_prog
+                    persist()
+                    st.rerun()
                 elif squares_correct and not printed_correct:
                     st.error("⚠️ You created the correct list but didn't print it. Please add `print(squares)`.")
                 else:
@@ -418,9 +500,17 @@ def main():
                 # Update progress
                 mod_prog = progress.get(mod_id, {})
                 mod_prog["exercise_runs"] = mod_prog.get("exercise_runs", 0) + 1
-                progress[mod_id] = mod_prog
-                save_progress(PROGRESS_PATH, progress)
-                st.success("Exercise run recorded!")
+                # If no error, mark exercise as completed
+                if not error:
+                    mod_prog["exercise_completed"] = True
+                    st.success("✅ Correct! Exercise run successful.")
+                    progress[mod_id] = mod_prog
+                    persist()
+                    st.rerun()
+                else:
+                    progress[mod_id] = mod_prog
+                    persist()
+                    st.success("Exercise run recorded!")
 
     # Quiz (multi-question)
     if "quiz" in sections:
@@ -471,7 +561,8 @@ def main():
                 mod_prog = progress.get(mod_id, {})
                 mod_prog["quiz_completed"] = True
                 progress[mod_id] = mod_prog
-                save_progress(PROGRESS_PATH, progress)
+                persist()
+                st.rerun()
             else:
                 for i, correct in enumerate(results):
                     if not correct:
@@ -484,10 +575,10 @@ def main():
     st.sidebar.markdown("---")
     st.sidebar.markdown("### Progress")
     total_modules = sum(len(ms) for ms in category_to_modules.values())
-    completed = sum(1 for k, v in progress.items() if v.get("quiz_completed"))
-    # Re-add quizzes completed in sidebar
-    st.sidebar.markdown(f"**Quizzes Completed:** {completed} / {total_modules}")
-    # Do NOT add Exercises Run
+    exercises_completed = sum(1 for k, v in progress.items() if v.get("exercise_completed"))
+    quizzes_completed = sum(1 for k, v in progress.items() if v.get("quiz_completed"))
+    st.sidebar.markdown(f"**Exercises Completed:** {exercises_completed} / {total_modules}")
+    st.sidebar.markdown(f"**Quizzes Completed:** {quizzes_completed} / {total_modules}")
 
 if __name__ == "__main__":
     main()
