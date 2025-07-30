@@ -80,8 +80,12 @@ def parse_quiz_block(quiz_md):
 
 def extract_codeblock(md, section_name):
     pattern = rf"###\s*{section_name}.*?```(python|r)(.*?)```"
-    match = re.search(pattern, md, re.DOTALL)
-    return match.group(2).strip() if match else ""
+    match = re.search(pattern, md, re.DOTALL | re.IGNORECASE)
+    if match:
+        lang = match.group(1).strip().lower()
+        code = match.group(2).strip()
+        return code, lang
+    return "", ""
 
 def extract_exercise_instructions(md):
     pattern = r"###\s*Exercise\s*[\r\n]+\"\"\"(.*?)\"\"\""
@@ -316,12 +320,12 @@ def main():
         st.markdown(md_text.split("### Example")[0])
 
         # Example code (legacy block, only for non-overview lessons)
-        example_code = extract_codeblock(md_text, "Example")
+        example_code, example_lang = extract_codeblock(md_text, "Example")
         if example_code:
             with st.expander("Show Example Code", expanded=True):
-                st.code(example_code, language="python")
+                st.code(example_code, language=example_lang or "python")
                 if st.button("Run Example", key=f"run_ex_{mod_id}"):
-                    output, error = run_code(example_code)
+                    output, error = run_code(example_code, lang=example_lang or "python")
                     st.text_area("Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
 
     # Exercise
@@ -330,11 +334,18 @@ def main():
         instructions = extract_exercise_instructions(md_text)
         if instructions:
             st.markdown(f"> {instructions}")
-        exercise_code = extract_codeblock(md_text, "Exercise")
+        exercise_code, exercise_lang = extract_codeblock(md_text, "Exercise")
         exercise_key = f"exercise_{mod_id}"
         try:
             from streamlit_ace import st_ace
-            editor = st_ace(value=exercise_code, language="python", key=exercise_key, height=200, theme="twilight", auto_update=True)
+            editor = st_ace(
+                value=exercise_code,
+                language=exercise_lang or "python",
+                key=exercise_key,
+                height=200,
+                theme="twilight",
+                auto_update=True,
+            )
         except ModuleNotFoundError:
             editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
         if st.button("Run Exercise", key=f"run_exercise_{mod_id}"):
@@ -392,7 +403,7 @@ def main():
                 progress[mod_id] = mod_prog
                 save_progress(PROGRESS_PATH, progress)
             else:
-                output, error = run_code(user_code)
+                output, error = run_code(user_code, lang=exercise_lang or "python")
                 st.text_area("Exercise Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
                 # Update progress
                 mod_prog = progress.get(mod_id, {})
