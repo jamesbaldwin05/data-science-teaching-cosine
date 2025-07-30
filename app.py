@@ -79,9 +79,13 @@ def parse_quiz_block(quiz_md):
     return result
 
 def extract_codeblock(md, section_name):
-    pattern = rf"###\s*{section_name}.*?```python(.*?)```"
-    match = re.search(pattern, md, re.DOTALL)
-    return match.group(1).strip() if match else ""
+    pattern = rf"###\s*{section_name}.*?```(python|r)(.*?)```"
+    match = re.search(pattern, md, re.DOTALL | re.IGNORECASE)
+    if match:
+        lang = match.group(1).strip().lower()
+        code = match.group(2).strip()
+        return code, lang
+    return "", ""
 
 def extract_exercise_instructions(md):
     pattern = r"###\s*Exercise\s*[\r\n]+\"\"\"(.*?)\"\"\""
@@ -265,17 +269,63 @@ def main():
             # Add a blank line to avoid heading merging
             st.markdown(post_md + "\n")
         # Do NOT output after_exercise markdown (no duplication)
+
+    elif selected_mod.stem == "02_r":
+        # Inline parse and render: markdown up to ### Exercise, with code block runners for R
+        code_block_pattern = re.compile(r"```r(.*?)```", re.DOTALL | re.IGNORECASE)
+        exercise_idx = md_text.find("### Exercise")
+        if exercise_idx >= 0:
+            before_exercise = md_text[:exercise_idx]
+        else:
+            before_exercise = md_text
+
+        def run_r_snippet(code, key):
+            import streamlit as st
+            display_code = code
+            st.code(display_code, language="r")
+            if st.button("Run", key=key):
+                with st.spinner("Running..."):
+                    # Use provided code runner utility
+                    output, error = run_code(code, lang='r')
+                    text_out = (output or "") + (("\n" + error) if error else "")
+                    st.text_area("Output", text_out, height=150, key=f"out_{key}")
+
+        last_pos = 0
+        runner_idx = 0
+        for match in code_block_pattern.finditer(before_exercise):
+            pre_md = before_exercise[last_pos:match.start()]
+            if pre_md.strip():
+                st.markdown(pre_md)
+            code = match.group(1).strip()
+            code_lines = code.lstrip().splitlines()
+            # "no-run": remove line & display code, no button
+            if code_lines and code_lines[0].strip().startswith("# no-run"):
+                display_code = "\n".join(code_lines[1:]).lstrip() if len(code_lines) > 1 else ""
+                if display_code.strip():
+                    st.code(display_code, language="r")
+                else:
+                    st.code("# no-run", language="r")
+            else:
+                run_r_snippet(code, key=f"run_snip_{mod_id}_{runner_idx}")
+                runner_idx += 1
+            last_pos = match.end()
+        # Output remaining markdown up to Exercise
+        post_md = before_exercise[last_pos:]
+        if post_md.strip():
+            st.markdown(post_md + "\n")
+        # Do NOT output after_exercise markdown (no duplication)
+
     else:
         # --- Fallback: normal markdown render for non-python-overview lessons ---
         st.markdown(md_text.split("### Example")[0])
 
         # Example code (legacy block, only for non-overview lessons)
-        example_code = extract_codeblock(md_text, "Example")
+        example_code, example_lang = extract_codeblock(md_text, "Example")
         if example_code:
             with st.expander("Show Example Code", expanded=True):
-                st.code(example_code, language="python")
+                st.code(example_code, language=example_lang or "python")
                 if st.button("Run Example", key=f"run_ex_{mod_id}"):
-                    output, error = run_code(example_code)
+                    output, error = run_code(example_code, lang=example_lang or "python")
                     st.text_area("Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
 
     # Exercise
@@ -284,16 +334,33 @@ def main():
         instructions = extract_exercise_instructions(md_text)
         if instructions:
             st.markdown(f"> {instructions}")
-        exercise_code = extract_codeblock(md_text, "Exercise")
+        exercise_code, exercise_lang = extract_codeblock(md_text, "Exercise")
         exercise_key = f"exercise_{mod_id}"
-        try:
-            from streamlit_ace import st_ace
-            editor = st_ace(value=exercise_code, language="python", key=exercise_key, height=200, theme="twilight", auto_update=True)
-        except ModuleNotFoundError:
+        if exercise_code is None:
+            exercise_code = ""
+        # Use ACE editor for Python if available, else fall back to text_area
+        if (exercise_lang or "").lower() == "python":
+            try:
+                from streamlit_ace import st_ace
+                editor = st_ace(
+                    value=exercise_code,
+                    language="python",
+                    theme="solarized_light",
+                    key=exercise_key,
+                    height=200,
+                    min_lines=8,
+                    max_lines=30,
+                    font_size=16,
+                )
+            except Exception:
+                editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
+        else:
             editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
-        if st.button("Run Exercise", key=f"run_exercise_{mod_id}"):
-            user_code = editor if editor is not None else exercise_code
+        user_code = editor if editor is not None else exercise_code
 
+        if st.button("Run Exercise", key=f"run_exercise_{mod_id}"):
+            # Always capture latest code from editor at button press
+            user_code = editor if editor is not None else exercise_code
             # Custom logic for 01_python -- check for correct `squares`.
             if selected_mod.stem == "01_python":
                 import io, contextlib, traceback
@@ -346,7 +413,7 @@ def main():
                 progress[mod_id] = mod_prog
                 save_progress(PROGRESS_PATH, progress)
             else:
-                output, error = run_code(user_code)
+                output, error = run_code(user_code, lang=exercise_lang or "python")
                 st.text_area("Exercise Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
                 # Update progress
                 mod_prog = progress.get(mod_id, {})
