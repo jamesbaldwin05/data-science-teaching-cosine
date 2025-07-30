@@ -265,6 +265,52 @@ def main():
             # Add a blank line to avoid heading merging
             st.markdown(post_md + "\n")
         # Do NOT output after_exercise markdown (no duplication)
+
+    elif selected_mod.stem == "02_r":
+        # Inline parse and render: markdown up to ### Exercise, with code block runners for R
+        code_block_pattern = re.compile(r"```r(.*?)```", re.DOTALL | re.IGNORECASE)
+        exercise_idx = md_text.find("### Exercise")
+        if exercise_idx >= 0:
+            before_exercise = md_text[:exercise_idx]
+        else:
+            before_exercise = md_text
+
+        def run_r_snippet(code, key):
+            import streamlit as st
+            display_code = code
+            st.code(display_code, language="r")
+            if st.button("Run", key=key):
+                with st.spinner("Running..."):
+                    # Use provided code runner utility
+                    output, error = run_code(code, lang='r')
+                    text_out = (output or "") + (("\n" + error) if error else "")
+                    st.text_area("Output", text_out, height=150, key=f"out_{key}")
+
+        last_pos = 0
+        runner_idx = 0
+        for match in code_block_pattern.finditer(before_exercise):
+            pre_md = before_exercise[last_pos:match.start()]
+            if pre_md.strip():
+                st.markdown(pre_md)
+            code = match.group(1).strip()
+            code_lines = code.lstrip().splitlines()
+            # "no-run": remove line & display code, no button
+            if code_lines and code_lines[0].strip().startswith("# no-run"):
+                display_code = "\n".join(code_lines[1:]).lstrip() if len(code_lines) > 1 else ""
+                if display_code.strip():
+                    st.code(display_code, language="r")
+                else:
+                    st.code("# no-run", language="r")
+            else:
+                run_r_snippet(code, key=f"run_snip_{mod_id}_{runner_idx}")
+                runner_idx += 1
+            last_pos = match.end()
+        # Output remaining markdown up to Exercise
+        post_md = before_exercise[last_pos:]
+        if post_md.strip():
+            st.markdown(post_md + "\n")
+        # Do NOT output after_exercise markdown (no duplication)
+
     else:
         # --- Fallback: normal markdown render for non-python-overview lessons ---
         st.markdown(md_text.split("### Example")[0])
