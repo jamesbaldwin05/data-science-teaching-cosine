@@ -50,6 +50,7 @@ def run_code(code: str, lang: str = 'python'):
     elif lang.lower() == 'r':
         # Try rpy2 first
         try:
+            import rpy2  # Ensure rpy2 is imported at the start of the try block
             import rpy2.robjects as robjects
             import rpy2.rinterface_lib.callbacks
             import contextlib
