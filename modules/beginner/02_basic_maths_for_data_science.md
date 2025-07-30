@@ -19,9 +19,7 @@
 
 ## Linear Algebra
 
-> **What?** The math of vectors and matrices—how data is stored, transformed, and analyzed.
->
-> **Why?** Underlies all data representations (tables, images, word embeddings), and powers most machine learning algorithms.
+**What/Why:** The math of vectors and matrices—how data is stored, transformed, and analyzed. Underlies all data representations (tables, images, word embeddings), and powers most machine learning algorithms.
 
 ### Scalars and Vectors
 
@@ -177,7 +175,7 @@ plt.title('Scree Plot')
 plt.show()
 ```
 
-> **PCA finds directions ("principal components") that capture the most variance in data.**
+*PCA finds directions ("principal components") that capture the most variance in data.*
 
 ---
 
@@ -192,9 +190,7 @@ plt.show()
 
 ## Statistics
 
-> **What?** The study of data: summarizing, visualizing, and drawing conclusions.
->
-> **Why?** All data science starts with understanding data distributions, patterns, and variation.
+**What/Why:** The study of data: summarizing, visualizing, and drawing conclusions. All data science starts with understanding data distributions, patterns, and variation.
 
 ### Descriptive Statistics
 
@@ -308,7 +304,7 @@ print("t-statistic:", t_stat)
 print("p-value:", p_val)
 ```
 
-> **If p-value < 0.05, often considered "statistically significant" (but always interpret in context!).**
+*If p-value < 0.05, often considered "statistically significant" (but always interpret in context!).*
 
 ---
 
@@ -362,9 +358,7 @@ plt.show()
 
 ## Probability
 
-> **What?** The math of uncertainty—quantifying how likely events are.
->
-> **Why?** Essential for modeling randomness, making predictions, and drawing conclusions from incomplete information.
+**What/Why:** The math of uncertainty—quantifying how likely events are. Essential for modeling randomness, making predictions, and drawing conclusions from incomplete information.
 
 ### Basic Probability Rules
 
@@ -466,18 +460,16 @@ plt.show()
 
 ### Practical Tips for Choosing a Distribution
 
-> - **Count data?** Try Binomial (fixed n) or Poisson (unbounded).
-> - **Continuous, bell-shaped?** Try Normal.
-> - **Waiting times?** Try Exponential.
-> - **Simple yes/no?** Try Bernoulli.
+- **Count data?** Try Binomial (fixed n) or Poisson (unbounded).
+- **Continuous, bell-shaped?** Try Normal.
+- **Waiting times?** Try Exponential.
+- **Simple yes/no?** Try Bernoulli.
 
 ---
 
 ## Calculus for ML (Lightweight)
 
-> **What?** The math of change—used to optimize, minimize error, and train models.
->
-> **Why?** Powers gradient descent and learning in ML.
+**What/Why:** The math of change—used to optimize, minimize error, and train models. Powers gradient descent and learning in ML.
 
 ### Derivative Concept & Slope Intuition
 
@@ -545,7 +537,7 @@ plt.show()
 
 ---
 
-> **Link to ML:** Training most models = minimize a loss function using gradient descent or its variants.
+*Link to ML: Training most models = minimize a loss function using gradient descent or its variants.*
 
 ---
 
@@ -603,14 +595,14 @@ Try these to practice your new math skills! (See the [Python lesson](01_python.m
    - Load the Iris dataset from `sklearn.datasets`.
    - Perform PCA, plot the explained variance (scree plot) and a scatterplot of the first two principal components.
 
-> **Want to go further?**  
-> - Try using Scipy's `curve_fit` to fit a curve to noisy data.
-> - Write a function that computes the variance and standard deviation *by hand* (no NumPy).
+*Want to go further?*  
+- Try using Scipy's `curve_fit` to fit a curve to noisy data.
+- Write a function that computes the variance and standard deviation *by hand* (no NumPy).
 
 ---
 
-> **Next steps:**  
-> - Keep practicing! Math is a skill—use it regularly and it will become second nature.
-> - Ready to move on? Check out the next lesson for practical machine learning.
+*Next steps:*  
+- Keep practicing! Math is a skill—use it regularly and it will become second nature.
+- Ready to move on? Check out the next lesson for practical machine learning.
 
 ---
