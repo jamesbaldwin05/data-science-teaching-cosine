@@ -48,7 +48,8 @@ def run_code(code: str, lang: str = 'python'):
             sys.stdout = old_stdout
             sys.stderr = old_stderr
     elif lang.lower() == 'r':
-        # Try rpy2 first
+        # Try rpy2 first, fallback to Rscript if any exception occurs
+        import shutil
         try:
             import rpy2  # Ensure rpy2 is imported at the start of the try block
             import rpy2.robjects as robjects
@@ -78,16 +79,16 @@ def run_code(code: str, lang: str = 'python'):
             out = output_buffer.getvalue()
             err = error_buffer.getvalue()
             return out, err
-        except ImportError:
-            # Fallback: try subprocess with Rscript
+        except Exception as e_rpy2:
+            # Fallback: try subprocess with Rscript or Rscript.exe
             import subprocess
             import tempfile
-            import shutil
             import os
 
-            rscript_path = shutil.which("Rscript")
+            rscript_path = shutil.which("Rscript") or shutil.which("Rscript.exe")
             if rscript_path is None:
-                return "", "Rscript not found. R does not seem to be installed on this system, or is not in PATH. To run R code, please install R (https://cran.r-project.org/) and ensure Rscript is available."
+                return "", f"rpy2 failed: {e_rpy2}; and Rscript not found in PATH."
+
             with tempfile.NamedTemporaryFile(mode="w", suffix='.R', delete=False) as tmp_file:
                 tmp_file.write(code)
                 tmp_file_path = tmp_file.name
@@ -98,18 +99,15 @@ def run_code(code: str, lang: str = 'python'):
                     text=True,
                     timeout=30
                 )
-                out = proc.stdout
-                err = proc.stderr
+                if proc.returncode != 0:
+                    return proc.stdout, proc.stderr or f"Rscript exited with code {proc.returncode}"
+                return proc.stdout, proc.stderr
             except Exception as e:
-                out = ""
-                err = f"Error running Rscript: {str(e)}"
+                return "", f"rpy2 failed: {e_rpy2}; and Rscript execution failed: {e}"
             finally:
                 try:
                     os.remove(tmp_file_path)
                 except Exception:
                     pass
-            return out, err
-        except Exception as e:
-            return "", f"Error executing R code: {str(e)}"
     else:
         return "", f"Language '{lang}' is not supported."
