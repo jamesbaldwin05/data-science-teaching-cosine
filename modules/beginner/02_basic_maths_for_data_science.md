@@ -1,16 +1,8 @@
-# Lesson 3: Essential Mathematics for Data Science
+# Essential Mathematics for Data Science
 
----
-
-> **Who is this lesson for?**
->
-> - Anyone comfortable with basic Python or R programming (see [Lesson 1](01_python.md) and [Lesson 2](02_r.md)).
-> - No prior university-level math required. We'll build intuition and show practical code for all key concepts.
-
-> **Why learn math for data science?**
->
-> - Data science is powered by mathematical ideas: understanding data, building models, and making decisions.
-> - You don’t need to be a mathematician! But a working grasp of the core ideas will make you a better, more confident data scientist.
+## Why learn math for data science?
+- Data science is powered by mathematical ideas: understanding data, building models, and making decisions.
+- No prior university-level math required. We'll build intuition and show practical code for all key concepts.
 
 ---
 
