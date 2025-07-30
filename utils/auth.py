@@ -63,6 +63,40 @@ def register_user(username, password):
     users = load_users()
     if username in users:
         return False, "Username already exists."
-    users[username] = hash_password(password)
+    users[username] = {
+        "password": hash_password(password),
+        "progress": {}
+    }
     save_users(users)
     return True, "Registration successful."
+
+def get_user_progress(username) -> dict:
+    """
+    Returns a copy of the user's progress dict, or {} if missing.
+    """
+    users = load_users()
+    user = users.get(username)
+    if not user or "progress" not in user:
+        return {}
+    # Return a copy to avoid accidental mutation
+    return dict(user["progress"])
+
+def save_user_progress(username, progress: dict):
+    """
+    Updates the user's progress dict and saves to users.json.
+    """
+    users = load_users()
+    if username not in users:
+        # Optionally scaffold new user if missing (shouldn't happen)
+        users[username] = {"password": "", "progress": {}}
+    users[username]["progress"] = progress
+    save_users(users)
+
+def ensure_user_exists(username):
+    """
+    Ensures that a user exists in users.json with an empty progress dict if not present.
+    """
+    users = load_users()
+    if username not in users:
+        users[username] = {"password": "", "progress": {}}
+        save_users(users)

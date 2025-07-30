@@ -4,10 +4,10 @@ import re
 import sys
 from pathlib import Path
 from utils.code_runner import run_code
-from utils.progress import load_progress, save_progress
 from utils.auth import (
     USERS_PATH, load_users, save_users, hash_password,
-    password_valid, verify_credentials, register_user
+    password_valid, verify_credentials, register_user,
+    get_user_progress, save_user_progress, ensure_user_exists
 )
 
 DEV_MODE = '--dev' in sys.argv
@@ -72,7 +72,7 @@ def handle_auth():
 
 MODULES_DIR = Path(__file__).resolve().parent / "modules"
 DATA_DIR = Path(__file__).resolve().parent / "data"
-PROGRESS_PATH = Path(__file__).resolve().parent / ".progress.json"
+
 
 ORDER = ["beginner", "intermediate", "advanced"]
 CATEGORY_NAMES = {
@@ -170,7 +170,17 @@ def main():
     st.title("🧑‍💻 Data Science for Developers")
 
     categories, category_to_modules = list_categories_and_modules()
-    progress = load_progress(PROGRESS_PATH)
+
+    username = st.session_state.get('username', 'dev')
+    if DEV_MODE:
+        progress = st.session_state.setdefault('dev_progress', {})
+        def persist():
+            st.session_state['dev_progress'] = progress
+    else:
+        ensure_user_exists(username)
+        progress = get_user_progress(username)
+        def persist():
+            save_user_progress(username, progress)
 
     # Default selection, persisted in session_state
     all_paths = []
@@ -463,7 +473,7 @@ def main():
                     mod_prog = progress.get(mod_id, {})
                     mod_prog["exercise_completed"] = True
                     progress[mod_id] = mod_prog
-                    save_progress(PROGRESS_PATH, progress)
+                    persist()
                     st.rerun()
                 elif squares_correct and not printed_correct:
                     st.error("⚠️ You created the correct list but didn't print it. Please add `print(squares)`.")
@@ -495,11 +505,11 @@ def main():
                     mod_prog["exercise_completed"] = True
                     st.success("✅ Correct! Exercise run successful.")
                     progress[mod_id] = mod_prog
-                    save_progress(PROGRESS_PATH, progress)
+                    persist()
                     st.rerun()
                 else:
                     progress[mod_id] = mod_prog
-                    save_progress(PROGRESS_PATH, progress)
+                    persist()
                     st.success("Exercise run recorded!")
 
     # Quiz (multi-question)
@@ -551,7 +561,7 @@ def main():
                 mod_prog = progress.get(mod_id, {})
                 mod_prog["quiz_completed"] = True
                 progress[mod_id] = mod_prog
-                save_progress(PROGRESS_PATH, progress)
+                persist()
                 st.rerun()
             else:
                 for i, correct in enumerate(results):
