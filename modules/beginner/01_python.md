@@ -44,6 +44,7 @@ A successful data scientist in Python needs fluency with the following language 
 ## 1. Lists & List Comprehensions
 
 **What:** Lists are used in data science to store collections of data, such as rows in a dataset or individual feature values.
+
 **Why:** List comprehensions provide a clear and compact way to create or transform these lists, making data manipulation tasks faster and more readable—an essential part of data wrangling.
 
 **Python lists vs. C-style arrays:** Unlike C arrays, Python lists can store elements of any type and can grow or shrink dynamically. For large numerical arrays, consider using the `array` module (for numbers) or, more commonly in data science, `numpy` arrays for efficiency and extra functionality.
@@ -66,6 +67,7 @@ print(temperatures_f)
 ## 2. Dictionaries & Nested Dicts
 
 **What:** Dicts map keys to values—ideal for label-value pairs, config settings, and JSON-like data.
+
 **Why:** Nested dicts are common when representing structured or hierarchical information.
 
 **Example:**
@@ -105,6 +107,7 @@ print(record["scores"])
 ## 3. Tuples & Unpacking
 
 **What:** Tuples are immutable sequences — once created, their contents cannot be changed.
+
 **Why:** They’re ideal for fixed-size, heterogeneous data (e.g. coordinate pairs, function returns). Tuples support multiple assignment and “starred unpacking” for flexible splitting.
 
 **Tuple immutability:**  
@@ -148,6 +151,7 @@ lo, hi = min_max([2, 8, 3])
 ## 4. Sets
 
 **What:** Sets store unique items; great for deduplication, membership testing, and set algebra (union/intersection).
+
 **Why:** Used often for label sets, removing duplicates, or fast lookups.
 
 **Example:**
@@ -168,6 +172,7 @@ print(unique_labels)
 ## 5. Slicing & Indexing
 
 **What:** Slicing extracts sublists or substrings—vital for data selection and windowing.
+
 **Why:**
 
 **Multi-level slicing:**  
@@ -201,6 +206,7 @@ reversed_data = data[::-1] # reversed_data = [5, 4, 3, 2, 1]
 ## 6. Comprehensions vs. Generator Expressions
 
 **What:** Comprehensions (list/dict/set) eagerly build collections in memory; generator expressions produce items lazily.
+
 **Why:** Crucial for efficiency when dealing with large or streaming data sets.
 
 **Memory usage & lazy evaluation:**  
@@ -229,6 +235,7 @@ squares_generator = (x**2 for x in range(10))
 ## 7. Functions (including Lambdas)
 
 **What:** Functions organize code and logic; lambdas create small, anonymous functions.
+
 **Why:** Handy for sorting, filtering, or passing as arguments.
 
 **Positional vs. keyword arguments, defaults, and lambdas:**  
@@ -263,6 +270,7 @@ print(data)
 ## 8. itertools & functools
 
 **What:** These standard libraries provide advanced iteration and functional utilities (e.g., grouping, mapping, accumulating).
+
 **Why:** Must-know tools include:
 
 - `itertools.chain`: concatenate iterables  
@@ -299,6 +307,7 @@ print(groups)
 ## 9. Classes & DataClasses
 
 **What:** *Classes* encapsulate data and methods, supporting inheritance and customization.
+
 **Why:** *DataClasses* (Python 3.7+) are specialized classes for simple data containers, generating boilerplate (e.g., `__init__`, `__repr__`) automatically.
 
 Below are two equivalent ways to define a simple data container: a classic class and a dataclass.
@@ -339,6 +348,7 @@ m = Measurement(1, 3.2)
 ## 10. Context Managers
 
 **What:** Use `with` to manage resources (files, DB connections) safely—ensures cleanup even on error.
+
 **Why:**
 
 **How it works:**  
@@ -384,6 +394,7 @@ with timer("Heavy computation"):
 ## 11. Error Handling
 
 **What:** Proper use of `try`/`except` ensures robust pipelines, especially with unpredictable data.
+
 **Why:**
 
 **Catching specific exceptions, raising new ones, and using all blocks:**
@@ -414,6 +425,7 @@ finally:
 ## 12. Type Hints & the typing Module
 
 **What:** Type hints clarify intent, improve code readability, and enable static analysis tools (e.g., mypy, IDEs).
+
 **Why:** The `typing` module offers generics (e.g., `List[T]`, `Dict[K, V]`), `Optional`, `Union`, and more.
 - Static analysis can catch bugs before runtime and aid code navigation in large projects.
 
@@ -448,6 +460,7 @@ print(mean([1.0, 2.0, 4.0]))
 ## 13. Virtual Environments & Dependency Management
 
 **What:** Isolating environments prevents package conflicts and ensures reproducibility.
+
 **Why:**
 
 - Use `python -m venv` or `conda` to create isolated environments.
@@ -476,6 +489,7 @@ pip install --upgrade matplotlib
 ## 14. Unit Testing (pytest)
 
 **What:** Tests catch regressions and document expectations.
+
 **Why:** `pytest` is the de facto testing library.
 
 **Example (arrange-act-assert):**
@@ -509,6 +523,7 @@ def test_add():
 ## 15. Logging
 
 **What:** Logging (vs. print) enables scalable monitoring, diagnostics, and debugging.
+
 **Why:** Logging supports different levels (INFO, WARNING, ERROR), structured logs, and integrates with ML pipeline tools and experiment tracking.
 
 **Example:**
@@ -577,6 +592,7 @@ print(view[2:5].tobytes())
 ## 17. Debugging
 
 **What:** Debuggers (`pdb`, IDE tools) and assert statements are invaluable for inspecting data flows and catching subtle bugs.
+
 **Why:**
 
 **You should be able to:**  
