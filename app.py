@@ -217,7 +217,7 @@ def main():
             cur_paths = cat_mods[cat]
             for i, mod in enumerate(category_to_modules[cat]):
                 mod_id = f"{cat[0]}_{mod.stem[:2]}"
-                completed = progress.get(mod_id, {}).get("quiz_completed", False)
+                completed = progress.get(mod_id, {}).get("exercise_completed") or progress.get(mod_id, {}).get("quiz_completed")
                 # Global sequential numbering
                 label_text = f"{module_counter:02d} {' '.join(mod.stem.split('_')[1:]).title()}"
                 label = label_text + (" ✅" if completed else "")
@@ -459,6 +459,12 @@ def main():
                     st.error("❌ Your code raised an exception:\n\n" + exception)
                 elif squares_correct and printed_correct:
                     st.success("✅ Correct! Great job generating and printing the squares.")
+                    # Mark exercise as completed and persist
+                    mod_prog = progress.get(mod_id, {})
+                    mod_prog["exercise_completed"] = True
+                    progress[mod_id] = mod_prog
+                    save_progress(PROGRESS_PATH, progress)
+                    st.rerun()
                 elif squares_correct and not printed_correct:
                     st.error("⚠️ You created the correct list but didn't print it. Please add `print(squares)`.")
                 else:
@@ -484,9 +490,17 @@ def main():
                 # Update progress
                 mod_prog = progress.get(mod_id, {})
                 mod_prog["exercise_runs"] = mod_prog.get("exercise_runs", 0) + 1
-                progress[mod_id] = mod_prog
-                save_progress(PROGRESS_PATH, progress)
-                st.success("Exercise run recorded!")
+                # If no error, mark exercise as completed
+                if not error:
+                    mod_prog["exercise_completed"] = True
+                    st.success("✅ Correct! Exercise run successful.")
+                    progress[mod_id] = mod_prog
+                    save_progress(PROGRESS_PATH, progress)
+                    st.rerun()
+                else:
+                    progress[mod_id] = mod_prog
+                    save_progress(PROGRESS_PATH, progress)
+                    st.success("Exercise run recorded!")
 
     # Quiz (multi-question)
     if "quiz" in sections:
@@ -551,10 +565,10 @@ def main():
     st.sidebar.markdown("---")
     st.sidebar.markdown("### Progress")
     total_modules = sum(len(ms) for ms in category_to_modules.values())
-    completed = sum(1 for k, v in progress.items() if v.get("quiz_completed"))
-    # Re-add quizzes completed in sidebar
-    st.sidebar.markdown(f"**Quizzes Completed:** {completed} / {total_modules}")
-    # Do NOT add Exercises Run
+    exercises_completed = sum(1 for k, v in progress.items() if v.get("exercise_completed"))
+    quizzes_completed = sum(1 for k, v in progress.items() if v.get("quiz_completed"))
+    st.sidebar.markdown(f"**Exercises Completed:** {exercises_completed} / {total_modules}")
+    st.sidebar.markdown(f"**Quizzes Completed:** {quizzes_completed} / {total_modules}")
 
 if __name__ == "__main__":
     main()
