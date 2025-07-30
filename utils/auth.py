@@ -70,33 +70,62 @@ def register_user(username, password):
     save_users(users)
     return True, "Registration successful."
 
+
+def _ensure_record_dict(users, username):
+    """
+    If user record is just a string (legacy hash), migrate it to dict form.
+    Returns the user record (dict) or None if not present.
+    """
+    rec = users.get(username)
+    if rec is None:
+        return None
+    if isinstance(rec, str):
+        users[username] = {"password": rec, "progress": {}}
+        return users[username]
+    return rec
+
+
 def get_user_progress(username) -> dict:
     """
     Returns a copy of the user's progress dict, or {} if missing.
+    Transparently migrates legacy hash-only records.
     """
     users = load_users()
-    user = users.get(username)
-    if not user or "progress" not in user:
+    rec = _ensure_record_dict(users, username)
+    if rec is None:
         return {}
-    # Return a copy to avoid accidental mutation
-    return dict(user["progress"])
+    if isinstance(rec, str):
+        save_users(users)  # Shouldn't happen, but just in case
+        return {}
+    # Save after migration if needed
+    if username in users and isinstance(users[username], dict) and "progress" not in users[username]:
+        users[username]["progress"] = {}
+        save_users(users)
+    return dict(rec.get('progress', {}))
+
 
 def save_user_progress(username, progress: dict):
     """
     Updates the user's progress dict and saves to users.json.
+    Transparently migrates legacy hash-only records.
     """
     users = load_users()
-    if username not in users:
-        # Optionally scaffold new user if missing (shouldn't happen)
-        users[username] = {"password": "", "progress": {}}
-    users[username]["progress"] = progress
+    rec = _ensure_record_dict(users, username)
+    if rec is None:
+        # create blank password
+        users[username] = {"password": "", "progress": progress}
+    else:
+        rec['progress'] = progress
     save_users(users)
+
 
 def ensure_user_exists(username):
     """
     Ensures that a user exists in users.json with an empty progress dict if not present.
+    Migrates legacy hash-only records.
     """
     users = load_users()
+    _ensure_record_dict(users, username)
     if username not in users:
         users[username] = {"password": "", "progress": {}}
-        save_users(users)
+    save_users(users)
