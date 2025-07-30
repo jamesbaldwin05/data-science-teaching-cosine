@@ -358,66 +358,67 @@ def main():
             editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
         user_code = editor if editor is not None else exercise_code
 
-        # Custom logic for 01_python -- check for correct `squares`.
-        if selected_mod.stem == "01_python":
-            import io, contextlib, traceback
-            import types
+        if st.button("Run Exercise", key=f"run_exercise_{mod_id}"):
+            # Custom logic for 01_python -- check for correct `squares`.
+            if selected_mod.stem == "01_python":
+                import io, contextlib, traceback
+                import types
 
-            stdout, stderr = io.StringIO(), io.StringIO()
-            globals_dict = {}
-            exception = None
-            try:
-                with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
-                    exec(user_code, globals_dict)
-            except Exception:
-                exception = traceback.format_exc()
+                stdout, stderr = io.StringIO(), io.StringIO()
+                globals_dict = {}
+                exception = None
+                try:
+                    with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+                        exec(user_code, globals_dict)
+                except Exception:
+                    exception = traceback.format_exc()
 
-            squares_expected = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
-            has_squares = "squares" in globals_dict
-            squares_val = globals_dict["squares"] if has_squares else None
-            squares_correct = has_squares and squares_val == squares_expected
+                squares_expected = [1, 4, 9, 16, 25, 36, 49, 64, 81, 100]
+                has_squares = "squares" in globals_dict
+                squares_val = globals_dict["squares"] if has_squares else None
+                squares_correct = has_squares and squares_val == squares_expected
 
-            stdout_val = stdout.getvalue()
-            err_val = stderr.getvalue()
-            # Remove non-problematic Matplotlib Agg warning
-            err_val = "".join([line for line in err_val.splitlines(keepends=True)
-                               if "FigureCanvasAgg is non-interactive" not in line])
+                stdout_val = stdout.getvalue()
+                err_val = stderr.getvalue()
+                # Remove non-problematic Matplotlib Agg warning
+                err_val = "".join([line for line in err_val.splitlines(keepends=True)
+                                   if "FigureCanvasAgg is non-interactive" not in line])
 
-            printed_correct = squares_correct and str(squares_val) in stdout_val
+                printed_correct = squares_correct and str(squares_val) in stdout_val
 
-            # Feedback logic
-            if exception:
-                st.error("❌ Your code raised an exception:\n\n" + exception)
-            elif squares_correct and printed_correct:
-                st.success("✅ Correct! Great job generating and printing the squares.")
-            elif squares_correct and not printed_correct:
-                st.error("⚠️ You created the correct list but didn't print it. Please add `print(squares)`.")
-            else:
-                msg = "❌ Incorrect – make sure `squares` contains the squares of 1-10."
-                if has_squares:
-                    msg += f"\n\nYour `squares`: `{repr(squares_val)}`"
+                # Feedback logic
+                if exception:
+                    st.error("❌ Your code raised an exception:\n\n" + exception)
+                elif squares_correct and printed_correct:
+                    st.success("✅ Correct! Great job generating and printing the squares.")
+                elif squares_correct and not printed_correct:
+                    st.error("⚠️ You created the correct list but didn't print it. Please add `print(squares)`.")
                 else:
-                    msg += "\n\nYou did not define the variable `squares`."
-                st.error(msg)
+                    msg = "❌ Incorrect – make sure `squares` contains the squares of 1-10."
+                    if has_squares:
+                        msg += f"\n\nYour `squares`: `{repr(squares_val)}`"
+                    else:
+                        msg += "\n\nYou did not define the variable `squares`."
+                    st.error(msg)
 
-            # Show captured output (stdout+stderr) for debugging
-            if stdout_val or err_val:
-                st.text_area("Exercise Output", stdout_val + err_val, height=150)
+                # Show captured output (stdout+stderr) for debugging
+                if stdout_val or err_val:
+                    st.text_area("Exercise Output", stdout_val + err_val, height=150)
 
-            # Record attempt regardless of result
-            mod_prog = progress.get(mod_id, {})
-            mod_prog["exercise_runs"] = mod_prog.get("exercise_runs", 0) + 1
-            progress[mod_id] = mod_prog
-            save_progress(PROGRESS_PATH, progress)
-        else:
-            output, error = run_code(user_code, lang=exercise_lang or "python")
-            st.text_area("Exercise Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
-            # Update progress
-            mod_prog = progress.get(mod_id, {})
-            mod_prog["exercise_runs"] = mod_prog.get("exercise_runs", 0) + 1
-            progress[mod_id] = mod_prog
-            save_progress(PROGRESS_PATH, progress)
-            st.success("Exercise run recorded!")
+                # Record attempt regardless of result
+                mod_prog = progress.get(mod_id, {})
+                mod_prog["exercise_runs"] = mod_prog.get("exercise_runs", 0) + 1
+                progress[mod_id] = mod_prog
+                save_progress(PROGRESS_PATH, progress)
+            else:
+                output, error = run_code(user_code, lang=exercise_lang or "python")
+                st.text_area("Exercise Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
+                # Update progress
+                mod_prog = progress.get(mod_id, {})
+                mod_prog["exercise_runs"] = mod_prog.get("exercise_runs", 0) + 1
+                progress[mod_id] = mod_prog
+                save_progress(PROGRESS_PATH, progress)
+                st.success("Exercise run recorded!")
 
     # Quiz (multi-question)
     if "quiz" in sections:
