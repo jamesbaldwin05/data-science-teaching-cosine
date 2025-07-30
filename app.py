@@ -24,7 +24,7 @@ def handle_auth():
             if st.button("Logout", key="logout_btn", help="Log out of your account"):
                 st.session_state.pop('logged_in', None)
                 st.session_state.pop('username', None)
-                st.experimental_rerun()
+                st.rerun()
         return
 
     # Login/Register UI
@@ -42,7 +42,7 @@ def handle_auth():
                 st.session_state['logged_in'] = True
                 st.session_state['username'] = login_user
                 st.success("Login successful!")
-                st.experimental_rerun()
+                st.rerun()
             else:
                 st.error("Invalid username or password.")
 
@@ -62,7 +62,7 @@ def handle_auth():
                     st.session_state['logged_in'] = True
                     st.session_state['username'] = reg_user
                     st.success("Registration successful! You are now logged in.")
-                    st.experimental_rerun()
+                    st.rerun()
                 else:
                     st.error(msg)
 
@@ -538,7 +538,7 @@ def main():
                 mod_prog["quiz_completed"] = True
                 progress[mod_id] = mod_prog
                 save_progress(PROGRESS_PATH, progress)
-                st.experimental_rerun()
+                st.rerun()
             else:
                 for i, correct in enumerate(results):
                     if not correct:
