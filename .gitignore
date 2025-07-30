@@ -30,11 +30,10 @@ var/
 .ipynb_checkpoints
 
 # Project
-.progress.json
 assets/
 .DS_Store
 friday25-07/
 monday28-07/
 tuesday29-07/
 wednesday30-07/
-.progress.json
+users.json
