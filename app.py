@@ -79,9 +79,9 @@ def parse_quiz_block(quiz_md):
     return result
 
 def extract_codeblock(md, section_name):
-    pattern = rf"###\s*{section_name}.*?```python(.*?)```"
+    pattern = rf"###\s*{section_name}.*?```(python|r)(.*?)```"
     match = re.search(pattern, md, re.DOTALL)
-    return match.group(1).strip() if match else ""
+    return match.group(2).strip() if match else ""
 
 def extract_exercise_instructions(md):
     pattern = r"###\s*Exercise\s*[\r\n]+\"\"\"(.*?)\"\"\""
