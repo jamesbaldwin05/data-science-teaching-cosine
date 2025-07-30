@@ -359,6 +359,8 @@ def main():
         user_code = editor if editor is not None else exercise_code
 
         if st.button("Run Exercise", key=f"run_exercise_{mod_id}"):
+            # Always capture latest code from editor at button press
+            user_code = editor if editor is not None else exercise_code
             # Custom logic for 01_python -- check for correct `squares`.
             if selected_mod.stem == "01_python":
                 import io, contextlib, traceback
