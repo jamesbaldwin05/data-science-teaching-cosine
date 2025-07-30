@@ -23,7 +23,7 @@
    ```bash
    streamlit run app.py
    ```
-   • Developers: append `--dev` after the script path to bypass login, e.g. `streamlit run app.py -- --dev`
+   • Developers: append `--dev` after the script path to bypass login, e.g. `streamlit run app.py --dev`
 
 4. **Navigate curriculum in the sidebar**  
    - The sidebar features a collapsible tree: each section (Beginner, Intermediate, Advanced) expands to show buttons for its modules.
