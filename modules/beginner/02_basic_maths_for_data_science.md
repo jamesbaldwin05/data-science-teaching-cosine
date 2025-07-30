@@ -19,7 +19,8 @@
 
 ## Linear Algebra
 
-**What/Why:** The math of vectors and matrices—how data is stored, transformed, and analyzed. Underlies all data representations (tables, images, word embeddings), and powers most machine learning algorithms.
+**What:** The math of vectors and matrices—how data is stored, transformed, and analyzed.
+**Why:** Underlies all data representations (tables, images, word embeddings), and powers most machine learning algorithms.
 
 ### Scalars and Vectors
 
@@ -190,7 +191,8 @@ plt.show()
 
 ## Statistics
 
-**What/Why:** The study of data: summarizing, visualizing, and drawing conclusions. All data science starts with understanding data distributions, patterns, and variation.
+**What:** The study of data: summarizing, visualizing, and drawing conclusions.
+**Why:** All data science starts with understanding data distributions, patterns, and variation.
 
 ### Descriptive Statistics
 
@@ -358,7 +360,8 @@ plt.show()
 
 ## Probability
 
-**What/Why:** The math of uncertainty—quantifying how likely events are. Essential for modeling randomness, making predictions, and drawing conclusions from incomplete information.
+**What:** The math of uncertainty—quantifying how likely events are.
+**Why:** Essential for modeling randomness, making predictions, and drawing conclusions from incomplete information.
 
 ### Basic Probability Rules
 
@@ -469,7 +472,8 @@ plt.show()
 
 ## Calculus for ML (Lightweight)
 
-**What/Why:** The math of change—used to optimize, minimize error, and train models. Powers gradient descent and learning in ML.
+**What:** The math of change—used to optimize, minimize error, and train models.
+**Why:** Powers gradient descent and learning in ML.
 
 ### Derivative Concept & Slope Intuition
 
