@@ -48,47 +48,17 @@ def run_code(code: str, lang: str = 'python'):
             sys.stdout = old_stdout
             sys.stderr = old_stderr
     elif lang.lower() == 'r':
-        # Try rpy2 first, fallback to Rscript if any exception occurs
         import shutil
-        try:
-            import rpy2  # Ensure rpy2 is imported at the start of the try block
-            import rpy2.robjects as robjects
-            import rpy2.rinterface_lib.callbacks
-            import contextlib
+        import subprocess
+        import tempfile
+        import os
+        import io
+        import contextlib
 
-            # Capture R stdout/stderr via Python
-            from io import StringIO
-
-            output_buffer = StringIO()
-            error_buffer = StringIO()
-
-            @contextlib.contextmanager
-            def capture_r_output():
-                old_writeconsole = rpy2.rinterface_lib.callbacks.consolewrite_print
-                old_writeconsole_warn = rpy2.rinterface_lib.callbacks.consolewrite_warnerror
-                rpy2.rinterface_lib.callbacks.consolewrite_print = lambda x: output_buffer.write(x)
-                rpy2.rinterface_lib.callbacks.consolewrite_warnerror = lambda x: error_buffer.write(x)
-                try:
-                    yield
-                finally:
-                    rpy2.rinterface_lib.callbacks.consolewrite_print = old_writeconsole
-                    rpy2.rinterface_lib.callbacks.consolewrite_warnerror = old_writeconsole_warn
-
-            with capture_r_output():
-                robjects.r(code)
-            out = output_buffer.getvalue()
-            err = error_buffer.getvalue()
-            return out, err
-        except Exception as e_rpy2:
-            # Fallback: try subprocess with Rscript or Rscript.exe
-            import subprocess
-            import tempfile
-            import os
-
-            rscript_path = shutil.which("Rscript") or shutil.which("Rscript.exe")
-            if rscript_path is None:
-                return "", f"rpy2 failed: {e_rpy2}; and Rscript not found in PATH."
-
+        # --- 1. Try Rscript first ---
+        rscript_path = shutil.which("Rscript") or shutil.which("Rscript.exe")
+        rscript_error = ""
+        if rscript_path is not None:
             with tempfile.NamedTemporaryFile(mode="w", suffix='.R', delete=False) as tmp_file:
                 tmp_file.write(code)
                 tmp_file_path = tmp_file.name
@@ -99,15 +69,49 @@ def run_code(code: str, lang: str = 'python'):
                     text=True,
                     timeout=30
                 )
-                if proc.returncode != 0:
-                    return proc.stdout, proc.stderr or f"Rscript exited with code {proc.returncode}"
-                return proc.stdout, proc.stderr
+                if proc.returncode == 0:
+                    return proc.stdout, proc.stderr
+                else:
+                    rscript_error = proc.stderr or f"Rscript exited with code {proc.returncode}"
             except Exception as e:
-                return "", f"rpy2 failed: {e_rpy2}; and Rscript execution failed: {e}"
+                rscript_error = f"Error running Rscript: {str(e)}"
             finally:
                 try:
                     os.remove(tmp_file_path)
                 except Exception:
                     pass
+        else:
+            rscript_error = "Rscript not found in PATH."
+
+        # --- 2. Try rpy2 fallback, wrap import and execution in stdout/stderr capture ---
+        try:
+            output_buffer = io.StringIO()
+            error_buffer = io.StringIO()
+            with contextlib.redirect_stdout(output_buffer), contextlib.redirect_stderr(error_buffer):
+                import rpy2
+                import rpy2.robjects as robjects
+                import rpy2.rinterface_lib.callbacks
+
+                # Setup rpy2 output/error capturing
+                @contextlib.contextmanager
+                def capture_r_output():
+                    old_writeconsole = rpy2.rinterface_lib.callbacks.consolewrite_print
+                    old_writeconsole_warn = rpy2.rinterface_lib.callbacks.consolewrite_warnerror
+                    rpy2.rinterface_lib.callbacks.consolewrite_print = lambda x: output_buffer.write(x)
+                    rpy2.rinterface_lib.callbacks.consolewrite_warnerror = lambda x: error_buffer.write(x)
+                    try:
+                        yield
+                    finally:
+                        rpy2.rinterface_lib.callbacks.consolewrite_print = old_writeconsole
+                        rpy2.rinterface_lib.callbacks.consolewrite_warnerror = old_writeconsole_warn
+
+                with capture_r_output():
+                    robjects.r(code)
+            out = output_buffer.getvalue()
+            err = error_buffer.getvalue()
+            return out, err
+        except Exception as e_rpy2:
+            comb_err = f"Rscript failed: {rscript_error}; rpy2 failed: {e_rpy2}"
+            return "", comb_err
     else:
         return "", f"Language '{lang}' is not supported."
