@@ -1,9 +1,74 @@
 import streamlit as st
 import os
 import re
+import sys
 from pathlib import Path
 from utils.code_runner import run_code
 from utils.progress import load_progress, save_progress
+from utils.auth import (
+    USERS_PATH, load_users, save_users, hash_password,
+    password_valid, verify_credentials, register_user
+)
+
+DEV_MODE = '--dev' in sys.argv
+
+def handle_auth():
+    """Streamlit UI for login/register/logout. Sets st.session_state['logged_in'] and ['username']."""
+    if DEV_MODE:
+        st.session_state['logged_in'] = True
+        st.session_state['username'] = 'dev'
+        return
+    if st.session_state.get('logged_in'):
+        # Sidebar logout button (not in dev mode)
+        with st.sidebar:
+            if st.button("Logout", key="logout_btn", help="Log out of your account"):
+                st.session_state.pop('logged_in', None)
+                st.session_state.pop('username', None)
+                st.experimental_rerun()
+        return
+
+    # Login/Register UI
+    tabs = st.tabs(["Login", "Register"])
+    login_tab, register_tab = tabs
+
+    with login_tab:
+        login_user = st.text_input("Username", key="login_user")
+        login_pw = st.text_input("Password", type="password", key="login_pw")
+        login_btn = st.button("Login", key="login_btn")
+        if login_btn:
+            if not login_user or not login_pw:
+                st.error("Please enter both username and password.")
+            elif verify_credentials(login_user, login_pw):
+                st.session_state['logged_in'] = True
+                st.session_state['username'] = login_user
+                st.success("Login successful!")
+                st.experimental_rerun()
+            else:
+                st.error("Invalid username or password.")
+
+    with register_tab:
+        reg_user = st.text_input("Username", key="reg_user")
+        reg_pw = st.text_input("Password", type="password", key="reg_pw")
+        reg_pw2 = st.text_input("Confirm Password", type="password", key="reg_pw2")
+        reg_btn = st.button("Register", key="reg_btn")
+        if reg_btn:
+            if not reg_user or not reg_pw or not reg_pw2:
+                st.error("Please fill in all fields.")
+            elif reg_pw != reg_pw2:
+                st.error("Passwords do not match.")
+            else:
+                success, msg = register_user(reg_user, reg_pw)
+                if success:
+                    st.session_state['logged_in'] = True
+                    st.session_state['username'] = reg_user
+                    st.success("Registration successful! You are now logged in.")
+                    st.experimental_rerun()
+                else:
+                    st.error(msg)
+
+    # At the end, if not logged in, halt app execution
+    if not st.session_state.get('logged_in'):
+        st.stop()
 
 MODULES_DIR = Path(__file__).resolve().parent / "modules"
 DATA_DIR = Path(__file__).resolve().parent / "data"
@@ -101,6 +166,7 @@ def get_default_selection(categories, category_to_modules):
 
 def main():
     st.set_page_config(page_title="Data Science for Developers", layout="wide")
+    handle_auth()  # Require login/register before showing rest of UI
     st.title("🧑‍💻 Data Science for Developers")
 
     categories, category_to_modules = list_categories_and_modules()
