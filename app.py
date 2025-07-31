@@ -56,9 +56,9 @@ def handle_auth():
         if login_btn:
             if not login_user or not login_pw:
                 st.error("Please enter both username and password.")
-            elif verify_credentials(login_user, login_pw):
+            elif verify_credentials(login_user.strip(), login_pw.strip()):
                 st.session_state['logged_in'] = True
-                st.session_state['username'] = login_user
+                st.session_state['username'] = login_user.strip()
                 st.success("Login successful!")
                 st.rerun()
             else:
@@ -78,7 +78,7 @@ def handle_auth():
                 success, msg = register_user(reg_user, reg_pw)
                 if success:
                     st.session_state['logged_in'] = True
-                    st.session_state['username'] = reg_user
+                    st.session_state['username'] = reg_user.strip()
                     st.success("Registration successful! You are now logged in.")
                     st.rerun()
                 else:
@@ -514,8 +514,8 @@ def main():
                     # Immediate feedback, then persist and rerun
                     flash_container.success("✅ Correct! Great job generating and printing the squares.")
                     scroll_to_bottom()
-                    st.session_state['flash'] = ('success', '✅ Correct! Great job generating and printing the squares.')
-                    st.session_state['top_flash'] = ('success', '✅ Correct! You have completed this module – move on to the next one.')
+                    st.session_state['flash'] = ('success', '✅ Exercise correct, module complete! Move onto next.')
+                    st.session_state['top_flash'] = ('success', '✅ Exercise correct, module complete! Move onto next.')
                     mod_prog = progress.get(mod_id, {})
                     mod_prog["exercise_completed"] = True
                     progress[mod_id] = mod_prog
@@ -554,11 +554,11 @@ def main():
                 if not error:
                     mod_prog["exercise_completed"] = True
                     # Immediate feedback so the user gets instant confirmation before rerun
-                    flash_container.success("✅ Correct! Exercise run successful.")
+                    flash_container.success("✅ Exercise correct, module complete! Move onto next.")
                     scroll_to_bottom()
                     # Set flash message to survive rerun on success
-                    st.session_state['flash'] = ('success', '✅ Correct! Exercise run successful.')
-                    st.session_state['top_flash'] = ('success', '✅ Correct! You have completed this module – move on to the next one.')
+                    st.session_state['flash'] = ('success', '✅ Exercise correct, module complete! Move onto next.')
+                    st.session_state['top_flash'] = ('success', '✅ Exercise correct, module complete! Move onto next.')
                     progress[mod_id] = mod_prog
                     persist()
                     st.rerun()
@@ -630,7 +630,7 @@ def main():
                     all_correct = False
             if all_correct:
                 st.success("✅ All answers correct!")
-                st.session_state['top_flash'] = ('success', '✅ Correct! You have completed this module – move on to the next one.')
+                st.session_state['top_flash'] = ('success', '✅ Exercise correct, module complete! Move onto next.')
                 mod_prog = progress.get(mod_id, {})
                 mod_prog["quiz_completed"] = True
                 progress[mod_id] = mod_prog

@@ -48,16 +48,13 @@ def verify_credentials(username, password) -> bool:
     """
     Authenticate a user against stored credentials, supporting both legacy and new user record formats.
 
-    - Loads users from disk.
-    - Retrieves the record for the given username.
-    - Ensures the user record is in dict form (migrates legacy string records if needed).
-    - If migration occurred, persists the updated users to disk.
-    - Returns True if the supplied password matches the stored hash; otherwise, False.
-    - Returns False if the user does not exist.
+    Strips whitespace from username and password before hashing/comparison.
 
     This function transparently migrates legacy user records (where the value is a string hash)
     to the newer dict format. After migration, updated records are saved back to disk.
     """
+    username = username.strip()
+    password = password.strip()
     users = load_users()
     rec = _ensure_record_dict(users, username)
     if rec is None:
@@ -66,12 +63,12 @@ def verify_credentials(username, password) -> bool:
 
     # If migration happened, save back to disk.
     if isinstance(users.get(username), dict) and "password" in users[username] and isinstance(users[username]["password"], str):
-        # Only save if we just migrated from legacy string to dict (i.e., rec was previously a str)
-        # This is safe to call every time after _ensure_record_dict; it will only update if needed.
         save_users(users)
 
     # Compare supplied password (after hashing) to stored hash.
     hash_pw = hash_password(password)
+    # Debug: Uncomment below to diagnose login issues
+    # print(f"DEBUG: username={username}, input_hash={hash_pw}, stored_hash={rec.get('password')}")
     return rec.get("password") == hash_pw
 
 def register_user(username, password):
