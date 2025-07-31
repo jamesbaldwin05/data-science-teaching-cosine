@@ -168,19 +168,7 @@ def main():
     st.set_page_config(page_title="Data Science for Developers", layout="wide")
     handle_auth()  # Require login/register before showing rest of UI
     st.title("🧑‍💻 Data Science for Developers")
-
-    # --- Flash message display (survives rerun) ---
-    # If st.session_state["flash"] is set, show it and clear after displaying.
-    # Used to show confirmation after rerun (e.g., success on exercise).
-    flash = st.session_state.pop('flash', None)
-    if flash:
-        kind, msg = flash
-        if kind == 'success':
-            st.success(msg)
-        elif kind == 'error':
-            st.error(msg)
-        else:
-            st.info(msg)
+    # (Removed global flash display: flash messages now shown inline in Exercise section)
 
     categories, category_to_modules = list_categories_and_modules()
 
@@ -447,6 +435,11 @@ def main():
             editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
         user_code = editor if editor is not None else exercise_code
 
+        # --- Inline flash message placeholder: appears just under code editor/run area ---
+        # We use a container here so the flash message (success/error/info) is always shown in-context,
+        # even after reruns, and does not jump to the top of the page.
+        flash_container = st.empty()
+
         if st.button("Run Exercise", key=f"run_exercise_{mod_id}"):
             # Always capture latest code from editor at button press
             user_code = editor if editor is not None else exercise_code
@@ -528,6 +521,19 @@ def main():
                     progress[mod_id] = mod_prog
                     persist()
                     st.success("Exercise run recorded!")
+
+        # --- Render flash message just under exercise area (always displays in-place) ---
+        # This must be outside the Run Exercise button logic so that after rerun, the
+        # message is shown promptly in the right context.
+        flash = st.session_state.pop('flash', None)
+        if flash:
+            kind, msg = flash
+            if kind == 'success':
+                flash_container.success(msg)
+            elif kind == 'error':
+                flash_container.error(msg)
+            else:
+                flash_container.info(msg)
 
     # Quiz (multi-question)
     if "quiz" in sections:
