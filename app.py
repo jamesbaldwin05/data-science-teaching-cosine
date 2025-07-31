@@ -448,8 +448,12 @@ def main():
             if USE_ACE_EDITOR:
                 try:
                     from streamlit_ace import st_ace
+                    # Keep user input in session state for persistence across reruns
+                    if f"user_exercise_code_{exercise_key}" not in st.session_state:
+                        st.session_state[f"user_exercise_code_{exercise_key}"] = exercise_code
+
                     ace_val = st_ace(
-                        value=exercise_code,
+                        value=st.session_state[f"user_exercise_code_{exercise_key}"],
                         language="python",
                         theme="solarized_light",
                         key=exercise_key,
@@ -458,11 +462,19 @@ def main():
                         max_lines=30,
                         font_size=16,
                     )
-                    # Only fallback to text_area if ace_val is None (not if empty string)
+                    # Only fallback if ACE fails to load (returns None, not empty string)
                     if ace_val is None:
-                        editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
+                        editor = st.text_area(
+                            "Edit & Run Your Solution",
+                            st.session_state[f"user_exercise_code_{exercise_key}"],
+                            height=200,
+                            key=f"fallback_{exercise_key}"
+                        )
                     else:
                         editor = ace_val
+
+                    # Always update session state for persistence
+                    st.session_state[f"user_exercise_code_{exercise_key}"] = editor
                 except Exception:
                     editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
             else:
