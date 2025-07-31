@@ -3,6 +3,14 @@ import os
 import re
 import sys
 from pathlib import Path
+from streamlit.components.v1 import html as st_html
+
+def scroll_to_bottom():
+    """Scroll browser viewport to page bottom (smooth)."""
+    st_html(
+        """<script>window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});</script>""",
+        height=0,
+    )
 from utils.code_runner import run_code
 from utils.auth import (
     USERS_PATH, load_users, save_users, hash_password,
@@ -473,13 +481,20 @@ def main():
                 # Feedback logic
                 if exception:
                     st.error("❌ Your code raised an exception:\n\n" + exception)
-                elif squares_correct and printed_correct:
+                if not error:
+                    mod_prog["exercise_completed"] = True
+                    # Immediate feedback so the user gets instant confirmation before rerun
+                    flash_container.success("✅ Correct! Exercise run successful.")
+                    scroll_to_bottom()
+                    # Set flash message to survive rerun on success
+                    st.session_state['flash'] = ('success', '✅ Correct! Exercise run successful.')
+                    progress[mod_id] = mod_prog
+                    persist()
+                    st.rerun()
                     # Immediate feedback so the user gets instant confirmation before rerun
                     flash_container.success("✅ Correct! Great job generating and printing the squares.")
                     # Also set flash message to survive rerun
-                    st.session_state['flash'] = ('success', '✅ Correct! Great job generating and printing the squares.')
-                    # Mark exercise as completed and persist
-                    mod_prog = progress.get(mod_id, {})
+                    st.session_state['flashrog = progress.get(mod_id, {})
                     mod_prog["exercise_completed"] = True
                     progress[mod_id] = mod_prog
                     persist()
@@ -514,8 +529,6 @@ def main():
                 # If no error, mark exercise as completed
                 if not error:
                     mod_prog["exercise_completed"] = True
-                    # Immediate feedback so the user gets instant confirmation before rerun
-                    flash_container.success("✅ Correct! Exercise run successful.")
                     # Set flash message to survive rerun on success
                     st.session_state['flash'] = ('success', '✅ Correct! Exercise run successful.')
                     progress[mod_id] = mod_prog
@@ -534,10 +547,13 @@ def main():
             kind, msg = flash
             if kind == 'success':
                 flash_container.success(msg)
+                scroll_to_bottom()
             elif kind == 'error':
                 flash_container.error(msg)
+                scroll_to_bottom()
             else:
                 flash_container.info(msg)
+                scroll_to_bottom()
 
     # Quiz (multi-question)
     if "quiz" in sections:
