@@ -53,7 +53,7 @@ A successful data scientist in Python needs fluency with the following language 
 
 ```python
 temperatures_c = [12, 18, 22, 15]
-temperatures_f = [c * 9/5 + 32 for c in temperatures_c]
+temperatures_f = [c * 9/5 + 32 for c in temperatures_c] # List comprehension
 print(temperatures_f)
 ```
 
@@ -172,8 +172,6 @@ print(unique_labels)
 ## 5. Slicing & Indexing
 
 **What:** Slicing extracts sublists or substrings—vital for data selection and windowing.
-
-**Why:**
 
 **Multi-level slicing:**  
 You can slice lists of lists (matrices) or strings:
