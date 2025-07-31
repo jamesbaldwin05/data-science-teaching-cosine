@@ -14,8 +14,8 @@ def scroll_to_bottom():
             window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
           }
           scrollBottom();
-          setTimeout(scrollBottom, 100);
-          setTimeout(scrollBottom, 400);
+          const times=[100,400,800];
+          times.forEach(t=>setTimeout(scrollBottom,t));
         </script>
         """,
         height=0,
@@ -28,7 +28,7 @@ from utils.auth import (
 )
 
 DEV_MODE = '--dev' in sys.argv
-USE_ACE_EDITOR = False  # Feature flag for Ace editor, default off
+USE_ACE_EDITOR = True  # Feature flag for Ace editor, default ON
 
 def handle_auth():
     """Streamlit UI for login/register/logout. Sets st.session_state['logged_in'] and ['username']."""
