@@ -6,9 +6,18 @@ from pathlib import Path
 from streamlit.components.v1 import html as st_html
 
 def scroll_to_bottom():
-    """Scroll browser viewport to page bottom (smooth)."""
+    """Scroll browser viewport to page bottom (smooth, retried for Streamlit rerender timing)."""
     st_html(
-        """<script>window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});</script>""",
+        """
+        <script>
+          function scrollBottom(){
+            window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});
+          }
+          scrollBottom();
+          setTimeout(scrollBottom, 100);
+          setTimeout(scrollBottom, 400);
+        </script>
+        """,
         height=0,
     )
 from utils.code_runner import run_code
@@ -481,6 +490,7 @@ def main():
                 # Feedback logic
                 if exception:
                     st.error("❌ Your code raised an exception:\n\n" + exception)
+                    scroll_to_bottom()
                 elif squares_correct and printed_correct:
                     # Immediate feedback, then persist and rerun
                     flash_container.success("✅ Correct! Great job generating and printing the squares.")
@@ -493,6 +503,7 @@ def main():
                     st.rerun()
                 elif squares_correct and not printed_correct:
                     st.error("⚠️ You created the correct list but didn't print it. Please add `print(squares)`.")
+                    scroll_to_bottom()
                 else:
                     msg = "❌ Incorrect – make sure `squares` contains the squares of 1-10."
                     if has_squares:
@@ -500,6 +511,7 @@ def main():
                     else:
                         msg += "\n\nYou did not define the variable `squares`."
                     st.error(msg)
+                    scroll_to_bottom()
 
                 # Show captured output (stdout+stderr) for debugging
                 if stdout_val or err_val:
@@ -533,6 +545,7 @@ def main():
                     progress[mod_id] = mod_prog
                     persist()
                     st.success("Exercise run recorded!")
+                    scroll_to_bottom()
 
         # --- Render flash message just under exercise area (always displays in-place) ---
         # This must be outside the Run Exercise button logic so that after rerun, the
