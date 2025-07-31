@@ -186,6 +186,16 @@ def main():
     st.set_page_config(page_title="Data Science for Developers", layout="wide")
     handle_auth()  # Require login/register before showing rest of UI
     st.title("🧑‍💻 Data Science for Developers")
+    # Top-of-page one-shot flash message (cleared after display)
+    top_flash = st.session_state.pop('top_flash', None)
+    if top_flash:
+        kind, msg = top_flash
+        if kind == 'success':
+            st.success(msg)
+        elif kind == 'error':
+            st.error(msg)
+        else:
+            st.info(msg)
     # (Removed global flash display: flash messages now shown inline in Exercise section)
 
     categories, category_to_modules = list_categories_and_modules()
@@ -505,6 +515,7 @@ def main():
                     flash_container.success("✅ Correct! Great job generating and printing the squares.")
                     scroll_to_bottom()
                     st.session_state['flash'] = ('success', '✅ Correct! Great job generating and printing the squares.')
+                    st.session_state['top_flash'] = ('success', '✅ Correct! You have completed this module – move on to the next one.')
                     mod_prog = progress.get(mod_id, {})
                     mod_prog["exercise_completed"] = True
                     progress[mod_id] = mod_prog
@@ -547,6 +558,7 @@ def main():
                     scroll_to_bottom()
                     # Set flash message to survive rerun on success
                     st.session_state['flash'] = ('success', '✅ Correct! Exercise run successful.')
+                    st.session_state['top_flash'] = ('success', '✅ Correct! You have completed this module – move on to the next one.')
                     progress[mod_id] = mod_prog
                     persist()
                     st.rerun()
@@ -618,6 +630,7 @@ def main():
                     all_correct = False
             if all_correct:
                 st.success("✅ All answers correct!")
+                st.session_state['top_flash'] = ('success', '✅ Correct! You have completed this module – move on to the next one.')
                 mod_prog = progress.get(mod_id, {})
                 mod_prog["quiz_completed"] = True
                 progress[mod_id] = mod_prog
