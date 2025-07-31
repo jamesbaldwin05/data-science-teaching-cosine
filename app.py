@@ -432,11 +432,11 @@ def main():
         exercise_key = f"exercise_{mod_id}"
         if exercise_code is None:
             exercise_code = ""
-        # Use ACE editor for Python if available, else fall back to text_area
+        # Use ACE editor for Python if available; robust fallback to text_area if st_ace fails or returns None
         if (exercise_lang or "").lower() == "python":
             try:
                 from streamlit_ace import st_ace
-                editor = st_ace(
+                ace_val = st_ace(
                     value=exercise_code,
                     language="python",
                     theme="solarized_light",
@@ -446,8 +446,12 @@ def main():
                     max_lines=30,
                     font_size=16,
                 )
+                if ace_val is None:
+                    editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=f"{exercise_key}_ta")
+                else:
+                    editor = ace_val
             except Exception:
-                editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
+                editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=f"{exercise_key}_ta")
         else:
             editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
         user_code = editor if editor is not None else exercise_code
