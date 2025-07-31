@@ -458,8 +458,8 @@ def main():
                         max_lines=30,
                         font_size=16,
                     )
-                    # Fallback if Ace fails to render or returns empty string/None
-                    if not ace_val:
+                    # Only fallback to text_area if ace_val is None (not if empty string)
+                    if ace_val is None:
                         editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
                     else:
                         editor = ace_val
