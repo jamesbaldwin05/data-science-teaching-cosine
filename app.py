@@ -3,6 +3,14 @@ import os
 import re
 import sys
 from pathlib import Path
+from streamlit.components.v1 import html as st_html
+
+def scroll_to_bottom():
+    """Scroll browser viewport to page bottom (smooth)."""
+    st_html(
+        """<script>window.scrollTo({top: document.body.scrollHeight, behavior: 'smooth'});</script>""",
+        height=0,
+    )
 from utils.code_runner import run_code
 from utils.auth import (
     USERS_PATH, load_users, save_users, hash_password,
@@ -168,6 +176,7 @@ def main():
     st.set_page_config(page_title="Data Science for Developers", layout="wide")
     handle_auth()  # Require login/register before showing rest of UI
     st.title("🧑‍💻 Data Science for Developers")
+    # (Removed global flash display: flash messages now shown inline in Exercise section)
 
     categories, category_to_modules = list_categories_and_modules()
 
@@ -434,6 +443,11 @@ def main():
             editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
         user_code = editor if editor is not None else exercise_code
 
+        # --- Inline flash message placeholder: appears just under code editor/run area ---
+        # We use a container here so the flash message (success/error/info) is always shown in-context,
+        # even after reruns, and does not jump to the top of the page.
+        flash_container = st.empty()
+
         if st.button("Run Exercise", key=f"run_exercise_{mod_id}"):
             # Always capture latest code from editor at button press
             user_code = editor if editor is not None else exercise_code
@@ -468,8 +482,10 @@ def main():
                 if exception:
                     st.error("❌ Your code raised an exception:\n\n" + exception)
                 elif squares_correct and printed_correct:
-                    st.success("✅ Correct! Great job generating and printing the squares.")
-                    # Mark exercise as completed and persist
+                    # Immediate feedback, then persist and rerun
+                    flash_container.success("✅ Correct! Great job generating and printing the squares.")
+                    scroll_to_bottom()
+                    st.session_state['flash'] = ('success', '✅ Correct! Great job generating and printing the squares.')
                     mod_prog = progress.get(mod_id, {})
                     mod_prog["exercise_completed"] = True
                     progress[mod_id] = mod_prog
@@ -493,7 +509,9 @@ def main():
                 mod_prog = progress.get(mod_id, {})
                 mod_prog["exercise_runs"] = mod_prog.get("exercise_runs", 0) + 1
                 progress[mod_id] = mod_prog
-                save_progress(PROGRESS_PATH, progress)
+                # Replaced broken save_progress(PROGRESS_PATH, progress) with persist()
+                # (persist() saves user progress for both dev & normal mode)
+                persist()
             else:
                 output, error = run_code(user_code, lang=exercise_lang or "python")
                 st.text_area("Exercise Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
@@ -503,7 +521,11 @@ def main():
                 # If no error, mark exercise as completed
                 if not error:
                     mod_prog["exercise_completed"] = True
-                    st.success("✅ Correct! Exercise run successful.")
+                    # Immediate feedback so the user gets instant confirmation before rerun
+                    flash_container.success("✅ Correct! Exercise run successful.")
+                    scroll_to_bottom()
+                    # Set flash message to survive rerun on success
+                    st.session_state['flash'] = ('success', '✅ Correct! Exercise run successful.')
                     progress[mod_id] = mod_prog
                     persist()
                     st.rerun()
@@ -511,6 +533,22 @@ def main():
                     progress[mod_id] = mod_prog
                     persist()
                     st.success("Exercise run recorded!")
+
+        # --- Render flash message just under exercise area (always displays in-place) ---
+        # This must be outside the Run Exercise button logic so that after rerun, the
+        # message is shown promptly in the right context.
+        flash = st.session_state.pop('flash', None)
+        if flash:
+            kind, msg = flash
+            if kind == 'success':
+                flash_container.success(msg)
+                scroll_to_bottom()
+            elif kind == 'error':
+                flash_container.error(msg)
+                scroll_to_bottom()
+            else:
+                flash_container.info(msg)
+                scroll_to_bottom()
 
     # Quiz (multi-question)
     if "quiz" in sections:
