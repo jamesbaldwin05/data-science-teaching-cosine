@@ -355,7 +355,7 @@ def main():
             st.markdown(post_md + "\n")
         # Do NOT output after_exercise markdown (no duplication)
 
-    elif selected_mod.stem == "02_r":
+    elif selected_mod.stem in ("02_r", "03_r"):
         # Inline parse and render: markdown up to ### Exercise, with code block runners for R
         code_block_pattern = re.compile(r"```r(.*?)```", re.DOTALL | re.IGNORECASE)
         exercise_idx = md_text.find("### Exercise")
