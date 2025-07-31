@@ -481,20 +481,12 @@ def main():
                 # Feedback logic
                 if exception:
                     st.error("❌ Your code raised an exception:\n\n" + exception)
-                if not error:
-                    mod_prog["exercise_completed"] = True
-                    # Immediate feedback so the user gets instant confirmation before rerun
-                    flash_container.success("✅ Correct! Exercise run successful.")
-                    scroll_to_bottom()
-                    # Set flash message to survive rerun on success
-                    st.session_state['flash'] = ('success', '✅ Correct! Exercise run successful.')
-                    progress[mod_id] = mod_prog
-                    persist()
-                    st.rerun()
-                    # Immediate feedback so the user gets instant confirmation before rerun
+                elif squares_correct and printed_correct:
+                    # Immediate feedback, then persist and rerun
                     flash_container.success("✅ Correct! Great job generating and printing the squares.")
-                    # Also set flash message to survive rerun
-                    st.session_state['flashrog = progress.get(mod_id, {})
+                    scroll_to_bottom()
+                    st.session_state['flash'] = ('success', '✅ Correct! Great job generating and printing the squares.')
+                    mod_prog = progress.get(mod_id, {})
                     mod_prog["exercise_completed"] = True
                     progress[mod_id] = mod_prog
                     persist()
@@ -529,6 +521,9 @@ def main():
                 # If no error, mark exercise as completed
                 if not error:
                     mod_prog["exercise_completed"] = True
+                    # Immediate feedback so the user gets instant confirmation before rerun
+                    flash_container.success("✅ Correct! Exercise run successful.")
+                    scroll_to_bottom()
                     # Set flash message to survive rerun on success
                     st.session_state['flash'] = ('success', '✅ Correct! Exercise run successful.')
                     progress[mod_id] = mod_prog
