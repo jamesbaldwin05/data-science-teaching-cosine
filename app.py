@@ -169,6 +169,19 @@ def main():
     handle_auth()  # Require login/register before showing rest of UI
     st.title("🧑‍💻 Data Science for Developers")
 
+    # --- Flash message display (survives rerun) ---
+    # If st.session_state["flash"] is set, show it and clear after displaying.
+    # Used to show confirmation after rerun (e.g., success on exercise).
+    flash = st.session_state.pop('flash', None)
+    if flash:
+        kind, msg = flash
+        if kind == 'success':
+            st.success(msg)
+        elif kind == 'error':
+            st.error(msg)
+        else:
+            st.info(msg)
+
     categories, category_to_modules = list_categories_and_modules()
 
     username = st.session_state.get('username', 'dev')
@@ -468,7 +481,8 @@ def main():
                 if exception:
                     st.error("❌ Your code raised an exception:\n\n" + exception)
                 elif squares_correct and printed_correct:
-                    st.success("✅ Correct! Great job generating and printing the squares.")
+                    # Instead of showing immediate success, set flash message to survive rerun
+                    st.session_state['flash'] = ('success', '✅ Correct! Great job generating and printing the squares.')
                     # Mark exercise as completed and persist
                     mod_prog = progress.get(mod_id, {})
                     mod_prog["exercise_completed"] = True
@@ -493,7 +507,9 @@ def main():
                 mod_prog = progress.get(mod_id, {})
                 mod_prog["exercise_runs"] = mod_prog.get("exercise_runs", 0) + 1
                 progress[mod_id] = mod_prog
-                save_progress(PROGRESS_PATH, progress)
+                # Replaced broken save_progress(PROGRESS_PATH, progress) with persist()
+                # (persist() saves user progress for both dev & normal mode)
+                persist()
             else:
                 output, error = run_code(user_code, lang=exercise_lang or "python")
                 st.text_area("Exercise Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
@@ -503,7 +519,8 @@ def main():
                 # If no error, mark exercise as completed
                 if not error:
                     mod_prog["exercise_completed"] = True
-                    st.success("✅ Correct! Exercise run successful.")
+                    # Set flash message to survive rerun on success
+                    st.session_state['flash'] = ('success', '✅ Correct! Exercise run successful.')
                     progress[mod_id] = mod_prog
                     persist()
                     st.rerun()
