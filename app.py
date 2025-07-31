@@ -474,7 +474,9 @@ def main():
                 if exception:
                     st.error("❌ Your code raised an exception:\n\n" + exception)
                 elif squares_correct and printed_correct:
-                    # Instead of showing immediate success, set flash message to survive rerun
+                    # Immediate feedback so the user gets instant confirmation before rerun
+                    flash_container.success("✅ Correct! Great job generating and printing the squares.")
+                    # Also set flash message to survive rerun
                     st.session_state['flash'] = ('success', '✅ Correct! Great job generating and printing the squares.')
                     # Mark exercise as completed and persist
                     mod_prog = progress.get(mod_id, {})
@@ -512,6 +514,8 @@ def main():
                 # If no error, mark exercise as completed
                 if not error:
                     mod_prog["exercise_completed"] = True
+                    # Immediate feedback so the user gets instant confirmation before rerun
+                    flash_container.success("✅ Correct! Exercise run successful.")
                     # Set flash message to survive rerun on success
                     st.session_state['flash'] = ('success', '✅ Correct! Exercise run successful.')
                     progress[mod_id] = mod_prog
