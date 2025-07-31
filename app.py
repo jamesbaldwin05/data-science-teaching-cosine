@@ -651,7 +651,6 @@ def main():
     exercises_completed = sum(1 for k, v in progress.items() if v.get("exercise_completed"))
     quizzes_completed = sum(1 for k, v in progress.items() if v.get("quiz_completed"))
     st.sidebar.markdown(f"**Exercises Completed:** {exercises_completed} / {total_modules}")
-    st.sidebar.markdown(f"**Quizzes Completed:** {quizzes_completed} / {total_modules}")
 
 if __name__ == "__main__":
     main()
