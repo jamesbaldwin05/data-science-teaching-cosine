@@ -441,10 +441,12 @@ def main():
             st.markdown(f"> {instructions}")
         exercise_code, exercise_lang = extract_codeblock(md_text, "Exercise")
         exercise_key = f"exercise_{mod_id}"
+        text_area_key = f"{exercise_key}_ta"
         if exercise_code is None:
             exercise_code = ""
         # Use ACE editor for Python if enabled; otherwise always use text_area
         if (exercise_lang or "").lower() == "python":
+            ace_val = None
             if USE_ACE_EDITOR:
                 try:
                     from streamlit_ace import st_ace
@@ -458,18 +460,19 @@ def main():
                         max_lines=30,
                         font_size=16,
                     )
-                    # Fallback if Ace fails to render or returns empty string/None
-                    if not ace_val:
-                        editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
-                    else:
-                        editor = ace_val
                 except Exception:
-                    editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
+                    ace_val = None
+            if USE_ACE_EDITOR and ace_val is not None and ace_val != "":
+                editor = ace_val
             else:
-                editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
+                editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=text_area_key)
         else:
-            editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
-        user_code = editor if editor is not None else exercise_code
+            editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=text_area_key)
+        # Retrieve user code: prefer ace_val if present and non-empty, else text_area, else default
+        if (exercise_lang or "").lower() == "python" and USE_ACE_EDITOR:
+            user_code = ace_val if ace_val is not None and ace_val != "" else st.session_state.get(text_area_key, exercise_code)
+        else:
+            user_code = editor if editor is not None else exercise_code
 
         # --- Inline flash message placeholder: appears just under code editor/run area ---
         # We use a container here so the flash message (success/error/info) is always shown in-context,
