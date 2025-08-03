@@ -488,8 +488,8 @@ def main():
         flash_container = st.empty()
 
         if st.button("Run Exercise", key=f"run_exercise_{mod_id}"):
-            # Always capture latest code from editor at button press
-            user_code = editor if editor is not None else exercise_code
+            # Always capture latest code from session_state at button press
+            user_code = st.session_state.get(exercise_key, exercise_code)
             # Custom logic for 01_python -- check for correct `squares`.
             if selected_mod.stem == "01_python":
                 import io, contextlib, traceback
@@ -556,6 +556,7 @@ def main():
                 # (persist() saves user progress for both dev & normal mode)
                 persist()
             else:
+                user_code = st.session_state.get(exercise_key, exercise_code)
                 output, error = run_code(user_code, lang=exercise_lang or "python")
                 st.text_area("Exercise Output", output + (f"\n[Error]: {error}" if error else ""), height=150)
                 # Update progress
