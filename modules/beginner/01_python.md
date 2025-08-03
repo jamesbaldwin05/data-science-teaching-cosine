@@ -396,7 +396,7 @@ try:
     val = float("not a number")
 except ValueError as e:
     print(f"Conversion failed: {e}")
-    raise RuntimeError("Parsing error") from e
+    # raise RuntimeError("Parsing error") from e
 else:
     print("Conversion succeeded!")
 finally:
