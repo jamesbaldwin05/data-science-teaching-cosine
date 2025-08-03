@@ -28,7 +28,8 @@ from utils.auth import (
 )
 
 DEV_MODE = '--dev' in sys.argv
-USE_ACE_EDITOR = True  # Feature flag for Ace editor, default ON
+USE_ACE_EDITOR = False  # Deprecated, do not use
+USE_MONACO_EDITOR = True  # Use Monaco editor via streamlit-monaco
 
 def handle_auth():
     """Streamlit UI for login/register/logout. Sets st.session_state['logged_in'] and ['username']."""
@@ -441,25 +442,18 @@ def main():
             st.markdown(f"> {instructions}")
         exercise_code, exercise_lang = extract_codeblock(md_text, "Exercise")
         exercise_key = f"exercise_{mod_id}"
-        ace_key = f"{exercise_key}_ace"  # separate key to avoid clash with text_area fallback
-        if (exercise_lang or "").lower() == "python" and USE_ACE_EDITOR:
+        monaco_key = f"{exercise_key}_monaco"
+        if (exercise_lang or "").lower() == "python" and USE_MONACO_EDITOR:
             try:
-                from streamlit_ace import st_ace
-                ace_val = st_ace(
+                from streamlit_monaco import st_monaco
+                editor_val = st_monaco(
                     value=exercise_code,
                     language="python",
-                    theme="solarized_light",
-                    key=ace_key,
-                    height=200,
-                    min_lines=8,
-                    max_lines=30,
-                    font_size=16,
+                    theme="vs-light",
+                    height="200px",
+                    key=monaco_key,
                 )
-                if ace_val:  # truthy string => Ace visible and has content
-                    editor = ace_val
-                else:
-                    # Ace failed (returns None or ''), fall back to text_area
-                    editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
+                editor = editor_val if editor_val is not None else exercise_code
             except Exception:
                 editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
         else:
