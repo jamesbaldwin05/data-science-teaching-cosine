@@ -444,12 +444,17 @@ def main():
         if exercise_code is None:
             exercise_code = ""
         # Use ACE editor for Python if enabled; otherwise always use text_area
+        # --- Robust Ace editor state persistence ---
+        # Always persist editor content in session_state to survive reruns or example runs!
+        if exercise_key not in st.session_state:
+            st.session_state[exercise_key] = exercise_code  # initialize with starter code
+
         if (exercise_lang or "").lower() == "python":
             if USE_ACE_EDITOR:
                 try:
                     from streamlit_ace import st_ace
                     ace_val = st_ace(
-                        value=exercise_code,
+                        value=st.session_state[exercise_key],
                         language="python",
                         theme="solarized_light",
                         key=exercise_key,
@@ -460,16 +465,22 @@ def main():
                     )
                     # Fallback if Ace fails to render or returns empty string/None
                     if not ace_val:
-                        editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
+                        editor = st.text_area("Edit & Run Your Solution", st.session_state[exercise_key], height=200, key=f"{exercise_key}_fallback")
                     else:
                         editor = ace_val
                 except Exception:
-                    editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
+                    editor = st.text_area("Edit & Run Your Solution", st.session_state[exercise_key], height=200, key=f"{exercise_key}_fallback")
             else:
-                editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
+                editor = st.text_area("Edit & Run Your Solution", st.session_state[exercise_key], height=200, key=f"{exercise_key}_fallback")
         else:
-            editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
-        user_code = editor if editor is not None else exercise_code
+            editor = st.text_area("Edit & Run Your Solution", st.session_state[exercise_key], height=200, key=f"{exercise_key}_fallback")
+
+        # --- Update session_state with latest editor content ---
+        # This ensures user edits are preserved across reruns.
+        if editor is not None:
+            st.session_state[exercise_key] = editor
+
+        user_code = st.session_state[exercise_key]
 
         # --- Inline flash message placeholder: appears just under code editor/run area ---
         # We use a container here so the flash message (success/error/info) is always shown in-context,
