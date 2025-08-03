@@ -441,30 +441,29 @@ def main():
             st.markdown(f"> {instructions}")
         exercise_code, exercise_lang = extract_codeblock(md_text, "Exercise")
         exercise_key = f"exercise_{mod_id}"
-        if exercise_code is None:
-            editor = st.text_area("Edit & Run Your Solution", "", height=200, key=exercise_key)
-        else:
-            # Use ACE editor for Python if enabled; otherwise use text_area
-            if (exercise_lang or "").lower() == "python" and USE_ACE_EDITOR:
-                try:
-                    from streamlit_ace import st_ace
-                    ace_val = st_ace(
-                        value=exercise_code,
-                        language="python",
-                        theme="solarized_light",
-                        key=exercise_key,
-                        height=200,
-                        min_lines=8,
-                        max_lines=30,
-                        font_size=16,
-                    )
-                    # st_ace returns None on first rerun; treat that as empty value rather than falling back
-                    editor = ace_val if ace_val is not None else exercise_code
-                except Exception:
-                    # streamlit_ace failed to load – fall back to plain text_area
+        ace_key = f"{exercise_key}_ace"  # separate key to avoid clash with text_area fallback
+        if (exercise_lang or "").lower() == "python" and USE_ACE_EDITOR:
+            try:
+                from streamlit_ace import st_ace
+                ace_val = st_ace(
+                    value=exercise_code,
+                    language="python",
+                    theme="solarized_light",
+                    key=ace_key,
+                    height=200,
+                    min_lines=8,
+                    max_lines=30,
+                    font_size=16,
+                )
+                if ace_val:  # truthy string => Ace visible and has content
+                    editor = ace_val
+                else:
+                    # Ace failed (returns None or ''), fall back to text_area
                     editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
-            else:
+            except Exception:
                 editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
+        else:
+            editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
         user_code = editor if editor is not None else exercise_code
 
         # --- Inline flash message placeholder: appears just under code editor/run area ---
