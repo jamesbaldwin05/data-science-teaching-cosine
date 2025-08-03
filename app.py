@@ -444,10 +444,15 @@ def main():
         text_area_key = f"{exercise_key}_ta"
         if exercise_code is None:
             exercise_code = ""
-        # Use ACE editor for Python if enabled; otherwise always use text_area
+
+        # --- Robust Ace fallback: permanently switch to text_area if Ace ever fails ---
+        st.session_state.setdefault("ace_broken", False)
+        ace_allowed = USE_ACE_EDITOR and not st.session_state["ace_broken"]
+
+        ace_val = None
+        editor = None
         if (exercise_lang or "").lower() == "python":
-            ace_val = None
-            if USE_ACE_EDITOR:
+            if ace_allowed:
                 try:
                     from streamlit_ace import st_ace
                     ace_val = st_ace(
@@ -460,16 +465,22 @@ def main():
                         max_lines=30,
                         font_size=16,
                     )
+                    # Detect failure: None or empty string disables Ace forever this session
+                    if ace_val is None or ace_val == "":
+                        st.session_state["ace_broken"] = True
+                        editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=text_area_key)
+                    else:
+                        editor = ace_val
                 except Exception:
-                    ace_val = None
-            if USE_ACE_EDITOR and ace_val is not None and ace_val != "":
-                editor = ace_val
+                    st.session_state["ace_broken"] = True
+                    editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=text_area_key)
             else:
                 editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=text_area_key)
         else:
             editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=text_area_key)
-        # Retrieve user code: prefer ace_val if present and non-empty, else text_area, else default
-        if (exercise_lang or "").lower() == "python" and USE_ACE_EDITOR:
+
+        # Retrieve user code: prefer ace_val if present/non-empty and Ace was allowed, else text_area, else default
+        if (exercise_lang or "").lower() == "python" and ace_allowed and not st.session_state["ace_broken"]:
             user_code = ace_val if ace_val is not None and ace_val != "" else st.session_state.get(text_area_key, exercise_code)
         else:
             user_code = editor if editor is not None else exercise_code
