@@ -331,11 +331,13 @@ def main():
                             exec(code, globals_dict)
                     except Exception:
                         st.error(traceback.format_exc())
+                        scroll_to_bottom()
                         return
                     # Display matplotlib figure if present
                     if plt.get_fignums():
                         st.pyplot(plt.gcf())
                         plt.close("all")
+                        scroll_to_bottom()
                     out = stdout.getvalue()
                     err = stderr.getvalue()
                     # Remove non-problematic Matplotlib Agg warning
@@ -346,8 +348,10 @@ def main():
                         fallback = get_fallback_vars(globals_dict)
                         if fallback.strip():
                             st.text_area("Output", fallback, height=150, key=f"out_{key}")
+                            scroll_to_bottom()
                     elif out or err:
                         st.text_area("Output", out + err, height=150, key=f"out_{key}")
+                        scroll_to_bottom()
 
         last_pos = 0
         runner_idx = 0
@@ -394,6 +398,7 @@ def main():
                     output, error = run_code(code, lang='r')
                     text_out = (output or "") + (("\n" + error) if error else "")
                     st.text_area("Output", text_out, height=150, key=f"out_{key}")
+                    scroll_to_bottom()
 
         last_pos = 0
         runner_idx = 0
