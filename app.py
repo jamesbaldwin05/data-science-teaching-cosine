@@ -449,6 +449,9 @@ def main():
         if exercise_key not in st.session_state:
             st.session_state[exercise_key] = exercise_code  # initialize with starter code
 
+        ace_widget_key = f"{exercise_key}_ace"
+        fallback_widget_key = f"{exercise_key}_fallback"
+
         if (exercise_lang or "").lower() == "python":
             if USE_ACE_EDITOR:
                 try:
@@ -457,7 +460,7 @@ def main():
                         value=st.session_state[exercise_key],
                         language="python",
                         theme="solarized_light",
-                        key=exercise_key,
+                        key=ace_widget_key,
                         height=200,
                         min_lines=8,
                         max_lines=30,
@@ -465,17 +468,17 @@ def main():
                     )
                     # Fallback if Ace fails to render or returns empty string/None
                     if not ace_val:
-                        editor = st.text_area("Edit & Run Your Solution", st.session_state[exercise_key], height=200, key=f"{exercise_key}_fallback")
+                        editor = st.text_area("Edit & Run Your Solution", st.session_state[exercise_key], height=200, key=fallback_widget_key)
                     else:
                         editor = ace_val
                 except Exception:
-                    editor = st.text_area("Edit & Run Your Solution", st.session_state[exercise_key], height=200, key=f"{exercise_key}_fallback")
+                    editor = st.text_area("Edit & Run Your Solution", st.session_state[exercise_key], height=200, key=fallback_widget_key)
             else:
-                editor = st.text_area("Edit & Run Your Solution", st.session_state[exercise_key], height=200, key=f"{exercise_key}_fallback")
+                editor = st.text_area("Edit & Run Your Solution", st.session_state[exercise_key], height=200, key=fallback_widget_key)
         else:
-            editor = st.text_area("Edit & Run Your Solution", st.session_state[exercise_key], height=200, key=f"{exercise_key}_fallback")
+            editor = st.text_area("Edit & Run Your Solution", st.session_state[exercise_key], height=200, key=fallback_widget_key)
 
-        # --- Update session_state with latest editor content ---
+        # --- Persist latest content ---
         # This ensures user edits are preserved across reruns.
         if editor is not None:
             st.session_state[exercise_key] = editor
