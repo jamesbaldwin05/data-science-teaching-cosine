@@ -28,7 +28,6 @@ from utils.auth import (
 )
 
 DEV_MODE = '--dev' in sys.argv
-USE_ACE_EDITOR = False  # Deprecated, do not use
 USE_MONACO_EDITOR = True  # Use Monaco editor via streamlit-monaco
 
 def handle_auth():
@@ -446,12 +445,20 @@ def main():
         if (exercise_lang or "").lower() == "python" and USE_MONACO_EDITOR:
             try:
                 from streamlit_monaco import st_monaco
+                # Use Monaco editor with enhanced options for better coding experience
                 editor_val = st_monaco(
                     value=exercise_code,
                     language="python",
-                    theme="vs-light",
-                    height="200px",
+                    theme="vs-dark",
+                    height="300px",
                     key=monaco_key,
+                    options={
+                        "fontSize": 14,
+                        "minimap": {"enabled": False},
+                        "automaticLayout": True,
+                        "lineNumbers": "on",
+                        "wordWrap": "on",
+                    },
                 )
                 editor = editor_val if editor_val is not None else exercise_code
             except Exception:
