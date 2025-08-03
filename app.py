@@ -447,41 +447,44 @@ def main():
         if (exercise_lang or "").lower() == "python":
             try:
                 ace_val = st_ace(
-                    value=exercise_code,
-                    language="python",
-                    theme="solarized_light",
-                    key=f"{exercise_key}_ace",
-                    min_lines=12,
-                    max_lines=40,
-                    height=300,
+                    value=default_code,
+                    language=ace_lang,
+                    theme="chaos",
                     font_size=16,
                     tab_size=4,
                     show_gutter=True,
-                    show_print_margin=False,
                     wrap=True,
-                    readonly=False,
-                    annotations=None,
-                    placeholder=None,
-                    auto_update=True,
+                    min_lines=8,
+                    key=f"{exercise_key}_ace",
                 )
                 if ace_val is None:
-                    editor = st.text_area(
-                        "Your solution:",
-                        value=exercise_code,
-                        height=300,
+                    ace_val = st.text_area(
+                        "Your code:",
+                        value=default_code,
+                        height=200,
                         key=f"{exercise_key}_ta",
-                        help="Write your solution here",
                     )
-                else:
-                    editor = ace_val
             except Exception:
-                editor = st.text_area(
-                    "Your solution:",
-                    value=exercise_code,
-                    height=300,
+                ace_val = st.text_area(
+                    "Your code:",
+                    value=default_code,
+                    height=200,
                     key=f"{exercise_key}_ta",
-                    help="Write your solution here",
                 )
+        else:
+            ace_val = st.text_area(
+                "Your code:",
+                value=default_code,
+                height=200,
+                key=f"{exercise_key}_ta",
+            )
+    else:
+        ace_val = st.text_area(
+            "Your code:",
+            value=default_code,
+            height=200,
+            key=f"{exercise_key}_ta",
+        )
         user_code = editor if editor is not None else exercise_code
 
         # --- Inline flash message placeholder: appears just under code editor/run area ---
