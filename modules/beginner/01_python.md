@@ -269,8 +269,6 @@ print(data)
 
 **What:** These standard libraries provide advanced iteration and functional utilities (e.g., grouping, mapping, accumulating).
 
-**Why:** Must-know tools include:
-
 - `itertools.chain`: concatenate iterables  
 - `itertools.product`: cartesian product  
 - `itertools.combinations`: all possible pairs/groups  
@@ -289,7 +287,7 @@ print(product)
 ```
 
 ```python
-from itertools import groupby, chain
+from itertools import groupby
 data = ["a", "aa", "b", "bb", "b"]
 groups = {k: list(g) for k, g in groupby(sorted(data), key=lambda x: x[0])}
 print(groups)
@@ -347,8 +345,6 @@ m = Measurement(1, 3.2)
 
 **What:** Use `with` to manage resources (files, DB connections) safely—ensures cleanup even on error.
 
-**Why:**
-
 **How it works:**  
 Context managers implement the `__enter__` and `__exit__` methods, which setup and teardown resources automatically. You can write them as classes or using `contextlib.contextmanager`.
 
@@ -392,8 +388,6 @@ with timer("Heavy computation"):
 ## 11. Error Handling
 
 **What:** Proper use of `try`/`except` ensures robust pipelines, especially with unpredictable data.
-
-**Why:**
 
 **Catching specific exceptions, raising new ones, and using all blocks:**
 
@@ -458,8 +452,6 @@ print(mean([1.0, 2.0, 4.0]))
 ## 13. Virtual Environments & Dependency Management
 
 **What:** Isolating environments prevents package conflicts and ensures reproducibility.
-
-**Why:**
 
 - Use `python -m venv` or `conda` to create isolated environments.
 - Use `pip install -r requirements.txt` to install dependencies from a file.
@@ -590,8 +582,6 @@ print(view[2:5].tobytes())
 ## 17. Debugging
 
 **What:** Debuggers (`pdb`, IDE tools) and assert statements are invaluable for inspecting data flows and catching subtle bugs.
-
-**Why:**
 
 **You should be able to:**  
 - Use assert for sanity checks  
