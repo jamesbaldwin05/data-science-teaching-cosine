@@ -10,4 +10,5 @@ scikit-learn==1.5.0
 # boto3==1.34.108
 # tensorflow==2.16.1
 # rpy2 -- for R/Python interoperability (optional; install with: pip install rpy2)
-streamlit-ace==0.1.1
+# streamlit-ace==0.1.1
+streamlit-monaco==0.1.3

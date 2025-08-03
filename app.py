@@ -28,7 +28,7 @@ from utils.auth import (
 )
 
 DEV_MODE = '--dev' in sys.argv
-USE_ACE_EDITOR = True  # Feature flag for Ace editor, default ON
+USE_MONACO_EDITOR = True  # Feature flag for Monaco editor, default ON
 
 def handle_auth():
     """Streamlit UI for login/register/logout. Sets st.session_state['logged_in'] and ['username']."""
@@ -443,26 +443,19 @@ def main():
         exercise_key = f"exercise_{mod_id}"
         if exercise_code is None:
             exercise_code = ""
-        # Use ACE editor for Python if enabled; otherwise always use text_area
+        # Use Monaco editor for Python if enabled; otherwise always use text_area
         if (exercise_lang or "").lower() == "python":
-            if USE_ACE_EDITOR:
+            if USE_MONACO_EDITOR:
                 try:
-                    from streamlit_ace import st_ace
-                    ace_val = st_ace(
+                    from streamlit_monaco import st_monaco
+                    monaco_val = st_monaco(
                         value=exercise_code,
                         language="python",
-                        theme="solarized_light",
+                        theme="vs-dark",
+                        height="400px",
                         key=exercise_key,
-                        height=200,
-                        min_lines=8,
-                        max_lines=30,
-                        font_size=16,
                     )
-                    # Fallback if Ace fails to render or returns empty string/None
-                    if not ace_val:
-                        editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
-                    else:
-                        editor = ace_val
+                    editor = monaco_val if monaco_val is not None else exercise_code
                 except Exception:
                     editor = st.text_area("Edit & Run Your Solution", exercise_code, height=200, key=exercise_key)
             else:
