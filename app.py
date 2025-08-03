@@ -451,7 +451,6 @@ def main():
                     monaco_val = st_monaco(
                         value=exercise_code,
                         language="python",
-                        theme="vs-dark",
                         height="400px",
                         key=exercise_key,
                     )
