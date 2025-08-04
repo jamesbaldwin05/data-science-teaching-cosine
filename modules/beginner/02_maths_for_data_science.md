@@ -37,7 +37,7 @@ v = np.array([2, 1, 8])
 print("Vector v:", v)
 ```
 
-### Vector Operations
+### Basic Vector Operations
 
 - **Addition**: Add corresponding elements of the vectors.  
   If $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$, then:  
@@ -49,7 +49,7 @@ print("Vector v:", v)
 
 - **Dot Product**: Measures how similar two vectors are (used in projections, similarity and machine learning). Result is a scalar, not a vector.  
   For $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$:  
-  $\vec{a} \cdot \vec{b} = a_1 \times b_1 + a_2 \times b_2 + a_3 \times b_3$
+  $\vec{a}\cdot\vec{b} = a_1 \times b_1 + a_2 \times b_2 + a_3 \times b_3$
 
 ```python
 import numpy as np
@@ -68,6 +68,104 @@ dot = np.dot(a, b)             # 1*3 + 2*7 + 6*2
 print("Dot product:", dot)
 
 ```
+
+### More About Vectors
+
+- **Vector Norm (Length)**: Measures how long the vector is.
+For $\vec{a} = [a_1, a_2, a_3]$, the norm $\left\|\vec{a}\right\| = \sqrt{{a_1}^2 + {a_2}^2 + {a_3}^2}$
+
+```python
+import numpy as np
+
+a = np.array([1, 2, 6])
+print("Norm: ", np.linalg.norm(a))
+```
+
+- **Unit vectors**: By dividing a vector by its norm (length), we can scale it to have a length of 1
+For $\vec{a} = [a_1, a_2, a_3]$, the unit vector is given by $\hat{a} = \dfrac{\vec{a}}{\left\|\vec{a}\right\|}$.
+
+```python
+import numpy as np
+
+a = np.array([1, 2, 6])
+a_norm = np.linalg.norm(a)
+a_unit = a / a_norm
+print("Unit of a: ", a_unit)                # The norm of this vector is 1
+```
+
+- **Cosine Similarity**: Using the formula below, we can derive a relationship between the dot product and the angle between two vectors.  
+For $\vec{a} = [a_1, a_2, a_3],\;\vec{b} = [b_1, b_2, b_3]$ and $\theta$ being the angle between $\vec{a}$ and $\vec{b}$  
+$$
+\vec{a}\cdot\vec{b} = \left\|\vec{a}\right\|\left\|\smash{\vec{b}}\right\|\cos{\theta}
+$$
+
+This can be rearranged to solve for the angle between two vectors:  
+$$
+\theta = \arccos{\left(\dfrac{\vec{a}\cdot\vec{b}}{\left\|\vec{a}\right\|\left\|\smash{\vec{b}}\right\|}\right)}
+$$
+
+```python
+import numpy as np
+
+a = np.array([1, 2, 6])
+b = np.array([3, 7, 2])
+
+a_norm = np.linalg.norm(a)
+b_norm = np.linalg.norm(b)
+dot_product = np.dot(a, b)
+
+theta = np.arccos(dot_product/(a_norm * b_norm))
+print("Angle between a and b (radians): ", theta)
+```
+
+*Radians are another way of measuring angles and there are $2\pi$ radians in $360^\circ$. The above angle is about $54.9^\circ$.*
+
+- **Linear Independence**: A set of vectors {$\vec{v_1}, \vec{v_2}, ...., \vec{v_n}$} is linearly independent if no vector in the set can be written as a linear combination of the others.  
+Formally, this is if the equation below only holds when all scalars $c_1,c_2,...,c_n=0$.
+$$
+c_1\vec{v_1} + c_2\vec{v_2} + ... + c_n\vec{v_n}= \vec{0}
+$$
+
+*The zero vector is written as $\vec{0}$ and is a n-th dimensional vector with every element in it 0*
+
+- **Orthogonal Sets**: If the dot product of two vectors is 0, they are said to be orthogonal. Geometrically this can be thought of as the two vectors being perpendicular, since $\arccos{0}=\dfrac{\pi}{2}$.  
+A set of vectors {$\vec{v_1}, \vec{v_2}, ...., \vec{v_n}$} is called an orthogonal set if every single pair of vectors in the set are orthogonal to eachother. This means every vector in the set points in independent directions and orthogonal sets are always linearly independent.
+
+- **Orthonormal Sets**: If each vector in an orthogonal set has unit length, the set is called an orthonormal set. These are useful for simplifying and speeding up compuation. There are algorithms such as the Gram-Schmidt procedure that form a orthonormal set from a set of linearly independent vectors.
+
+- **Projection**: The projection of a vector onto another vector tells us how much of the first vector lies in the direction of the second.  
+For $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$, the projection of $\vec{a}$ onto $\vec{b}$ is calculated by the formula:  
+$$
+\text{proj}_{\vec{b}} \vec{a} = \left( \frac{\vec{a} \cdot \vec{b}}{\left\|\smash{\vec{b}}\right\|^2} \right) \vec{b}
+$$
+
+```python
+import numpy as np
+
+a = np.array([1, 2, 6])
+b = np.array([3, 7, 2])
+
+dot_product = np.dot(a, b)
+b_norm_squared = np.dot(b, b)
+
+projection = (dot_product / b_norm_squared) * b
+print("Projection of a onto b:", projection)
+```
+
+- **Element-wise Operations**: This group of operations apply a function independently to each element of a vector. An example is the Hadamard product (elemement wise multiplication):  
+For $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$, the Hadamard product is $\vec{a} \ast \vec{b} = [a_1 \times b_1, \; a_2 \times b_2, \; a_3 \times b_3]$
+
+```python
+import numpy as np
+
+a = np.array([1, 2, 6])
+b = np.array([3, 7, 2])
+
+elementwise_product = a * b
+print("Element-wise product:", elementwise_product)
+```
+
+*In linear algebra theory, element-wise operations are often emphasized less since they are not linear transformations (they cannot be represented as a matrix) and do not preseve vector space structure. They do have practical applications to data science, especially under the hood.*
 
 ---
 
