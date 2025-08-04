@@ -19,16 +19,16 @@
 
 ## Linear Algebra
 
-Linear algebra covers vectors, matricies and linear transformations. It's essential to data science because it's fundamental for handling datasets, performing computations efficiently and powering techniques such as linear regression and neural networks.
+Linear algebra covers vectors, matrices, and linear transformations. It's essential to data science because it's fundamental for handling datasets, performing computations efficiently, and powering techniques such as linear regression and neural networks.
 
 ### Vectors
 
-- A single number (4, -2.834) is called a scalar
-- A vector is an ordered list of numbers (e.g. $\mathbf[2, 1, 8]$) and is used to represent points and directions
+- A single number (like 4 or -2.834) is called a **scalar**.
+- A **vector** is an ordered list of numbers (e.g. $\vec{a} = [2, 1, 8]$) and is used to represent points or directions in space.
 
 **Coordinate Notation:**
-- A vector in 3D: $\mathbf{v} = [v_1, v_2, v_3]$ 
-- It is clearly comparable to a coordinate $\mathbf(x, y, z)$
+- A vector in 3D: $\vec{v} = [v_1, v_2, v_3]$
+- This is comparable to a coordinate point: $(x, y, z)$
 
 ```python
 import numpy as np
@@ -39,26 +39,35 @@ print("Vector v:", v)
 
 ### Vector Operations
 
-- **Addition**: Add corresponding elements.
-- **Scalar multiplication**: Multiply each element by a number.
-- **Dot product**: Measures how much two vectors point in the same direction.
+- **Addition**: Add corresponding elements of the vectors.  
+  If $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$, then:  
+  $\vec{a} + \vec{b} = [a_1 + b_1, \; a_2 + b_2, \; a_3 + b_3]$
+
+- **Scalar Multiplication**: Multiply each element by a scalar.  
+  If c is a number and $\vec{a} = [a_1, a_2, a_3]$, then:  
+  c $\vec{a} = [c \times a_1, \; c \times a_2, \; c \times a_3]$
+
+- **Dot Product**: Measures how similar two vectors are (used in projections, similarity and machine learning). Result is a scalar, not a vector.  
+  For $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$:  
+  $\vec{a} \cdot \vec{b} = a_1 \times b_1 + a_2 \times b_2 + a_3 \times b_3$
 
 ```python
-a = np.array([1, 2])
-b = np.array([3, 4])
+import numpy as np
 
-# Addition
-print("a + b =", a + b)
+a = np.array([1, 2, 6])
+b = np.array([3, 7, 2])
+
+# Vector addition
+print("a + b =", a + b)        # [1+3, 2+7, 6+2]
 
 # Scalar multiplication
-print("2 * a =", 2 * a)
+print("2 * a =", 2 * a)        # [2*1, 2*2, 2*6]
 
 # Dot product
-dot = np.dot(a, b)
+dot = np.dot(a, b)             # 1*3 + 2*7 + 6*2
 print("Dot product:", dot)
-```
 
-#### *What/Why*: Dot product tells you about similarity and projections—used in ML for similarity, attention, and projections.
+```
 
 ---
 
