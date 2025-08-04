@@ -1,7 +1,7 @@
 # Essential Mathematics for Data Science
 
 ## Why learn math for data science?
-- Data science is powered by mathematical ideas: understanding data, building models, and making decisions.
+- Math underpins how we represent data, build models and draw conclusions
 - No prior university-level math required. We'll build intuition and show practical code for all key concepts.
 
 ---
@@ -19,25 +19,20 @@
 
 ## Linear Algebra
 
-**What:** The math of vectors and matrices—how data is stored, transformed, and analyzed.
+Linear algebra covers vectors, matricies and linear transformations. It's essential to data science because it's fundamental for handling datasets, performing computations efficiently and powering techniques such as linear regression and neural networks.
 
-**Why:** Underlies all data representations (tables, images, word embeddings), and powers most machine learning algorithms.
+### Vectors
 
-### Scalars and Vectors
-
-- **Scalar**: A single number (e.g., 7, -2.3).
-- **Vector**: An ordered list of numbers (e.g., `[2, 1, 8]`), representing a point or direction in space.
+- A single number (4, -2.834) is called a scalar
+- A vector is an ordered list of numbers (e.g. $\mathbf[2, 1, 8]$) and is used to represent points and directions
 
 **Coordinate Notation:**
-- A vector in 3D: $\mathbf{v} = [v_1, v_2, v_3]$
+- A vector in 3D: $\mathbf{v} = [v_1, v_2, v_3]$ 
+- It is clearly comparable to a coordinate $\mathbf(x, y, z)$
 
 ```python
 import numpy as np
 
-# Scalar
-s = 5.0
-
-# Vector
 v = np.array([2, 1, 8])
 print("Vector v:", v)
 ```
