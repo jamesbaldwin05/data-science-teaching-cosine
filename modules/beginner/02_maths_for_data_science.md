@@ -45,11 +45,11 @@ print("Vector v:", v)
 
 - **Scalar Multiplication**: Multiply each element by a scalar.  
   If c is a number and $\vec{a} = [a_1, a_2, a_3]$, then:  
-  c $\vec{a} = [c \times a_1, \; c \times a_2, \; c \times a_3]$
+  c $\vec{a} = [c a_1, \; c a_2, \; c a_3]$
 
 - **Dot Product**: Measures how similar two vectors are (used in projections, similarity and machine learning). Result is a scalar, not a vector.  
   For $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$:  
-  $\vec{a}\cdot\vec{b} = a_1 \times b_1 + a_2 \times b_2 + a_3 \times b_3$
+  $\vec{a}\cdot\vec{b} = a_1 b_1 + a_2 b_2 + a_3 b_3$
 
 ```python
 import numpy as np
@@ -128,15 +128,15 @@ $$
 
 *The zero vector is written as $\vec{0}$ and is a n-th dimensional vector with every element in it 0*
 
-- **Orthogonal Sets**: If the dot product of two vectors is 0, they are said to be orthogonal. Geometrically this can be thought of as the two vectors being perpendicular, since $\arccos{0}=\dfrac{\pi}{2}$.  
-A set of vectors {$\vec{v_1}, \vec{v_2}, ...., \vec{v_n}$} is called an orthogonal set if every single pair of vectors in the set are orthogonal to eachother. This means every vector in the set points in independent directions and orthogonal sets are always linearly independent.
+- **Orthogonal Sets**: If the dot product of two vectors is 0, they are said to be orthogonal. Geometrically this can be thought of as the two vectors being perpendicular, since $\arccos(0)=\dfrac{\pi}{2}$.  
+A set of vectors {$\vec{v_1}, \vec{v_2}, ...., \vec{v_n}$} is called an orthogonal set if every single pair of vectors in the set are orthogonal to each other. This means every vector in the set points in independent directions and orthogonal sets are always linearly independent.
 
-- **Orthonormal Sets**: If each vector in an orthogonal set has unit length, the set is called an orthonormal set. These are useful for simplifying and speeding up compuation. There are algorithms such as the Gram-Schmidt procedure that form a orthonormal set from a set of linearly independent vectors.
+- **Orthonormal Sets**: If each vector in an orthogonal set has unit length, the set is called an orthonormal set. These are useful for simplifying and speeding up computation. There are algorithms such as the Gram-Schmidt procedure that form a orthonormal set from a set of linearly independent vectors.
 
 - **Projection**: The projection of a vector onto another vector tells us how much of the first vector lies in the direction of the second.  
 For $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$, the projection of $\vec{a}$ onto $\vec{b}$ is calculated by the formula:  
 $$
-\text{proj}_{\vec{b}} \vec{a} = \left( \frac{\vec{a} \cdot \vec{b}}{\left\|\smash{\vec{b}}\right\|^2} \right) \vec{b}
+\mathrm{proj}_{\vec{b}}\vec{a} = \left( \frac{\vec{a} \cdot \vec{b}}{\left\|\smash{\vec{b}}\right\|^2} \right) \vec{b}
 $$
 
 ```python
@@ -152,8 +152,8 @@ projection = (dot_product / b_norm_squared) * b
 print("Projection of a onto b:", projection)
 ```
 
-- **Element-wise Operations**: This group of operations apply a function independently to each element of a vector. An example is the Hadamard product (elemement wise multiplication):  
-For $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$, the Hadamard product is $\vec{a} \ast \vec{b} = [a_1 \times b_1, \; a_2 \times b_2, \; a_3 \times b_3]$
+- **Element-wise Operations**: This group of operations apply a function independently to each element of a vector. An example is the Hadamard product (element wise multiplication):  
+For $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$, the Hadamard product is $\vec{a} \ast \vec{b} = [a_1 b_1, \; a_2 b_2, \; a_3 b_3]$
 
 ```python
 import numpy as np
@@ -165,7 +165,7 @@ elementwise_product = a * b
 print("Element-wise product:", elementwise_product)
 ```
 
-*In linear algebra theory, element-wise operations are often emphasized less since they are not linear transformations (they cannot be represented as a matrix) and do not preseve vector space structure. They do have practical applications to data science, especially under the hood.*
+*In linear algebra theory, element-wise operations are often emphasized less since they are not linear transformations (they cannot be represented as a matrix) and do not preserve vector space structure. They do have practical applications to data science, especially under the hood.*
 
 ---
 
