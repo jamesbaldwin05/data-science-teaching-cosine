@@ -21,6 +21,8 @@
 
 Linear algebra covers vectors, matrices, and linear transformations. It's essential to data science because it's fundamental for handling datasets, performing computations efficiently, and powering techniques such as linear regression and neural networks.
 
+---
+
 ### Vectors
 
 - A single number (like 4 or -2.834) is called a **scalar**.
@@ -37,9 +39,11 @@ v = np.array([2, 1, 8])
 print("Vector v:", v)
 ```
 
-### Basic Vector Operations
+---
 
-- **Addition**: Add corresponding elements of the vectors.  
+#### Basic Vector Operations
+
+- **Addition/Subtraction**: Add/subtract corresponding elements of the vectors.  
   If $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$, then:  
   $\vec{a} + \vec{b} = [a_1 + b_1, \; a_2 + b_2, \; a_3 + b_3]$
 
@@ -69,7 +73,9 @@ print("Dot product:", dot)
 
 ```
 
-### More About Vectors
+---
+
+#### More About Vectors
 
 - **Vector Norm (Length)**: Measures how long the vector is.
 For $\vec{a} = [a_1, a_2, a_3]$, the norm $\left\|\vec{a}\right\| = \sqrt{{a_1}^2 + {a_2}^2 + {a_3}^2}$
@@ -171,66 +177,219 @@ print("Element-wise product:", elementwise_product)
 
 ### Matrices
 
-- **Matrix**: A 2D grid of numbers (shape: rows × columns, e.g., 3 × 2).
-- **Notation**: $A_{ij}$ is the entry in row $i$, column $j$.
-- **Shape**: Use `.shape` in NumPy.
+- **Matrix**: A **matrix** is a 2D grid of numbers, written as rows and columns. A matrix with $m$ rows and $n$ columns is said to have shape $m\times n$. A vector is just a special case of a matrix (one with only one row or column).  
+$A_{m\times n} =
+\begin{bmatrix}
+a_{11} & a_{12} & \cdots & a_{1n} \\
+a_{21} & a_{22} & \cdots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m1} & a_{m2} & \cdots & a_{mn}
+\end{bmatrix}$
 
 ```python
+import numpy as np
+
 A = np.array([[1, 2],
               [3, 4],
               [5, 6]])
-print("Shape:", A.shape)  # (3, 2)
-```
 
-#### Matrix Transpose
-
-- Flips rows and columns: $A^\top$ ("A transposed").
-
-```python
-A_T = A.T
-print(A_T)
+print("Shape:", A.shape)
 ```
 
 ---
 
-### Matrix Multiplication & Broadcasting
+#### Basic Matrix Operations
 
-- **Matrix multiplication**: Combines two matrices (or matrix × vector).
-- **What/Why**: Used to transform data, combine features, apply weights in neural nets.
-- **Rule**: $(m \times n)$ × $(n \times p)$ → $(m \times p)$
+- **Addition/Subtraction**: Add/subtract corresponding elements of the matrices. The matrices **must** be the same shape, you can add two $3 \times 3$ matrices but you cannot add a $3 \times 2$ matrix to a $4 \times 4$ matrix.  
 
 ```python
-B = np.array([[1, 2, 3],
-              [4, 5, 6]])
-# A: (3,2), B: (2,3)
-AB = np.dot(A, B)
-print(AB)
+import numpy as np
+A = np.array([[3, 5, 2],
+              [1, 8, 3],
+              [4, 4, 7]])
+
+B = np.array([[7, 1, 2],
+              [3, 6, 8],
+              [5, 5, 1]])
+
+print("A-B:")
+print(A-B)
 ```
 
-#### Broadcasting
-
-- **What?** NumPy automatically expands arrays to match shapes for element-wise ops.
-- **Why?** Lets you write concise, efficient code.
+- **Scalar Multiplication**: Multiply each element by a scalar.
 
 ```python
+import numpy as np
+A = np.array([[3, 5, 2],
+              [1, 8, 3],
+              [4, 4, 7]])
+
+print("3A:")
+print(3*A)
+```
+
+- **Transpose**: Swap the rows and columns of the matrix. This is denoted by $A^T$.
+
+```python
+import numpy as np
+A = np.array([[3, 5, 2],
+              [1, 8, 3],
+              [4, 4, 7]])
+
+print("Transpose of A:")
+print(A.T)
+```
+
+---
+
+#### Matrix Multiplication
+
+- Matrix multiplication works differently to other operations.
+- Firstly, the number of columns of the first matrix **must** be the same as the number of rows of the second matrix.
+- The resulting matrix has the number of rows of the first matrix and number of columns of the second matrix.
+- Multiplying a matrix $A_{m\times p} \times B_{p\times n}$ results in a matrix of shape $m\times n$.
+
+```python
+import numpy as np
+
+A = np.random.random((3, 2))      # Creates a 3x2 matrix filled with random numbers between 0 and 1
+B = np.random.random((2, 1))
+
+C = A @ B                         # @ is used for matrix multiplication although np.dot(A, B) or np.matmul(A, B) also work
+
+print("Shape of result: ", C.shape)
+
+```
+
+- Secondly, matrix multiplication is not commutative meaning $AB \neq BA$ in general, even when both $A$ and $B$ are defined.
+- It may not even be defined in certain cases: $A_{2\times 1} \times B_{1\times 4}$ is defined but $B_{1\times 4} \times A_{2\times 1}$ is not.
+- There are cases where $AB = BA$ but these are rare and in general $AB$ and $BA$ will look very different.
+
+```python
+import numpy as np
+
+A = np.array([[3, 5, 2],
+              [1, 8, 3],
+              [4, 4, 7]])
+
+B = np.array([[7, 1, 2],
+              [3, 6, 8],
+              [5, 5, 1]])
+
+print("AB:")
+print(A @ B)
+print("BA:")
+print(B @ A)
+```
+
+- The algorithm for multiplying two matrixes involves a lot of calculations and is therefore quite long to explain (although the calculations are simple and it will not take long to understand).
+- It is probably worth learning if you are new to matrices entirely. There is a video [here](https://www.youtube.com/watch?v=2spTnAiQg4M) with a clear explanation.
+It will be ignored here since numpy can do all these calculations very fast and under the hood anyway.
+
+- To multiply a matrix by a vector, use the algorithm below:  
+For a matrix $A_{m\times n} =
+\begin{bmatrix}
+a_{11} & a_{12} & \cdots & a_{1n} \\
+a_{21} & a_{22} & \cdots & a_{2n} \\
+\vdots & \vdots & \ddots & \vdots \\
+a_{m1} & a_{m2} & \cdots & a_{mn}
+\end{bmatrix}$ and a vector $\vec{v} = \begin{bmatrix} v_1 \\ v_2 \\ \vdots \\ v_n \end{bmatrix}$,  
+$A\vec{v} = \begin{bmatrix}
+a_{11}v_1 + a_{12}v_2 + \cdots + a_{1n}v_n \\
+a_{21}v_1 + a_{22}v_2 + \cdots + a_{2n}v_n \\
+\vdots \\
+a_{m1}v_1 + a_{m2}v_2 + \cdots + a_{mn}v_n
+\end{bmatrix}$
+
+- Note that the result is a vector.
+- This is equivalent to doing the dot product of each row in the matrix by the vector.
+
+```python
+import numpy as np
+
+A = np.array([[3, 5, 2],
+              [1, 8, 3],
+              [4, 4, 7]])
+
+v = np.array([1, 2, 3])
+
+print("Multiplying A and v: ")
+print(A @ v)
+
+```
+
+---
+
+#### Special Matrices
+
+- **Zero matrix**: A matrix where all elements are zero.  
+For any matrix $A$, $\;A + 0 = A$ and $A \times 0 = 0$ (assuming the dimensions are compatible).
+- **Square matrix**: A matrix with the same number of rows and columns (e.g. a $3\times 3$ matrix).
+- **Identity matrix**: A square matrix with 1s on the diagonal (top left to bottom right) and 0s elsewhere. For any matrix $A$, $\; AI = IA = A$ (assuming the dimensions are compatible).  
+For example, the $3\times 3$ identity matrix is:  
+$I_3 = \begin{bmatrix}
+1 & 0 & 0\\
+0 & 1 & 0\\
+0 & 0 & 1\end{bmatrix}$
+- **Diagonal matrix**: A square matrix with all off-diagonal elements 0.   
+For example:
+$A = \begin{bmatrix}
+-4 & 0 & 0\\
+0 & 3 & 0\\
+0 & 0 & 2\end{bmatrix}$
+- **Scalar matrix**: A diagonal matrix with all diagonal elements the same scalar and all off-diagonal elements 0. Can be written as multiples of the identity matrix.  
+For example:
+$A = \begin{bmatrix}
+5 & 0 & 0\\
+0 & 5 & 0\\
+0 & 0 & 5\end{bmatrix} = 5I$
+- **Upper Triangular matrix**: A square matrix where all the elements below the main diagonal are 0.     
+For example:
+$A = \begin{bmatrix}
+-3 & -3 & 1\\
+0 & 9 & -7\\
+0 & 0 & 5\end{bmatrix}$
+- **Lower Triangular matrix**: A square matrix where all the elements above the main diagonal are 0.     
+For example:
+$A = \begin{bmatrix}
+-3 & 0 & 0\\
+9 & -2 & 0\\
+4 & 3 & 5\end{bmatrix}$
+- **Symmetric matrix**: A square matrix that is equal to its tranpose ($A=A^T$).  
+For example,
+$A = \begin{bmatrix}
+2 & 3 & 4\\
+3 & 5 & 6\\
+4 & 6 & 1\end{bmatrix}$
+- **Skew-symmetric matrix**: A square matrix that is equal to its negative transpose ($-A=A^T$). The diagonal is always 0.  
+For example,
+$A = \begin{bmatrix}
+0 & 2 & -4\\
+-2 & 0 & 6\\
+4 & -6 & 0\end{bmatrix}$
+- **Orthogonal matrix**: A sqaure matrix whose transpose is also its inverse ($A^T=A^{-1}$). Columns (and rows) and orthonormal vectors.
+- **Singular matrix**: A square matrix that does not have an inverse (its determinant is 0).
+- **Diagonalizable matrix**: A matrix that can be written as $A=PDP^-1$ where $D$ is a diagonal matrix.  
+*More on inverses, determinants and diagonalizable matrices soon.*
+
+```python
+import numpy as np
+A = np.zeros((2, 3))    # 2x3 zero matrix
+I = np.eye(3)           # 3x3 identity
+D = np.diag([1, 2, 3])  # Diagonal matrix
+print(D)
+```
+
+---
+
+#### Broadcasting
+- Although it is not techn
+```python
+import numpy as np
 # Add a vector to each row of a matrix
 A = np.array([[1, 2], [3, 4], [5, 6]])
 v = np.array([10, 100])
 print(A + v)
-```
-
----
-
-### Special Matrices
-
-- **Identity matrix ($I$)**: Diagonal of 1s, rest 0s. Acts as "1" for matrices.
-- **Diagonal matrix**: Only entries on the diagonal are non-zero.
-
-```python
-I = np.eye(3)           # 3x3 identity
-D = np.diag([1, 2, 3])  # Diagonal matrix
-print(I)
-print(D)
 ```
 
 ---
