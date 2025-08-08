@@ -530,14 +530,30 @@ plt.show()
 
 ## Calculus
 
-### Motivation: Why Calculus is Essential
-- Most ML algorithms are optimization problems: we adjust model parameters to minimize a loss (error) function.
-- Calculus provides tools to quantify and navigate small changes in the loss with respect to parameters, guiding effective updates.
+Calculus is the branch of mathematics that deals with continuous change through derivatives and integrals.
+In machine learning, many algorithms focus on optimization—adjusting model parameters to minimize a loss (or error) function.
+Calculus gives us the tools to measure how small changes in these parameters affect the loss, helping us update them efficiently to improve model performance.
 
-### Key Calculus Concepts
-- Derivatives
-  - Measure instantaneous rate of change.
-  - In ML: the derivative of the loss with respect to a parameter tells us how changing that parameter will affect error right now.
+### Basic Calculus Concepts
+- **Derivatives**: Measure instantaneous rate of change of a function at a point. For a function $f(x)$, the derivative $f'(x)$ tells us how $f(x)$ changes at $x$. It is defined by a limit:  
+$f'(x) = \displaystyle\lim_{h \to 0} \frac{f(x + h) - f(x)}{h}$  
+Some common derivatives which can be used instead of using the limit definition are:
+
+Some common derivatives which can be used instead of using the limit definition are:
+
+Some common derivatives which can be used instead of using the limit definition are:
+
+| Function Name          | Function $f(x)$              | Derivative $f'(x)$                 | Example Function            | Example Derivative           |
+|-----------------------|-----------------------------|----------------------------------|----------------------------|-----------------------------|
+| Constant              | $c$                         | $0$                              | $5$                        | $0$                         |
+| Power rule            | $x^n$                      | $n x^{n-1}$                     | $x^3$                      | $3x^2$                      |
+| Constant multiple     | $c \cdot f(x)$             | $c \cdot f'(x)$                 | $4x^3$                     | $4 \cdot 3x^2 = 12x^2$      |
+| Sum / Difference      | $f \pm g$                  | $f' \pm g'$                     | $x^3 + x^2$                | $3x^2 + 2x$                 |
+| Exponential natural   | $e^x$                      | $e^x$                          | $e^x$                      | $e^x$                       |
+| Exponential base a    | $a^x$                      | $a^x \ln(a)$                   | $2^x$                      | $2^x \ln(2)$                |
+| Natural logarithm     | $\ln(x)$                   | $\frac{1}{x}$                  | $\ln(x)$                   | $\frac{1}{x}$               |
+| Logarithm base a      | $\log_a(x)$                | $\frac{1}{x \ln(a)}$           | $\log_2(x)$                | $\frac{1}{x \ln(2)}$        |
+
 - Partial Derivatives
   - When the loss depends on many parameters (weights), differentiate with respect to one while holding the others fixed.
   - Isolates each parameter’s local influence on the loss.
