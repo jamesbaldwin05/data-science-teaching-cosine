@@ -8,11 +8,50 @@
 
 ## Table of Contents
 1. [Linear Algebra](#linear-algebra)
-2. [Statistics](#statistics)
-3. [Probability](#probability)
+    - [Vectors](#vectors)
+        - [Basic Vector Operations](#basic-vector-operations)
+        - [More About Vectors](#more-about-vectors)
+    - [Matrices](#matrices)
+        - [Basic Matrix Operations](#basic-matrix-operations)
+        - [Matrix Multiplication](#matrix-multiplication)
+        - [Special Matrices](#special-matrices)
+        - [Broadcasting](#broadcasting)
+        - [Determinant & Inverse](#determinant--inverse)
+    - [Eigenvalues & Eigenvectors](#eigenvalues--eigenvectors)
+        - [PCA Example: Principal Component Analysis (Dimensionality Reduction)](#pca-example-principal-component-analysis-dimensionality-reduction)
+    - [You should be able to (Linear Algebra)](#you-should-be-able-to-1)
+
+2. [Probability](#probability)
+    - [Basic Probability Rules](#basic-probability-rules)
+    - [Conditional Probability & Bayes' Theorem](#conditional-probability--bayes-theorem)
+    - [Independence](#independence)
+
+3. [Statistics](#statistics)
+    - [Descriptive Statistics](#descriptive-statistics)
+    - [Visualizing Distributions](#visualizing-distributions)
+    - [Probability Distributions Overview](#probability-distributions-overview)
+        - [Plots](#plots)
+        - [Key Discrete Distributions](#key-discrete-distributions)
+        - [Key Continuous Distributions](#key-continuous-distributions)
+        - [Why do these appear?](#why-do-these-appear)
+        - [Practical Tips for Choosing a Distribution](#practical-tips-for-choosing-a-distribution)
+    - [Sampling & Central Limit Theorem (CLT)](#sampling--central-limit-theorem-clt)
+        - [Simulation](#simulation)
+    - [Hypothesis Testing](#hypothesis-testing)
+    - [Confidence Intervals](#confidence-intervals)
+    - [Correlation vs. Covariance](#correlation-vs-covariance)
+        - [Visualizing with a Heatmap](#visualizing-with-a-heatmap)
+    - [You should be able to (Statistics)](#you-should-be-able-to-2)
+
 4. [Calculus for Machine Learning](#calculus-for-ml-lightweight)
+    - [Derivative Concept & Slope Intuition](#derivative-concept--slope-intuition)
+    - [Gradients and Partial Derivatives](#gradients-and-partial-derivatives)
+    - [Gradient Descent Walkthrough](#gradient-descent-walkthrough)
+
 5. [Mathematical Notation Reference](#mathematical-notation-reference)
+
 6. [Key Takeaways](#key-takeaways)
+
 7. [Exercises & Mini-Projects](#exercises--mini-projects)
 
 ---
@@ -607,6 +646,72 @@ plt.show()
 
 ---
 
+#### Key Discrete Distributions
+
+- **Bernoulli**: One trial, yes/no (coin flip).
+- **Binomial**: Repeated Bernoulli trials (e.g., number of heads in 10 flips).
+- **Poisson**: Number of rare events in fixed time/space (e.g., calls per minute).
+
+```python
+# Bernoulli, Binomial, Poisson distributions
+from scipy.stats import bernoulli, binom, poisson
+import matplotlib.pyplot as plt
+
+outcomes = bernoulli.rvs(0.7, size=10)
+print("Bernoulli samples:", outcomes)
+
+# Binomial: # of successes in 10 trials
+binom_sample = binom.rvs(n=10, p=0.5, size=1000)
+plt.hist(binom_sample, bins=11, alpha=0.7)
+plt.title("Binomial Sample Distribution")
+plt.show()
+
+# Poisson: e.g., number of emails per hour
+poisson_sample = poisson.rvs(mu=3, size=1000)
+plt.hist(poisson_sample, bins=range(10), alpha=0.7)
+plt.title("Poisson Sample Distribution")
+plt.show()
+```
+
+---
+
+#### Key Continuous Distributions
+
+- **Uniform**: All outcomes equally likely (e.g., random number between 0 and 1).
+- **Normal**: Bell curve, real-world heights, test scores.
+- **Exponential**: Time between random events (e.g., waiting time for bus).
+
+```python
+from scipy.stats import uniform, expon
+import matplotlib.pyplot as plt
+
+# Uniform
+plt.hist(uniform.rvs(loc=0, scale=1, size=1000), bins=20, alpha=0.7)
+plt.title("Uniform Distribution")
+plt.show()
+
+# Exponential
+plt.hist(expon.rvs(scale=1, size=1000), bins=20, alpha=0.7)
+plt.title("Exponential Distribution")
+plt.show()
+```
+
+#### Why do these appear?
+- Uniform: True randomness (e.g., random sampling).
+- Normal: Sums/averages of many small effects (Central Limit Theorem).
+- Exponential: Waiting for the next random event (memoryless property).
+
+---
+
+#### Practical Tips for Choosing a Distribution
+
+- **Count data?** Try Binomial (fixed n) or Poisson (unbounded).
+- **Continuous, bell-shaped?** Try Normal.
+- **Waiting times?** Try Exponential.
+- **Simple yes/no?** Try Bernoulli.
+
+---
+
 ### Sampling & Central Limit Theorem (CLT)
 
 - **Sampling**: Drawing subsets from data.
@@ -754,72 +859,6 @@ print("Probability actually sick if test is positive:", P_D_pos)
 
 - **Events A and B are independent** if $P(A|B) = P(A)$.
 - **Intuition**: If knowing B tells you nothing about A, they are independent.
-
----
-
-### Key Discrete Distributions
-
-- **Bernoulli**: One trial, yes/no (coin flip).
-- **Binomial**: Repeated Bernoulli trials (e.g., number of heads in 10 flips).
-- **Poisson**: Number of rare events in fixed time/space (e.g., calls per minute).
-
-```python
-# Bernoulli, Binomial, Poisson distributions
-from scipy.stats import bernoulli, binom, poisson
-import matplotlib.pyplot as plt
-
-outcomes = bernoulli.rvs(0.7, size=10)
-print("Bernoulli samples:", outcomes)
-
-# Binomial: # of successes in 10 trials
-binom_sample = binom.rvs(n=10, p=0.5, size=1000)
-plt.hist(binom_sample, bins=11, alpha=0.7)
-plt.title("Binomial Sample Distribution")
-plt.show()
-
-# Poisson: e.g., number of emails per hour
-poisson_sample = poisson.rvs(mu=3, size=1000)
-plt.hist(poisson_sample, bins=range(10), alpha=0.7)
-plt.title("Poisson Sample Distribution")
-plt.show()
-```
-
----
-
-### Key Continuous Distributions
-
-- **Uniform**: All outcomes equally likely (e.g., random number between 0 and 1).
-- **Normal**: Bell curve, real-world heights, test scores.
-- **Exponential**: Time between random events (e.g., waiting time for bus).
-
-```python
-from scipy.stats import uniform, expon
-import matplotlib.pyplot as plt
-
-# Uniform
-plt.hist(uniform.rvs(loc=0, scale=1, size=1000), bins=20, alpha=0.7)
-plt.title("Uniform Distribution")
-plt.show()
-
-# Exponential
-plt.hist(expon.rvs(scale=1, size=1000), bins=20, alpha=0.7)
-plt.title("Exponential Distribution")
-plt.show()
-```
-
-#### Why do these appear?
-- Uniform: True randomness (e.g., random sampling).
-- Normal: Sums/averages of many small effects (Central Limit Theorem).
-- Exponential: Waiting for the next random event (memoryless property).
-
----
-
-### Practical Tips for Choosing a Distribution
-
-- **Count data?** Try Binomial (fixed n) or Poisson (unbounded).
-- **Continuous, bell-shaped?** Try Normal.
-- **Waiting times?** Try Exponential.
-- **Simple yes/no?** Try Bernoulli.
 
 ---
 
