@@ -2,7 +2,7 @@
 
 ## Why learn math for data science?
 - Math underpins how we represent data, build models and draw conclusions
-- No prior university-level math required. We'll build intuition and show practical code for all key concepts.
+- No prior university-level maths required. We'll build intuition and show practical code for all key concepts.
 
 ---
 
