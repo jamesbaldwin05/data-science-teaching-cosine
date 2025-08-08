@@ -8,9 +8,13 @@
 
 ## Table of Contents
 1. [Linear Algebra](#linear-algebra)
+   - [Vectors](#vectors)
+   - [Matrices](#matrices)
+   - [Eigenvalues and Eigenvectors](#eigenvalues-and-eigenvectors)
+   - [PCA Example](#pca-example-principal-component-analysis-dimensionality-reduction)
 2. [Statistics](#statistics)
 3. [Probability](#probability)
-4. [Calculus for Machine Learning](#calculus-for-ml-lightweight)
+4. [Calculus for Machine Learning](#calculus-for-machine-learning)
 5. [Mathematical Notation Reference](#mathematical-notation-reference)
 6. [Key Takeaways](#key-takeaways)
 7. [Exercises & Mini-Projects](#exercises--mini-projects)
