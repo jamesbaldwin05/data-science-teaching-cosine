@@ -1,5 +1,40 @@
 # Python in Data Science
 
+## Table of Contents
+
+1. [Who is This Course For?](#who-is-this-course-for)
+2. [Prerequisite Python Skills: Self-Assessment Checklist](#prerequisite-python-skills-self-assessment-checklist)
+    - [Where to Brush Up](#where-to-brush-up)
+3. [Lists & List Comprehensions](#1-lists--list-comprehensions)
+4. [Dictionaries & Nested Dicts](#2-dictionaries--nested-dicts)
+5. [Tuples & Unpacking](#3-tuples--unpacking)
+6. [Sets](#4-sets)
+7. [Slicing & Indexing](#5-slicing--indexing)
+8. [Comprehensions vs. Generator Expressions](#6-comprehensions-vs-generator-expressions)
+9. [Functions (including Lambdas)](#7-functions-including-lambdas)
+10. [itertools & functools](#8-itertools--functools)
+11. [Classes & DataClasses](#9-classes--dataclasses)
+    - [Classic class example](#classic-class-example)
+    - [Dataclass equivalent](#dataclass-equivalent)
+12. [Context Managers](#10-context-managers)
+13. [Error Handling](#11-error-handling)
+14. [Type Hints & the typing Module](#12-type-hints--the-typing-module)
+15. [Virtual Environments & Dependency Management](#13-virtual-environments--dependency-management)
+16. [Unit Testing (pytest)](#14-unit-testing-pytest)
+17. [Logging](#15-logging)
+18. [Performance Tips (Vectorization, Generators, Memory Views)](#16-performance-tips-vectorization-generators-memory-views)
+19. [Debugging](#17-debugging)
+20. [Python Ecosystem for Data Science](#python-ecosystem-for-data-science)
+    - [Numpy](#numpy)
+    - [Pandas](#pandas)
+    - [Matplotlib & Seaborn](#matplotlib--seaborn)
+    - [Scikit-learn](#scikit-learn)
+    - [SciPy](#scipy)
+    - [Statsmodels](#statsmodels)
+    - [Jupyter Notebooks](#jupyter-notebooks)
+21. [Key Takeaways](#key-takeaways)
+    - [Exercise](#exercise)
+
 ## Who is This Course For?
 
 This course is designed for intermediate to experienced Python programmers who are comfortable with core syntax and programming concepts but are new to data science. If you know your way around functions, classes, and built-in types, this module will help you bridge the gap to data-science-specific Python usage, highlighting language features and ecosystem tools (including libraries) you'll encounter in real-world pipelines.
