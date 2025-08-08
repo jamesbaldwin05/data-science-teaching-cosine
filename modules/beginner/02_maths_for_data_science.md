@@ -530,271 +530,50 @@ plt.show()
 
 ## Calculus for ML (Lightweight)
 
-**What:** The math of change—used to optimize, minimize error, and train models.
-
-**Why:** Powers gradient descent and learning in ML.
-
-### Derivative Concept & Slope Intuition
-
-- **Derivative**: Rate of change; slope of a function at a point.
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-x = np.linspace(-3, 3, 100)
-y = x ** 2
-plt.plot(x, y, label="y = x^2")
-plt.plot(1, 1, 'ro', label="Point (1,1)")
-plt.arrow(1, 1, 1, 2, head_width=0.1, head_length=0.2, color='red')
-plt.title("Slope at x=1 is 2")
-plt.legend()
-plt.show()
-```
-
----
-
-### Gradients and Partial Derivatives
-
-- **Gradient**: Vector of partial derivatives; points in direction of greatest increase.
-- **Partial derivative**: Rate of change with respect to one variable, keeping others fixed.
-
-```python
-def f(x, y):
-    return x**2 + y**2
-
-# Gradient at (1,1):
-df_dx = 2 * 1
-df_dy = 2 * 1
-print("Gradient at (1,1):", (df_dx, df_dy))
-```
-
----
-
-### Gradient Descent Walkthrough
-
-- **What?** Iterative method to find minimum of a function.
-- **Why?** Used to train ML models by minimizing loss.
-
-```python
-import matplotlib.pyplot as plt
-
-# Minimize f(x) = x^2 + 2x + 1
-f = lambda x: x**2 + 2*x + 1
-df = lambda x: 2*x + 2
-
-x = 5.0
-learning_rate = 0.1
-xs, ys = [], []
-
-for i in range(20):
-    xs.append(x)
-    ys.append(f(x))
-    x -= learning_rate * df(x)
-
-plt.plot(xs, ys, marker='o')
-plt.xlabel("Step")
-plt.ylabel("f(x)")
-plt.title("Gradient Descent Progress")
-plt.show()
-```
-
----
-
-*Link to ML: Training most models = minimize a loss function using gradient descent or its variants.*
-
----
-
-## Probability
-
-**What:** The math of uncertainty—quantifying how likely events are.
-
-**Why:** Essential for modeling randomness, making predictions, and drawing conclusions from incomplete information.
-
-### Basic Probability Rules
-
-- **Addition Rule**: $P(A \text{ or } B) = P(A) + P(B) - P(A \text{ and } B)$
-- **Multiplication Rule**: $P(A \text{ and } B) = P(A) \times P(B|A)$
-
-**Example:**
-If $P(A) = 0.2$, $P(B) = 0.5$, $P(A \text{ and } B) = 0.1$:
-- $P(A \text{ or } B) = 0.2 + 0.5 - 0.1 = 0.6$
-
----
-
-### Conditional Probability & Bayes' Theorem
-
-- **Conditional**: Probability of $A$ given $B$: $P(A|B) = \frac{P(A \text{ and } B)}{P(B)}$
-- **Bayes' theorem**: Updates beliefs: $P(A|B) = \frac{P(B|A)P(A)}{P(B)}$
-
-**Concrete Example: Disease Testing**
-
-Suppose:
-- 1% of people have disease ($P(D) = 0.01$)
-- Test is 99% accurate (true positive rate $P(+|D) = 0.99$; false positive $P(+|\neg D)=0.01$)
-- You test positive. What is $P(D|+)$?
-
-```python
-# Bayes theorem calculation
-P_D = 0.01      # Disease prevalence
-P_pos_D = 0.99  # True positive rate
-P_pos_notD = 0.01 # False positive rate
-
-P_notD = 1 - P_D
-P_pos = P_pos_D * P_D + P_pos_notD * P_notD
-P_D_pos = (P_pos_D * P_D) / P_pos
-print("Probability actually sick if test is positive:", P_D_pos)
-```
-
----
-
-### Independence
-
-- **Events A and B are independent** if $P(A|B) = P(A)$.
-- **Intuition**: If knowing B tells you nothing about A, they are independent.
-
----
-
-### Key Discrete Distributions
-
-- **Bernoulli**: One trial, yes/no (coin flip).
-- **Binomial**: Repeated Bernoulli trials (e.g., number of heads in 10 flips).
-- **Poisson**: Number of rare events in fixed time/space (e.g., calls per minute).
-
-```python
-# Bernoulli, Binomial, Poisson distributions
-from scipy.stats import bernoulli, binom, poisson
-import matplotlib.pyplot as plt
-
-outcomes = bernoulli.rvs(0.7, size=10)
-print("Bernoulli samples:", outcomes)
-
-# Binomial: # of successes in 10 trials
-binom_sample = binom.rvs(n=10, p=0.5, size=1000)
-plt.hist(binom_sample, bins=11, alpha=0.7)
-plt.title("Binomial Sample Distribution")
-plt.show()
-
-# Poisson: e.g., number of emails per hour
-poisson_sample = poisson.rvs(mu=3, size=1000)
-plt.hist(poisson_sample, bins=range(10), alpha=0.7)
-plt.title("Poisson Sample Distribution")
-plt.show()
-```
-
----
-
-### Key Continuous Distributions
-
-- **Uniform**: All outcomes equally likely (e.g., random number between 0 and 1).
-- **Normal**: Bell curve, real-world heights, test scores.
-- **Exponential**: Time between random events (e.g., waiting time for bus).
-
-```python
-from scipy.stats import uniform, expon
-import matplotlib.pyplot as plt
-
-# Uniform
-plt.hist(uniform.rvs(loc=0, scale=1, size=1000), bins=20, alpha=0.7)
-plt.title("Uniform Distribution")
-plt.show()
-
-# Exponential
-plt.hist(expon.rvs(scale=1, size=1000), bins=20, alpha=0.7)
-plt.title("Exponential Distribution")
-plt.show()
-```
-
-#### Why do these appear?
-- Uniform: True randomness (e.g., random sampling).
-- Normal: Sums/averages of many small effects (Central Limit Theorem).
-- Exponential: Waiting for the next random event (memoryless property).
-
----
-
-### Practical Tips for Choosing a Distribution
-
-- **Count data?** Try Binomial (fixed n) or Poisson (unbounded).
-- **Continuous, bell-shaped?** Try Normal.
-- **Waiting times?** Try Exponential.
-- **Simple yes/no?** Try Bernoulli.
-
----
-
-## Calculus for ML (Lightweight)
-
-**What:** The math of change—used to optimize, minimize error, and train models.
-
-**Why:** Powers gradient descent and learning in ML.
-
-### Derivative Concept & Slope Intuition
-
-- **Derivative**: Rate of change; slope of a function at a point.
-
-```python
-import numpy as np
-import matplotlib.pyplot as plt
-
-x = np.linspace(-3, 3, 100)
-y = x ** 2
-plt.plot(x, y, label="y = x^2")
-plt.plot(1, 1, 'ro', label="Point (1,1)")
-plt.arrow(1, 1, 1, 2, head_width=0.1, head_length=0.2, color='red')
-plt.title("Slope at x=1 is 2")
-plt.legend()
-plt.show()
-```
-
----
-
-### Gradients and Partial Derivatives
-
-- **Gradient**: Vector of partial derivatives; points in direction of greatest increase.
-- **Partial derivative**: Rate of change with respect to one variable, keeping others fixed.
-
-```python
-def f(x, y):
-    return x**2 + y**2
-
-# Gradient at (1,1):
-df_dx = 2 * 1
-df_dy = 2 * 1
-print("Gradient at (1,1):", (df_dx, df_dy))
-```
-
----
-
-### Gradient Descent Walkthrough
-
-- **What?** Iterative method to find minimum of a function.
-- **Why?** Used to train ML models by minimizing loss.
-
-```python
-import matplotlib.pyplot as plt
-
-# Minimize f(x) = x^2 + 2x + 1
-f = lambda x: x**2 + 2*x + 1
-df = lambda x: 2*x + 2
-
-x = 5.0
-learning_rate = 0.1
-xs, ys = [], []
-
-for i in range(20):
-    xs.append(x)
-    ys.append(f(x))
-    x -= learning_rate * df(x)
-
-plt.plot(xs, ys, marker='o')
-plt.xlabel("Step")
-plt.ylabel("f(x)")
-plt.title("Gradient Descent Progress")
-plt.show()
-```
-
----
-
-*Link to ML: Training most models = minimize a loss function using gradient descent or its variants.*
+### Motivation: Why Calculus is Essential
+- Most ML algorithms are optimization problems: we adjust model parameters to minimize a loss (error) function.
+- Calculus provides tools to quantify and navigate small changes in the loss with respect to parameters, guiding effective updates.
+
+### Key Calculus Concepts
+- Derivatives
+  - Measure instantaneous rate of change.
+  - In ML: the derivative of the loss with respect to a parameter tells us how changing that parameter will affect error right now.
+- Partial Derivatives
+  - When the loss depends on many parameters (weights), differentiate with respect to one while holding the others fixed.
+  - Isolates each parameter’s local influence on the loss.
+- Gradient Vector
+  - The vector of all partial derivatives.
+  - Points in the direction of steepest ascent; for minimization, we move in the opposite direction (negative gradient).
+- Chain Rule
+  - Differentiates compositions of functions.
+  - Fundamental for layered models (e.g., neural networks), enabling efficient gradient calculation during backpropagation.
+- Integrals
+  - Used for probabilities and expectations in continuous distributions (e.g., likelihoods, marginalization), though less frequent in basic training loops.
+
+### Calculus in Optimization Algorithms
+- Gradient Descent
+  - Iteratively updates parameters by moving opposite the gradient to reduce the loss.
+  - Core idea: take small steps in the direction that locally reduces error most.
+- Stochastic Gradient Descent (SGD)
+  - Uses subsets (mini-batches) of data to estimate gradients.
+  - Faster, noisier updates that scale to large datasets and can help escape shallow local minima.
+- Convergence
+  - Learning rate (step size) and gradient magnitudes determine stability and speed.
+  - Too large: divergence/oscillation; too small: slow learning. Adaptive methods adjust step sizes automatically.
+
+### Backpropagation: The Calculus Behind Neural Networks
+- Multi-layer networks are compositions of functions; the chain rule lets us compute derivatives layer by layer from outputs back to inputs.
+- Gradients from backpropagation guide weight updates to minimize overall error.
+
+### Calculus in Probabilistic Models and Bayesian Methods
+- Expectations and marginalization often involve integrals over continuous variables.
+- Maximum Likelihood Estimation (MLE) and Bayesian inference frequently require differentiating (log-)likelihoods with respect to parameters.
+
+#### You should be able to:
+- Explain derivative, partial derivative, gradient, and chain rule in ML terms.
+- Interpret the gradient’s direction and why updates move against it in minimization.
+- Describe gradient descent vs. SGD and the role of the learning rate in convergence.
+- Connect integrals to expectations and marginalization in probabilistic models.
 
 ---
 
