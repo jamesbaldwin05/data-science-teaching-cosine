@@ -12,9 +12,9 @@
    - [Matrices](#matrices)
    - [Eigenvalues and Eigenvectors](#eigenvalues-and-eigenvectors)
    - [PCA Example](#pca-example-principal-component-analysis-dimensionality-reduction)
-2. [Statistics](#statistics)
+2. [Calculus for Machine Learning](#calculus-for-ml-lightweight)
 3. [Probability](#probability)
-4. [Calculus for Machine Learning](#calculus-for-machine-learning)
+4. [Statistics](#statistics)
 5. [Mathematical Notation Reference](#mathematical-notation-reference)
 6. [Key Takeaways](#key-takeaways)
 7. [Exercises & Mini-Projects](#exercises--mini-projects)
@@ -528,186 +528,80 @@ plt.show()
 
 ---
 
-## Statistics
+## Calculus for ML (Lightweight)
 
-**What:** The study of data: summarizing, visualizing, and drawing conclusions.
+**What:** The math of change—used to optimize, minimize error, and train models.
 
-**Why:** All data science starts with understanding data distributions, patterns, and variation.
+**Why:** Powers gradient descent and learning in ML.
 
-### Descriptive Statistics
+### Derivative Concept & Slope Intuition
 
-- **Mean**: Average.
-- **Median**: Middle value.
-- **Mode**: Most frequent value.
-- **Variance**: How spread out data is.
-- **Standard deviation (std)**: Typical distance from mean.
-- **IQR (Interquartile Range)**: Range of the middle 50%.
-
-```python
-import pandas as pd
-
-data = [5, 6, 7, 8, 8, 8, 10, 15]
-s = pd.Series(data)
-print("Mean:", s.mean())
-print("Median:", s.median())
-print("Mode:", s.mode().tolist())
-print("Variance:", s.var())
-print("Std:", s.std())
-print("IQR:", s.quantile(0.75) - s.quantile(0.25))
-```
-
----
-
-### Visualizing Distributions
-
-- **Histogram**: Shows frequency of values.
-- **Boxplot**: Shows median, quartiles, outliers.
-
-```python
-import matplotlib.pyplot as plt
-import seaborn as sns
-
-sns.histplot(data, kde=True)
-plt.title("Histogram")
-plt.show()
-
-sns.boxplot(y=data)
-plt.title("Boxplot")
-plt.show()
-```
-
----
-
-### Probability Distributions Overview
-
-- **Normal (Gaussian)**: Bell-shaped, many natural phenomena.
-- **Binomial**: Counts successes in a series of yes/no trials.
-- **Poisson**: Counts events in fixed time/space (rare events).
-
-#### Plots
+- **Derivative**: Rate of change; slope of a function at a point.
 
 ```python
 import numpy as np
 import matplotlib.pyplot as plt
-from scipy.stats import norm, binom, poisson
 
-x = np.linspace(-4, 4, 100)
-plt.plot(x, norm.pdf(x, loc=0, scale=1), label="Normal")
-plt.title("Normal Distribution (PDF)")
+x = np.linspace(-3, 3, 100)
+y = x ** 2
+plt.plot(x, y, label="y = x^2")
+plt.plot(1, 1, 'ro', label="Point (1,1)")
+plt.arrow(1, 1, 1, 2, head_width=0.1, head_length=0.2, color='red')
+plt.title("Slope at x=1 is 2")
 plt.legend()
 plt.show()
-
-k = np.arange(0, 11)
-plt.stem(k, binom.pmf(k, n=10, p=0.5), use_line_collection=True)
-plt.title("Binomial Distribution (PMF)")
-plt.show()
-
-lmbda = 3
-k = np.arange(0, 10)
-plt.stem(k, poisson.pmf(k, lmbda), use_line_collection=True)
-plt.title("Poisson Distribution (PMF)")
-plt.show()
 ```
 
 ---
 
-### Sampling & Central Limit Theorem (CLT)
+### Gradients and Partial Derivatives
 
-- **Sampling**: Drawing subsets from data.
-- **CLT**: Means of samples from any distribution become bell-shaped (normal) as sample size grows.
-
-#### Simulation
+- **Gradient**: Vector of partial derivatives; points in direction of greatest increase.
+- **Partial derivative**: Rate of change with respect to one variable, keeping others fixed.
 
 ```python
-import numpy as np
+def f(x, y):
+    return x**2 + y**2
+
+# Gradient at (1,1):
+df_dx = 2 * 1
+df_dy = 2 * 1
+print("Gradient at (1,1):", (df_dx, df_dy))
+```
+
+---
+
+### Gradient Descent Walkthrough
+
+- **What?** Iterative method to find minimum of a function.
+- **Why?** Used to train ML models by minimizing loss.
+
+```python
 import matplotlib.pyplot as plt
 
-np.random.seed(1)
-population = np.random.exponential(scale=2, size=10000)
-means = [np.mean(np.random.choice(population, size=30)) for _ in range(1000)]
+# Minimize f(x) = x^2 + 2x + 1
+f = lambda x: x**2 + 2*x + 1
+df = lambda x: 2*x + 2
 
-plt.hist(means, bins=30, color='orange', alpha=0.7)
-plt.title("Sampling Distribution of Mean (CLT in action!)")
-plt.xlabel("Sample Mean")
-plt.ylabel("Frequency")
+x = 5.0
+learning_rate = 0.1
+xs, ys = [], []
+
+for i in range(20):
+    xs.append(x)
+    ys.append(f(x))
+    x -= learning_rate * df(x)
+
+plt.plot(xs, ys, marker='o')
+plt.xlabel("Step")
+plt.ylabel("f(x)")
+plt.title("Gradient Descent Progress")
 plt.show()
 ```
 
 ---
 
-### Hypothesis Testing
-
-- **What?** Test a claim about data (e.g., "mean is 0").
-- **Z-test/T-test**: Compare means.
-- **p-value**: Probability of seeing data as extreme as observed, assuming null hypothesis is true.
-
-```python
-import numpy as np
-from scipy.stats import ttest_1samp
-
-sample = np.random.normal(loc=1, scale=1, size=30)
-t_stat, p_val = ttest_1samp(sample, popmean=0)
-print("t-statistic:", t_stat)
-print("p-value:", p_val)
-```
-
-*If p-value < 0.05, often considered "statistically significant" (but always interpret in context!).*
-
----
-
-### Confidence Intervals
-
-- **What?** Range likely to contain the true parameter (e.g., mean), with some confidence (e.g., 95%).
-- **Python Example:**
-
-```python
-import numpy as np
-import scipy.stats as stats
-
-sample = np.random.normal(loc=1, scale=1, size=30)
-sample_mean = np.mean(sample)
-sample_std = np.std(sample, ddof=1)
-n = len(sample)
-conf_int = stats.t.interval(0.95, n-1, loc=sample_mean, scale=sample_std/np.sqrt(n))
-print("95% Confidence Interval:", conf_int)
-```
-
----
-
-### Correlation vs. Covariance
-
-- **Covariance**: How two variables vary together (units matter).
-- **Correlation**: Standardized covariance, ranges [-1, 1]. 1 = perfect positive, -1 = perfect negative.
-
-```python
-import pandas as pd
-import numpy as np
-
-df = pd.DataFrame({'x': np.random.rand(100), 'y': np.random.rand(100)})
-print("Covariance:\n", df.cov())
-print("Correlation:\n", df.corr())
-```
-
-#### Visualizing with a Heatmap
-
-```python
-import seaborn as sns
-import matplotlib.pyplot as plt
-
-sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
-plt.title("Correlation Matrix Heatmap")
-plt.show()
-```
-
----
-
-#### You should be able to:
-- Compute and interpret mean, median, mode, variance, std, IQR.
-- Visualize data with histograms and boxplots.
-- Identify and plot key probability distributions.
-- Explain and simulate the Central Limit Theorem.
-- Run a t-test and interpret p-values.
-- Calculate and interpret correlation and covariance.
+*Link to ML: Training most models = minimize a loss function using gradient descent or its variants.*
 
 ---
 
@@ -901,6 +795,305 @@ plt.show()
 ---
 
 *Link to ML: Training most models = minimize a loss function using gradient descent or its variants.*
+
+---
+
+## Probability
+
+**What:** The math of uncertainty—quantifying how likely events are.
+
+**Why:** Essential for modeling randomness, making predictions, and drawing conclusions from incomplete information.
+
+### Basic Probability Rules
+
+- **Addition Rule**: $P(A \text{ or } B) = P(A) + P(B) - P(A \text{ and } B)$
+- **Multiplication Rule**: $P(A \text{ and } B) = P(A) \times P(B|A)$
+
+**Example:**
+If $P(A) = 0.2$, $P(B) = 0.5$, $P(A \text{ and } B) = 0.1$:
+- $P(A \text{ or } B) = 0.2 + 0.5 - 0.1 = 0.6$
+
+---
+
+### Conditional Probability & Bayes' Theorem
+
+- **Conditional**: Probability of $A$ given $B$: $P(A|B) = \frac{P(A \text{ and } B)}{P(B)}$
+- **Bayes' theorem**: Updates beliefs: $P(A|B) = \frac{P(B|A)P(A)}{P(B)}$
+
+**Concrete Example: Disease Testing**
+
+Suppose:
+- 1% of people have disease ($P(D) = 0.01$)
+- Test is 99% accurate (true positive rate $P(+|D) = 0.99$; false positive $P(+|\neg D)=0.01$)
+- You test positive. What is $P(D|+)$?
+
+```python
+# Bayes theorem calculation
+P_D = 0.01      # Disease prevalence
+P_pos_D = 0.99  # True positive rate
+P_pos_notD = 0.01 # False positive rate
+
+P_notD = 1 - P_D
+P_pos = P_pos_D * P_D + P_pos_notD * P_notD
+P_D_pos = (P_pos_D * P_D) / P_pos
+print("Probability actually sick if test is positive:", P_D_pos)
+```
+
+---
+
+### Independence
+
+- **Events A and B are independent** if $P(A|B) = P(A)$.
+- **Intuition**: If knowing B tells you nothing about A, they are independent.
+
+---
+
+### Key Discrete Distributions
+
+- **Bernoulli**: One trial, yes/no (coin flip).
+- **Binomial**: Repeated Bernoulli trials (e.g., number of heads in 10 flips).
+- **Poisson**: Number of rare events in fixed time/space (e.g., calls per minute).
+
+```python
+# Bernoulli, Binomial, Poisson distributions
+from scipy.stats import bernoulli, binom, poisson
+import matplotlib.pyplot as plt
+
+outcomes = bernoulli.rvs(0.7, size=10)
+print("Bernoulli samples:", outcomes)
+
+# Binomial: # of successes in 10 trials
+binom_sample = binom.rvs(n=10, p=0.5, size=1000)
+plt.hist(binom_sample, bins=11, alpha=0.7)
+plt.title("Binomial Sample Distribution")
+plt.show()
+
+# Poisson: e.g., number of emails per hour
+poisson_sample = poisson.rvs(mu=3, size=1000)
+plt.hist(poisson_sample, bins=range(10), alpha=0.7)
+plt.title("Poisson Sample Distribution")
+plt.show()
+```
+
+---
+
+### Key Continuous Distributions
+
+- **Uniform**: All outcomes equally likely (e.g., random number between 0 and 1).
+- **Normal**: Bell curve, real-world heights, test scores.
+- **Exponential**: Time between random events (e.g., waiting time for bus).
+
+```python
+from scipy.stats import uniform, expon
+import matplotlib.pyplot as plt
+
+# Uniform
+plt.hist(uniform.rvs(loc=0, scale=1, size=1000), bins=20, alpha=0.7)
+plt.title("Uniform Distribution")
+plt.show()
+
+# Exponential
+plt.hist(expon.rvs(scale=1, size=1000), bins=20, alpha=0.7)
+plt.title("Exponential Distribution")
+plt.show()
+```
+
+#### Why do these appear?
+- Uniform: True randomness (e.g., random sampling).
+- Normal: Sums/averages of many small effects (Central Limit Theorem).
+- Exponential: Waiting for the next random event (memoryless property).
+
+---
+
+### Practical Tips for Choosing a Distribution
+
+- **Count data?** Try Binomial (fixed n) or Poisson (unbounded).
+- **Continuous, bell-shaped?** Try Normal.
+- **Waiting times?** Try Exponential.
+- **Simple yes/no?** Try Bernoulli.
+
+---
+
+## Statistics
+
+**What:** The study of data: summarizing, visualizing, and drawing conclusions.
+
+**Why:** All data science starts with understanding data distributions, patterns, and variation.
+
+### Descriptive Statistics
+
+- **Mean**: Average.
+- **Median**: Middle value.
+- **Mode**: Most frequent value.
+- **Variance**: How spread out data is.
+- **Standard deviation (std)**: Typical distance from mean.
+- **IQR (Interquartile Range)**: Range of the middle 50%.
+
+```python
+import pandas as pd
+
+data = [5, 6, 7, 8, 8, 8, 10, 15]
+s = pd.Series(data)
+print("Mean:", s.mean())
+print("Median:", s.median())
+print("Mode:", s.mode().tolist())
+print("Variance:", s.var())
+print("Std:", s.std())
+print("IQR:", s.quantile(0.75) - s.quantile(0.25))
+```
+
+---
+
+### Visualizing Distributions
+
+- **Histogram**: Shows frequency of values.
+- **Boxplot**: Shows median, quartiles, outliers.
+
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+sns.histplot(data, kde=True)
+plt.title("Histogram")
+plt.show()
+
+sns.boxplot(y=data)
+plt.title("Boxplot")
+plt.show()
+```
+
+---
+
+### Probability Distributions Overview
+
+- **Normal (Gaussian)**: Bell-shaped, many natural phenomena.
+- **Binomial**: Counts successes in a series of yes/no trials.
+- **Poisson**: Counts events in fixed time/space (rare events).
+
+#### Plots
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.stats import norm, binom, poisson
+
+x = np.linspace(-4, 4, 100)
+plt.plot(x, norm.pdf(x, loc=0, scale=1), label="Normal")
+plt.title("Normal Distribution (PDF)")
+plt.legend()
+plt.show()
+
+k = np.arange(0, 11)
+plt.stem(k, binom.pmf(k, n=10, p=0.5), use_line_collection=True)
+plt.title("Binomial Distribution (PMF)")
+plt.show()
+
+lmbda = 3
+k = np.arange(0, 10)
+plt.stem(k, poisson.pmf(k, lmbda), use_line_collection=True)
+plt.title("Poisson Distribution (PMF)")
+plt.show()
+```
+
+---
+
+### Sampling & Central Limit Theorem (CLT)
+
+- **Sampling**: Drawing subsets from data.
+- **CLT**: Means of samples from any distribution become bell-shaped (normal) as sample size grows.
+
+#### Simulation
+
+```python
+import numpy as np
+import matplotlib.pyplot as plt
+
+np.random.seed(1)
+population = np.random.exponential(scale=2, size=10000)
+means = [np.mean(np.random.choice(population, size=30)) for _ in range(1000)]
+
+plt.hist(means, bins=30, color='orange', alpha=0.7)
+plt.title("Sampling Distribution of Mean (CLT in action!)")
+plt.xlabel("Sample Mean")
+plt.ylabel("Frequency")
+plt.show()
+```
+
+---
+
+### Hypothesis Testing
+
+- **What?** Test a claim about data (e.g., "mean is 0").
+- **Z-test/T-test**: Compare means.
+- **p-value**: Probability of seeing data as extreme as observed, assuming null hypothesis is true.
+
+```python
+import numpy as np
+from scipy.stats import ttest_1samp
+
+sample = np.random.normal(loc=1, scale=1, size=30)
+t_stat, p_val = ttest_1samp(sample, popmean=0)
+print("t-statistic:", t_stat)
+print("p-value:", p_val)
+```
+
+*If p-value < 0.05, often considered "statistically significant" (but always interpret in context!).*
+
+---
+
+### Confidence Intervals
+
+- **What?** Range likely to contain the true parameter (e.g., mean), with some confidence (e.g., 95%).
+- **Python Example:**
+
+```python
+import numpy as np
+import scipy.stats as stats
+
+sample = np.random.normal(loc=1, scale=1, size=30)
+sample_mean = np.mean(sample)
+sample_std = np.std(sample, ddof=1)
+n = len(sample)
+conf_int = stats.t.interval(0.95, n-1, loc=sample_mean, scale=sample_std/np.sqrt(n))
+print("95% Confidence Interval:", conf_int)
+```
+
+---
+
+### Correlation vs. Covariance
+
+- **Covariance**: How two variables vary together (units matter).
+- **Correlation**: Standardized covariance, ranges [-1, 1]. 1 = perfect positive, -1 = perfect negative.
+
+```python
+import pandas as pd
+import numpy as np
+
+df = pd.DataFrame({'x': np.random.rand(100), 'y': np.random.rand(100)})
+print("Covariance:\n", df.cov())
+print("Correlation:\n", df.corr())
+```
+
+#### Visualizing with a Heatmap
+
+```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
+plt.title("Correlation Matrix Heatmap")
+plt.show()
+```
+
+---
+
+#### You should be able to:
+- Compute and interpret mean, median, mode, variance, std, IQR.
+- Visualize data with histograms and boxplots.
+- Identify and plot key probability distributions.
+- Explain and simulate the Central Limit Theorem.
+- Run a t-test and interpret p-values.
+- Calculate and interpret correlation and covariance.
 
 ---
 
