@@ -12,7 +12,7 @@
    - [Matrices](#matrices)
    - [Eigenvalues and Eigenvectors](#eigenvalues-and-eigenvectors)
    - [PCA Example](#pca-example-principal-component-analysis-dimensionality-reduction)
-2. [Calculus for Machine Learning](#calculus-for-ml-lightweight)
+2. [Calculus](#calculus)
 3. [Probability](#probability)
 4. [Statistics](#statistics)
 5. [Mathematical Notation Reference](#mathematical-notation-reference)
@@ -528,7 +528,7 @@ plt.show()
 
 ---
 
-## Calculus for ML (Lightweight)
+## Calculus
 
 ### Motivation: Why Calculus is Essential
 - Most ML algorithms are optimization problems: we adjust model parameters to minimize a loss (error) function.
