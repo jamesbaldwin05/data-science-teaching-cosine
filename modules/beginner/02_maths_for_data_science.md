@@ -430,7 +430,7 @@ print(np.linalg.inv(A))
 
 ---
 
-#### Eigenvalues & Eigenvectors
+### Eigenvalues & Eigenvectors
 
 - As discussed, matrices are essentially just a way of representing a linear transformation.  
 For $A = \begin{bmatrix} 4 & 1 \\ 2 & 3 \end{bmatrix}$ and $\vec{v} = \begin{bmatrix} x \\ y \end{bmatrix}$, $\;A\vec{v} = \begin{bmatrix} 4x+y \\ 2x+3y \end{bmatrix}$
@@ -463,7 +463,7 @@ $D = \begin{bmatrix} 5&0\\0&2 \end{bmatrix}$.
 
 - This is powerful in speeding up various computational processes as diagonal matrices are much easier to compute with than other types of matrix.
 
-#### PCA Example: Principal Component Analysis (Dimensionality Reduction)
+### PCA Example: Principal Component Analysis (Dimensionality Reduction)
 - Principal Component Analysis (PCA) is a method for dimensionality reduction. It takes high-dimensional data and finds new axes (called principal components) that capture the most variance in the data and are uncorrelated (perpendicular to each other). It simplifies datasets while keeping most information and makes patterns easier to see.  
 
 *More on variance in the statistics section.*
