@@ -464,35 +464,54 @@ $\begin{bmatrix} 5&0\\0&1 \end{bmatrix} = \begin{bmatrix} 0.75&0.25\\0.25&-0.25 
 - This is powerful in speeding up various compuational processes as diagonal matrices are much easier to compute with than other types of matrix.
 
 #### PCA Example: Principal Component Analysis (Dimensionality Reduction)
-- Principal Component Analysis (PCA) is a method for dimensionality reduction. It takes high-dimensional data and finds new axes (called principal components) that capture the most variance in the data first and are uncorrelated (perpendicular to each other). It simplifies datasets while keeping most information and makes patterns easier to see.
+- Principal Component Analysis (PCA) is a method for dimensionality reduction. It takes high-dimensional data and finds new axes (called principal components) that capture the most variance in the data and are uncorrelated (perpendicular to each other). It simplifies datasets while keeping most information and makes patterns easier to see.  
 
-- Orthonormal vector sets (or orthornomal bases though these do not mean the exact same thing) and diagonalising matrices are heavily used in PCA.
-
-- A simple example in 2D would be a set of data that
 *More on variance in the statistics section.*
+
+- Orthonormal sets (or orthornomal bases, though these do not mean the exact same thing) and diagonalising matrices are heavily used in PCA.
+
+- A simple example in 3D would be a set of data that lies almost in one plane (almost flat) with some tiny variation in one direction. PCA would find:  
+  - PC1 - the direction of greatest variance (lying in the plane)
+  - PC2 - the direction of second greatest variance (also lying in the plane)
+  - PC3 - the direction of least variance (perpendicular to the plane and pointing "out" from it)  
+- These components are all perpendicular to eachother (they form an orthogonal/orthonormal basis).
 
 ```python
 import numpy as np
-from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
+from sklearn.decomposition import PCA
 
-# Toy dataset: 100 points in 2D
-np.random.seed(0)
-X = np.dot(np.random.rand(100, 2), np.array([[3, 1], [1, 2]])) + np.array([5, 10])
+np.random.seed(42)
+n = 20
+x = np.random.normal(0, 1, n)
+y = 1.5 * x + 0.5 + np.random.normal(0, 0.4, n)
+data = np.column_stack((x, y))
 
-pca = PCA()
-pca.fit(X)
+pca = PCA(n_components=2)
+pca.fit(data)
+components = pca.components_                    #unit vectors
 explained = pca.explained_variance_ratio_
+mean = pca.mean_
 
-plt.figure(figsize=(5, 3))
-plt.bar([1, 2], explained, color='skyblue')
-plt.xlabel('Principal Component')
-plt.ylabel('Explained Variance Ratio')
-plt.title('Scree Plot')
+plt.figure(figsize=(6, 6))
+plt.scatter(data[:, 0], data[:, 1], color='skyblue', s=50, label='Data points')
+
+plt.scatter(mean[0], mean[1], color='red', marker='x', s=80, label='Mean')
+
+scale = 3
+for i, (comp, var) in enumerate(zip(components, explained)):
+    line = np.vstack([mean - comp * scale, mean + comp * scale])
+    plt.plot(line[:, 0], line[:, 1],
+             linewidth=2,
+             label=f'PC{i+1} ({var:.2f} var)')
+
+plt.axis('equal')
+plt.xlabel('Feature 1')
+plt.ylabel('Feature 2')
+plt.title('PCA on 2D Correlated Data')
+plt.legend()
 plt.show()
 ```
-
-*PCA finds directions ("principal components") that capture the most variance in data.*
 
 ---
 
