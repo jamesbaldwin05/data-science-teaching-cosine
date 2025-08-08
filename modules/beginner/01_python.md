@@ -612,10 +612,6 @@ data = np.arange(6).reshape(2, 3)
 mean_by_column = data.mean(axis=0)
 centered = data - mean_by_column
 print(centered)
-
-# Linear algebra: matrix multiplication and eigendecomposition
-product = data @ data.T
-eigenvalues, eigenvectors = np.linalg.eig(product)  # eigenvalues ≈ [54., 1.]
 ```
 
 ---
