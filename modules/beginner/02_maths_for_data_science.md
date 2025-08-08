@@ -523,7 +523,7 @@ plt.show()
 - Explain scalars, vectors, matrices, and their shapes.
 - Compute vector and matrix operations in Python.
 - Understand matrix multiplication and broadcasting.
-- Recognize the role of eigenvalues/eigenvectors (e.g., in PCA).
+- Recognize the role of eigenvalues/eigenvectors (e.g. in PCA).
 - Interpret basic matrix concepts (identity, inverse).
 
 ---
