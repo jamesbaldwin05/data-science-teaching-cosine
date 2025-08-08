@@ -383,42 +383,96 @@ print(D)
 ---
 
 #### Broadcasting
-- Although it is not techn
+- Broadcasting in NumPy is a way to perform operations on arrays of different shapes by automatically expanding the smaller array to match the shape of the larger one without actually copying data. For example, adding a scalar to a matrix adds the scalar to every element.
+
+- This is **not** mathematically valid in strict linear algebra because operations like addition are only defined for arrays (or matrices/vectors) of the same shape. Broadcasting relaxes that rule for programming convenience, but it's a computational shortcut, not a formal mathematical operation.
+
+
 ```python
 import numpy as np
+
 # Add a vector to each row of a matrix
-A = np.array([[1, 2], [3, 4], [5, 6]])
+B = np.array([[1, 2], [3, 4], [5, 6]])
 v = np.array([10, 100])
-print(A + v)
+print(B + v)
 ```
 
 ---
 
-### Determinant & Inverse
+#### Determinant & Inverse
 
 - **Determinant**: A single number summarizing a square matrix. If $|A| = 0$, matrix can't be inverted.
-- **Inverse**: $A^{-1}$ "undoes" $A$ (if it exists). $A A^{-1} = I$
-- **When do you need them?** Inverting matrices is used for solving equations, but in data science it's often avoided for speed/stability.
 
 ```python
-from numpy.linalg import det, inv
+import numpy as np
 
-M = np.array([[4, 7],
-              [2, 6]])
-print("Determinant:", det(M))
-print("Inverse:\n", inv(M))
+A = np.array([[3, 5, 2],
+              [1, 8, 3],
+              [4, 4, 7]])
+
+print("Determinant of A:", np.linalg.det(A))
+```
+
+- **Inverse**: $A^{-1}$ "undoes" $A$ (if it exists) i.e. $A A^{-1} = I$. Used for solving systems of equations.
+
+```python
+import numpy as np
+
+A = np.array([[3, 5, 2],
+              [1, 8, 3],
+              [4, 4, 7]])
+
+print("Inverse of A:")
+print(np.linalg.inv(A))
 ```
 
 ---
 
-### Eigenvalues & Eigenvectors (+ PCA Demo)
+#### Eigenvalues & Eigenvectors
 
-- **What?** Eigenvectors are directions that stay the same when a matrix is applied; eigenvalues tell how much they're stretched.
-- **Why?** Foundational for PCA (dimensionality reduction), stability, understanding transformations.
+- As discussed, matrices are essentially just a way of representing a linear transormation.  
+For $A = \begin{bmatrix} 3 & 2 \\ 4 & 1 \end{bmatrix}$ and $\vec{v} = \begin{bmatrix} x \\ y \end{bmatrix}$, $\;A\vec{v} = \begin{bmatrix} 3x+2y \\ 4x+y \end{bmatrix}$
+
+- This means if we can find a way of representing the same linear transformation with a different matrix, one that simply scales vectors along special direcctions, then understanding and processing the matrix becomes a lot easier.
+
+- These special directions are called eigenvectors and the scaling factors are called eigenvalues.  In other words, for eigenvector $\vec{v}$ and eigenvalue $\lambda$, $\; A\vec{v}= \lambda \vec{v}$, which means that the transformation A simply streches the eigenvector without changing its direction. Each eigenvector corresponds to an eigenvalue and vice versa.
+
+- Eigenvectors and eigenvalues exist for every square matrix if we allow for complex numbers, but they are not always real.   
+
+- However, they can be used to represent a matrix in diagonal form which, due to the large number of zeros, greatly speed up comutation time.
+
+- For example, consider the matrix $A = \begin{bmatrix} 4 & 1\\2&3 \end{bmatrix}$. The eigenvalues for this matrix are 5 and 1 (can be calculated on a computer or using methods such as the characteristic equation). To find the eigenvectors for this matrix, we need to solve for each eigenvalue individually:  
+For $\lambda = 5$,  
+$\begin{bmatrix} 4&1\\2&3 \end{bmatrix} \vec{v} = 5\; \vec{v}$  
+$\begin{bmatrix} 4&1\\2&3 \end{bmatrix} \vec{v} = 5\; I\;\vec{v}$  
+$\begin{bmatrix} 4&1\\2&3 \end{bmatrix} \vec{v} - 5\; I\;\vec{v} = \vec{0}$  
+$(\begin{bmatrix} 4&1\\2&3 \end{bmatrix} - 5\; \begin{bmatrix} 1&0\\0&1 \end{bmatrix})\vec{v} = \vec{0}$  
+$\begin{bmatrix} -1&1\\2&-2 \end{bmatrix} \begin{bmatrix} x\\ y \end{bmatrix} = \begin{bmatrix} 0\\ 0 \end{bmatrix}$  
+$-x+y=0,\; 2x-2y=0$ solved simultaneously gives $x=1,\; y=1$  
+So for eigenvalue $\lambda=5$, the eigenvector is $\begin{bmatrix} 1\\ 1 \end{bmatrix}$.  
+Same method for $\lambda=1$ gives the eigenvector $\begin{bmatrix} 1\\ -3 \end{bmatrix}$.  
+
+- We can now rewrite $A$ as a diagonal matrix using the formula $D=P^{-1}AP\;(or A=PDP^{-1})$ where $P$ is the matrix found by using the eigenvectors as columns of the matrix (and $P^{-1}$ is the inverse of this matrix). In our example,  
+$P = \begin{bmatrix} 1&1\\1&-3 \end{bmatrix}$ and  $P^{-1} = \begin{bmatrix} 0.75&0.25\\0.25&-0.25 \end{bmatrix}$.
+
+- $D$ is the matrix with the eigenvalues corresponding to $P$ across the diagonal, in our example,  
+$D = \begin{bmatrix} 5&0\\0&1 \end{bmatrix}$.
+
+- Using all this, we can show that in our example, using $D = P^{-1}AP$:  
+$\begin{bmatrix} 5&0\\0&1 \end{bmatrix} = \begin{bmatrix} 0.75&0.25\\0.25&-0.25 \end{bmatrix} \begin{bmatrix} 4&1\\2&3 \end{bmatrix} \begin{bmatrix} 1&1\\1&-3 \end{bmatrix}$
+
+- This is powerful in speeding up various compuational processes as diagonal matrices are much easier to compute with than other types of matrix.
 
 #### PCA Example: Principal Component Analysis (Dimensionality Reduction)
+- Principal Component Analysis (PCA) is a method for dimensionality reduction. It takes high-dimensional data and finds new axes (called principal components) that capture the most variance in the data first and are uncorrelated (perpendicular to each other). It simplifies datasets while keeping most information and makes patterns easier to see.
+
+- Orthonormal vector sets (or orthornomal bases though these do not mean the exact same thing) and diagonalising matrices are heavily used in PCA.
+
+- A simple example in 2D would be a set of data that
+*More on variance in the statistics section.*
 
 ```python
+import numpy as np
 from sklearn.decomposition import PCA
 import matplotlib.pyplot as plt
 
