@@ -38,7 +38,11 @@
 
 **Beginner**
 - 01 Python Overview
-- 02 R Overview
+- 02 Maths & Data Science
+  - [vectors](modules/beginner/02_maths_for_data_science.md#basic-probability-concepts)
+  - [matrices](modules/beginner/02_maths_for_data_science.md#conditional-probability)
+  - [probability](modules/beginner/02_maths_for_data_science.md#basic-probability-concepts)
+  - [bayes-theorem](modules/beginner/02_maths_for_data_science.md#bayes-theorem)
 - 03 Stats & Math Basics
 - 04 Data Loading & Visualization
 - 05 Pandas Basics
