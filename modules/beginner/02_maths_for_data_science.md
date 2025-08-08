@@ -96,7 +96,7 @@ import numpy as np
 a = np.array([1, 2, 6])
 a_norm = np.linalg.norm(a)
 a_unit = a / a_norm
-print("Unit of a: ", a_unit)                # The norm of this vector is 1
+print("Unit vector of a: ", a_unit)                # The norm of this vector is 1
 ```
 
 - **Cosine Similarity**: Using the formula below, we can derive a relationship between the dot product and the angle between two vectors.  
@@ -137,7 +137,7 @@ $$
 - **Orthogonal Sets**: If the dot product of two vectors is 0, they are said to be orthogonal. Geometrically this can be thought of as the two vectors being perpendicular, since $\arccos(0)=\dfrac{\pi}{2}$.  
 A set of vectors {$\vec{v_1}, \vec{v_2}, ...., \vec{v_n}$} is called an orthogonal set if every single pair of vectors in the set are orthogonal to each other. This means every vector in the set points in independent directions and orthogonal sets are always linearly independent.
 
-- **Orthonormal Sets**: If each vector in an orthogonal set has unit length, the set is called an orthonormal set. These are useful for simplifying and speeding up computation. There are algorithms such as the Gram-Schmidt procedure that form a orthonormal set from a set of linearly independent vectors.
+- **Orthonormal Sets**: If each vector in an orthogonal set has unit length, the set is called an orthonormal set. These are useful for simplifying and speeding up computation. There are algorithms such as the Gram-Schmidt procedure that form an orthonormal set from a set of linearly independent vectors.
 
 - **Projection**: The projection of a vector onto another vector tells us how much of the first vector lies in the direction of the second.  
 For $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$, the projection of $\vec{a}$ onto $\vec{b}$ is calculated by the formula:  
@@ -218,6 +218,8 @@ print(A-B)
 
 - **Scalar Multiplication**: Multiply each element by a scalar.
 
+If $c$ is a scalar and $\vec{a} = [a_1, a_2, a_3]$, then $c\vec{a} = [c a_1, c a_2, c a_3]$.
+
 ```python
 import numpy as np
 A = np.array([[3, 5, 2],
@@ -282,7 +284,7 @@ print("BA:")
 print(B @ A)
 ```
 
-- The algorithm for multiplying two matrixes involves a lot of calculations and is therefore quite long to explain (although the calculations are simple and it will not take long to understand).
+- The algorithm for multiplying two matrices involves a lot of calculations and is therefore quite long to explain (although the calculations are simple and it will not take long to understand).
 - It is probably worth learning if you are new to matrices entirely. There is a video [here](https://www.youtube.com/watch?v=2spTnAiQg4M) with a clear explanation.
 It will be ignored here since numpy can do all these calculations very fast and under the hood anyway.
 
@@ -298,11 +300,11 @@ $A\vec{v} = \begin{bmatrix}
 a_{11}v_1 + a_{12}v_2 + \cdots + a_{1n}v_n \\
 a_{21}v_1 + a_{22}v_2 + \cdots + a_{2n}v_n \\
 \vdots \\
-a_{m1}v_1 + a_{m2}v_2 + \cdots + a_{mn}v_n
+a_{m1}v_1 + a_{m2}v_2 + a_{mn}v_n
 \end{bmatrix}$
 
 - Note that the result is a vector.
-- This is equivalent to doing the dot product of each row in the matrix by the vector.
+- This is equivalent to doing the dot product of each row in the matrix with the vector.
 
 ```python
 import numpy as np
@@ -355,7 +357,7 @@ $A = \begin{bmatrix}
 -3 & 0 & 0\\
 9 & -2 & 0\\
 4 & 3 & 5\end{bmatrix}$
-- **Symmetric matrix**: A square matrix that is equal to its tranpose ($A=A^T$).  
+- **Symmetric matrix**: A square matrix that is equal to its transpose ($A=A^T$).  
 For example,
 $A = \begin{bmatrix}
 2 & 3 & 4\\
@@ -367,9 +369,9 @@ $A = \begin{bmatrix}
 0 & 2 & -4\\
 -2 & 0 & 6\\
 4 & -6 & 0\end{bmatrix}$
-- **Orthogonal matrix**: A sqaure matrix whose transpose is also its inverse ($A^T=A^{-1}$). Columns (and rows) and orthonormal vectors.
+- **Orthogonal matrix**: A square matrix whose transpose is also its inverse ($A^T=A^{-1}$). Columns (and rows) are orthonormal vectors.
 - **Singular matrix**: A square matrix that does not have an inverse (its determinant is 0).
-- **Diagonalizable matrix**: A matrix that can be written as $A=PDP^-1$ where $D$ is a diagonal matrix.  
+- **Diagonalizable matrix**: A matrix that can be written as $A = P D P^{-1}$ where $D$ is a diagonal matrix.  
 *More on inverses, determinants and diagonalizable matrices soon.*
 
 ```python
@@ -385,7 +387,7 @@ print(D)
 #### Broadcasting
 - Broadcasting in NumPy is a way to perform operations on arrays of different shapes by automatically expanding the smaller array to match the shape of the larger one without actually copying data. For example, adding a scalar to a matrix adds the scalar to every element.
 
-- This is **not** mathematically valid in strict linear algebra because operations like addition are only defined for arrays (or matrices/vectors) of the same shape. Broadcasting relaxes that rule for programming convenience, but it's a computational shortcut, not a formal mathematical operation.
+- This is **not** mathematically valid in strict linear algebra because operations like addition are only defined for arrays (or matrices/vectors) of the same shape. Broadcasting relaxes that rule for programming convenience, but it's a computational shortcut, not a formal mathematical operation. Broadcasting corresponds to implicitly repeating a vector across rows or columns as needed for the operation (a programming convenience), even though classical linear algebra only defines addition for same-shaped arrays.
 
 
 ```python
@@ -401,7 +403,7 @@ print(B + v)
 
 #### Determinant & Inverse
 
-- **Determinant**: A single number summarizing a square matrix. If $|A| = 0$, matrix can't be inverted.
+- **Determinant**: A single number summarizing a square matrix. If $\det(A) = 0$, matrix can't be inverted.
 
 ```python
 import numpy as np
@@ -430,51 +432,49 @@ print(np.linalg.inv(A))
 
 #### Eigenvalues & Eigenvectors
 
-- As discussed, matrices are essentially just a way of representing a linear transormation.  
-For $A = \begin{bmatrix} 3 & 2 \\ 4 & 1 \end{bmatrix}$ and $\vec{v} = \begin{bmatrix} x \\ y \end{bmatrix}$, $\;A\vec{v} = \begin{bmatrix} 3x+2y \\ 4x+y \end{bmatrix}$
+- As discussed, matrices are essentially just a way of representing a linear transformation.  
+For $A = \begin{bmatrix} 4 & 1 \\ 2 & 3 \end{bmatrix}$ and $\vec{v} = \begin{bmatrix} x \\ y \end{bmatrix}$, $\;A\vec{v} = \begin{bmatrix} 4x+y \\ 2x+3y \end{bmatrix}$
 
-- This means if we can find a way of representing the same linear transformation with a different matrix, one that simply scales vectors along special direcctions, then understanding and processing the matrix becomes a lot easier.
+- This means if we can find a way of representing the same linear transformation with a different matrix, one that simply scales vectors along special directions, then understanding and processing the matrix becomes a lot easier.
 
-- These special directions are called eigenvectors and the scaling factors are called eigenvalues.  In other words, for eigenvector $\vec{v}$ and eigenvalue $\lambda$, $\; A\vec{v}= \lambda \vec{v}$, which means that the transformation A simply streches the eigenvector without changing its direction. Each eigenvector corresponds to an eigenvalue and vice versa.
+- These special directions are called eigenvectors and the scaling factors are called eigenvalues.  In other words, for eigenvector $\vec{v}$ and eigenvalue $\lambda$, $\; A\vec{v}= \lambda \vec{v}$, which means that the transformation $A$ simply stretches the eigenvector without changing its direction. Each eigenvector corresponds to an eigenvalue and vice versa.
 
 - Eigenvectors and eigenvalues exist for every square matrix if we allow for complex numbers, but they are not always real.   
 
-- However, they can be used to represent a matrix in diagonal form which, due to the large number of zeros, greatly speed up comutation time.
+- However, they can be used to represent a matrix in diagonal form which, due to the large number of zeros, greatly speeds up computation time.
 
-- For example, consider the matrix $A = \begin{bmatrix} 4 & 1\\2&3 \end{bmatrix}$. The eigenvalues for this matrix are 5 and 1 (can be calculated on a computer or using methods such as the characteristic equation). To find the eigenvectors for this matrix, we need to solve for each eigenvalue individually:  
+- For example, consider the matrix $A = \begin{bmatrix} 4 & 1\\2&3 \end{bmatrix}$. The eigenvalues for this matrix are $5$ and $2$ (these can be calculated on a computer or using methods such as the characteristic equation). To find the eigenvectors for this matrix, we solve for each eigenvalue individually:  
 For $\lambda = 5$,  
 $\begin{bmatrix} 4&1\\2&3 \end{bmatrix} \vec{v} = 5\; \vec{v}$  
-$\begin{bmatrix} 4&1\\2&3 \end{bmatrix} \vec{v} = 5\; I\;\vec{v}$  
 $\begin{bmatrix} 4&1\\2&3 \end{bmatrix} \vec{v} - 5\; I\;\vec{v} = \vec{0}$  
 $(\begin{bmatrix} 4&1\\2&3 \end{bmatrix} - 5\; \begin{bmatrix} 1&0\\0&1 \end{bmatrix})\vec{v} = \vec{0}$  
 $\begin{bmatrix} -1&1\\2&-2 \end{bmatrix} \begin{bmatrix} x\\ y \end{bmatrix} = \begin{bmatrix} 0\\ 0 \end{bmatrix}$  
 $-x+y=0,\; 2x-2y=0$ solved simultaneously gives $x=1,\; y=1$  
 So for eigenvalue $\lambda=5$, the eigenvector is $\begin{bmatrix} 1\\ 1 \end{bmatrix}$.  
-Same method for $\lambda=1$ gives the eigenvector $\begin{bmatrix} 1\\ -3 \end{bmatrix}$.  
+For $\lambda=2$, the eigenvector is $\begin{bmatrix} 1\\ -2 \end{bmatrix}$.  
 
-- We can now rewrite $A$ as a diagonal matrix using the formula $D=P^{-1}AP\;(or A=PDP^{-1})$ where $P$ is the matrix found by using the eigenvectors as columns of the matrix (and $P^{-1}$ is the inverse of this matrix). In our example,  
-$P = \begin{bmatrix} 1&1\\1&-3 \end{bmatrix}$ and  $P^{-1} = \begin{bmatrix} 0.75&0.25\\0.25&-0.25 \end{bmatrix}$.
+- We can now rewrite $A$ as a diagonal matrix using the formulas $A = P D P^{-1}$ and $D = P^{-1} A P$, where $P$ is the matrix formed by using the eigenvectors as columns of the matrix (and $P^{-1}$ is the inverse of this matrix). In our example,  
+$P = \begin{bmatrix} 1&1\\1&-2 \end{bmatrix}$ and  $P^{-1} = \begin{bmatrix} 2/3&1/3\\1/3&-1/3 \end{bmatrix}$.
 
 - $D$ is the matrix with the eigenvalues corresponding to $P$ across the diagonal, in our example,  
-$D = \begin{bmatrix} 5&0\\0&1 \end{bmatrix}$.
+$D = \begin{bmatrix} 5&0\\0&2 \end{bmatrix}$.
 
-- Using all this, we can show that in our example, using $D = P^{-1}AP$:  
-$\begin{bmatrix} 5&0\\0&1 \end{bmatrix} = \begin{bmatrix} 0.75&0.25\\0.25&-0.25 \end{bmatrix} \begin{bmatrix} 4&1\\2&3 \end{bmatrix} \begin{bmatrix} 1&1\\1&-3 \end{bmatrix}$
+- Using all this, we can show that in our example, $A = P D P^{-1}$ and $D = P^{-1} A P$.
 
-- This is powerful in speeding up various compuational processes as diagonal matrices are much easier to compute with than other types of matrix.
+- This is powerful in speeding up various computational processes as diagonal matrices are much easier to compute with than other types of matrix.
 
 #### PCA Example: Principal Component Analysis (Dimensionality Reduction)
 - Principal Component Analysis (PCA) is a method for dimensionality reduction. It takes high-dimensional data and finds new axes (called principal components) that capture the most variance in the data and are uncorrelated (perpendicular to each other). It simplifies datasets while keeping most information and makes patterns easier to see.  
 
 *More on variance in the statistics section.*
 
-- Orthonormal sets (or orthornomal bases, though these do not mean the exact same thing) and diagonalising matrices are heavily used in PCA.
+- Orthonormal sets (or orthonormal bases, though these do not mean the exact same thing) and diagonalizing matrices are heavily used in PCA.
 
 - A simple example in 3D would be a set of data that lies almost in one plane (almost flat) with some tiny variation in one direction. PCA would find:  
   - PC1 - the direction of greatest variance (lying in the plane)
   - PC2 - the direction of second greatest variance (also lying in the plane)
   - PC3 - the direction of least variance (perpendicular to the plane and pointing "out" from it)  
-- These components are all perpendicular to eachother (they form an orthogonal/orthonormal basis).
+- These components are all perpendicular to each other (they form an orthogonal/orthonormal basis).
 
 ```python
 import numpy as np
@@ -584,6 +584,7 @@ plt.show()
 
 ```python
 import numpy as np
+import matplotlib.pyplot as plt
 from scipy.stats import norm, binom, poisson
 
 x = np.linspace(-4, 4, 100)
@@ -614,6 +615,9 @@ plt.show()
 #### Simulation
 
 ```python
+import numpy as np
+import matplotlib.pyplot as plt
+
 np.random.seed(1)
 population = np.random.exponential(scale=2, size=10000)
 means = [np.mean(np.random.choice(population, size=30)) for _ in range(1000)]
@@ -634,6 +638,7 @@ plt.show()
 - **p-value**: Probability of seeing data as extreme as observed, assuming null hypothesis is true.
 
 ```python
+import numpy as np
 from scipy.stats import ttest_1samp
 
 sample = np.random.normal(loc=1, scale=1, size=30)
@@ -652,8 +657,10 @@ print("p-value:", p_val)
 - **Python Example:**
 
 ```python
+import numpy as np
 import scipy.stats as stats
 
+sample = np.random.normal(loc=1, scale=1, size=30)
 sample_mean = np.mean(sample)
 sample_std = np.std(sample, ddof=1)
 n = len(sample)
@@ -669,6 +676,9 @@ print("95% Confidence Interval:", conf_int)
 - **Correlation**: Standardized covariance, ranges [-1, 1]. 1 = perfect positive, -1 = perfect negative.
 
 ```python
+import pandas as pd
+import numpy as np
+
 df = pd.DataFrame({'x': np.random.rand(100), 'y': np.random.rand(100)})
 print("Covariance:\n", df.cov())
 print("Correlation:\n", df.corr())
@@ -677,6 +687,9 @@ print("Correlation:\n", df.corr())
 #### Visualizing with a Heatmap
 
 ```python
+import seaborn as sns
+import matplotlib.pyplot as plt
+
 sns.heatmap(df.corr(), annot=True, cmap='coolwarm')
 plt.title("Correlation Matrix Heatmap")
 plt.show()
@@ -751,8 +764,10 @@ print("Probability actually sick if test is positive:", P_D_pos)
 - **Poisson**: Number of rare events in fixed time/space (e.g., calls per minute).
 
 ```python
-# Bernoulli
-from scipy.stats import bernoulli
+# Bernoulli, Binomial, Poisson distributions
+from scipy.stats import bernoulli, binom, poisson
+import matplotlib.pyplot as plt
+
 outcomes = bernoulli.rvs(0.7, size=10)
 print("Bernoulli samples:", outcomes)
 
@@ -779,6 +794,7 @@ plt.show()
 
 ```python
 from scipy.stats import uniform, expon
+import matplotlib.pyplot as plt
 
 # Uniform
 plt.hist(uniform.rvs(loc=0, scale=1, size=1000), bins=20, alpha=0.7)
@@ -818,6 +834,7 @@ plt.show()
 - **Derivative**: Rate of change; slope of a function at a point.
 
 ```python
+import numpy as np
 import matplotlib.pyplot as plt
 
 x = np.linspace(-3, 3, 100)
@@ -887,8 +904,6 @@ plt.show()
 
 | Symbol     | Name/Meaning                              | Plain English                | Python Equivalent            |
 |------------|-------------------------------------------|------------------------------|------------------------------|
-| $Σ$        | Sigma, summation                          | Add up a sequence            | `sum()`                      |
-| $Π$        | Pi, product                               | Multiply a sequence          | `np.prod()`                  |
 | $∑$        | Summation                                 | Add over index (e.g., $∑_i x_i$) | `sum(x)`                 |
 | $∏$        | Product                                   | Multiply over index          | `np.prod(x)`                 |
 | $∇$        | Nabla, gradient                           | Vector of partial derivatives| `np.gradient()`, manual      |
@@ -938,13 +953,13 @@ Try these to practice your new math skills! (See the [Python lesson](01_python.m
    - Perform PCA, plot the explained variance (scree plot) and a scatterplot of the first two principal components.
 
 *Want to go further?*  
-- Try using Scipy's `curve_fit` to fit a curve to noisy data.
+- Try using SciPy's `curve_fit` to fit a curve to noisy data.
 - Write a function that computes the variance and standard deviation *by hand* (no NumPy).
 
 ---
 
 *Next steps:*  
 - Keep practicing! Math is a skill—use it regularly and it will become second nature.
-- Ready to move on? Check out the next lesson for practical machine learning.
+- Ready to move on? Check out the next lesson on R basics.
 
 ---

@@ -60,7 +60,7 @@ print(temperatures_f)
 **You should be able to:**  
 - Create, access, and modify lists  
 - Write and read list comprehensions (including nested comprehensions)  
-- Recognize when to use lists versus numpy arrays for large, homogeneous data
+- Recognize when to use lists versus NumPy arrays for large, homogeneous data
 
 ---
 
@@ -179,7 +179,7 @@ You can slice lists of lists (matrices) or strings:
 ```python
 matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 row = matrix[1]      # row = [4, 5, 6]
-submatrix = [row[1:] for row in matrix[:2]]  # submatrix = [[2, 3], [5, 6]]
+submatrix = [r[1:] for r in matrix[:2]]  # submatrix = [[2, 3], [5, 6]]
 
 text = "data science"
 print(text[5:12])
@@ -195,7 +195,7 @@ reversed_data = data[::-1] # reversed_data = [5, 4, 3, 2, 1]
 ```
 
 **You should be able to:**  
-- Use slicing for lists, strings, and (with libraries) numpy arrays  
+- Use slicing for lists, strings, and (with libraries) NumPy arrays  
 - Read and write multi-level slices  
 - Understand step and negative indexing
 
@@ -267,10 +267,10 @@ print(data)
 
 ## 8. itertools & functools
 
-**What:** These standard libraries provide advanced iteration and functional utilities (e.g., grouping, mapping, accumulating).
+**What:** These standard library modules provide advanced iteration and functional utilities (e.g., grouping, mapping, accumulating).
 
 - `itertools.chain`: concatenate iterables  
-- `itertools.product`: cartesian product  
+- `itertools.product`: Cartesian product  
 - `itertools.combinations`: all possible pairs/groups  
 - `itertools.groupby`: group consecutive items  
 - `functools.reduce`: accumulate a result  
@@ -346,7 +346,7 @@ m = Measurement(1, 3.2)
 **What:** Use `with` to manage resources (files, DB connections) safely—ensures cleanup even on error.
 
 **How it works:**  
-Context managers implement the `__enter__` and `__exit__` methods, which setup and teardown resources automatically. You can write them as classes or using `contextlib.contextmanager`.
+Context managers implement the `__enter__` and `__exit__` methods, which set up and tear down resources automatically. You can write them as classes or using `contextlib.contextmanager`.
 
 **Example:**
 
@@ -600,9 +600,9 @@ Mastering Python for data science also means knowing the landscape of essential 
 
 ## Numpy
 
-Numpy is the foundational package for numerical computing in Python, providing fast, efficient arrays and a wealth of mathematical functions. It’s essential for scientific and data-intensive work, powering the core of nearly every other data science library in the Python ecosystem.
+NumPy is the foundational package for numerical computing in Python, providing fast, efficient arrays and a wealth of mathematical functions. It’s essential for scientific and data-intensive work, powering the core of nearly every other data science library in the Python ecosystem.
 
-Numpy’s ndarrays enable vectorized, element-wise operations and support broadcasting, making them far more powerful and efficient than native Python lists. Key submodules include `numpy.linalg` for linear algebra, `numpy.random` for random sampling, and `numpy.fft` for signal processing. Common use-cases include numerical simulations, matrix operations, and rapid prototyping of algorithms.
+NumPy’s ndarrays enable vectorized, element-wise operations and support broadcasting, making them far more powerful and efficient than native Python lists. Key submodules include `numpy.linalg` for linear algebra, `numpy.random` for random sampling, and `numpy.fft` for signal processing. Common use-cases include numerical simulations, matrix operations, and rapid prototyping of algorithms.
 
 ```python
 import numpy as np
@@ -615,7 +615,7 @@ print(centered)
 
 # Linear algebra: matrix multiplication and eigendecomposition
 product = data @ data.T
-eigenvalues, eigenvectors = np.linalg.eig(product) # eigenvalues = [ 0.15496668 81.84503332] approx
+eigenvalues, eigenvectors = np.linalg.eig(product)  # eigenvalues ≈ [54., 1.]
 ```
 
 ---
@@ -658,11 +658,17 @@ With these libraries, you can create a wide range of visualizations: scatter plo
 ```python
 import matplotlib.pyplot as plt
 import seaborn as sns
+import pandas as pd
 
-# Load a built-in dataset and visualize relationships
-tips = sns.load_dataset("tips")
-sns.scatterplot(data=tips, x="total_bill", y="tip", hue="time")
-sns.regplot(data=tips, x="total_bill", y="tip", scatter=False, color="red")
+# Use a small offline DataFrame to visualize relationships
+df = pd.DataFrame({
+    "total_bill": [10, 20, 30, 40, 50],
+    "tip": [1.5, 3.0, 4.0, 5.5, 8.0],
+    "time": ["Lunch", "Dinner", "Dinner", "Lunch", "Dinner"],
+})
+
+sns.scatterplot(data=df, x="total_bill", y="tip", hue="time")
+sns.regplot(data=df, x="total_bill", y="tip", scatter=False, color="red")
 
 plt.title("Tip vs. Total Bill")
 plt.xlabel("Total Bill ($)")
@@ -696,11 +702,11 @@ print(f"Mean CV accuracy: {scores.mean():.2%}")
 
 ---
 
-## Scipy
+## SciPy
 
-Scientific computing: stats, optimization, signal/image processing. Scipy extends numpy with a vast library of high-level scientific algorithms and utilities for statistics, optimization, integration, interpolation, and more.
+Scientific computing: stats, optimization, signal/image processing. SciPy extends NumPy with a vast library of high-level scientific algorithms and utilities for statistics, optimization, integration, interpolation, and more.
 
-Scipy is organized into key submodules such as `scipy.optimize` (optimization and curve fitting), `scipy.stats` (statistical tests and distributions), `scipy.integrate` (numerical integration), `scipy.signal` (signal processing), and `scipy.sparse` (sparse matrices). Typical uses include fitting models to data, running hypothesis tests, integrating functions, or working with large, sparse datasets.
+SciPy is organized into key submodules such as `scipy.optimize` (optimization and curve fitting), `scipy.stats` (statistical tests and distributions), `scipy.integrate` (numerical integration), `scipy.signal` (signal processing), and `scipy.sparse` (sparse matrices). Typical uses include fitting models to data, running hypothesis tests, integrating functions, or working with large, sparse datasets.
 
 ```python
 from scipy import stats
@@ -742,7 +748,7 @@ When working in a notebook, you execute code cells individually, and the results
 
 - Data science with Python builds on solid core language skills—review as needed!
 - Mastering lists, dicts, comprehensions, generators, and classes is essential for readable, high-performance code.
-- Key ecosystem libraries like numpy, pandas, matplotlib, and scikit-learn are foundational—learn their idioms and APIs.
+- Key ecosystem libraries like NumPy, pandas, Matplotlib, and scikit-learn are foundational—learn their idioms and APIs.
 - Robust workflow includes using virtual environments, testing, logging, and performance-aware coding.
 
 ### Exercise
@@ -750,5 +756,6 @@ When working in a notebook, you execute code cells individually, and the results
 Generate a list `squares` containing the squares of numbers 1-10 using a list comprehension, then print the result.
 """
 ```python
-squares = []
+squares = [n**2 for n in range(1, 11)]
+print(squares)
 ```
