@@ -137,7 +137,7 @@ $$
 - **Orthogonal Sets**: If the dot product of two vectors is 0, they are said to be orthogonal. Geometrically this can be thought of as the two vectors being perpendicular, since $\arccos(0)=\dfrac{\pi}{2}$.  
 A set of vectors {$\vec{v_1}, \vec{v_2}, ...., \vec{v_n}$} is called an orthogonal set if every single pair of vectors in the set are orthogonal to each other. This means every vector in the set points in independent directions and orthogonal sets are always linearly independent.
 
-- **Orthonormal Sets**: If each vector in an orthogonal set has unit length, the set is called an orthonormal set. These are useful for simplifying and speeding up computation. There are algorithms such as the Gram-Schmidt procedure that form a orthonormal set from a set of linearly independent vectors.
+- **Orthonormal Sets**: If each vector in an orthogonal set has unit length, the set is called an orthonormal set. These are useful for simplifying and speeding up computation. There are algorithms such as the Gram-Schmidt procedure that form an orthonormal set from a set of linearly independent vectors.
 
 - **Projection**: The projection of a vector onto another vector tells us how much of the first vector lies in the direction of the second.  
 For $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$, the projection of $\vec{a}$ onto $\vec{b}$ is calculated by the formula:  
@@ -284,7 +284,7 @@ print("BA:")
 print(B @ A)
 ```
 
-- The algorithm for multiplying two matrixes involves a lot of calculations and is therefore quite long to explain (although the calculations are simple and it will not take long to understand).
+- The algorithm for multiplying two matrices involves a lot of calculations and is therefore quite long to explain (although the calculations are simple and it will not take long to understand).
 - It is probably worth learning if you are new to matrices entirely. There is a video [here](https://www.youtube.com/watch?v=2spTnAiQg4M) with a clear explanation.
 It will be ignored here since numpy can do all these calculations very fast and under the hood anyway.
 
@@ -300,11 +300,11 @@ $A\vec{v} = \begin{bmatrix}
 a_{11}v_1 + a_{12}v_2 + \cdots + a_{1n}v_n \\
 a_{21}v_1 + a_{22}v_2 + \cdots + a_{2n}v_n \\
 \vdots \\
-a_{m1}v_1 + a_{m2}v_2 + \cdots + a_{mn}v_n
+a_{m1}v_1 + a_{m2}v_2 + a_{mn}v_n
 \end{bmatrix}$
 
 - Note that the result is a vector.
-- This is equivalent to doing the dot product of each row in the matrix by the vector.
+- This is equivalent to doing the dot product of each row in the matrix with the vector.
 
 ```python
 import numpy as np
@@ -371,7 +371,7 @@ $A = \begin{bmatrix}
 4 & -6 & 0\end{bmatrix}$
 - **Orthogonal matrix**: A square matrix whose transpose is also its inverse ($A^T=A^{-1}$). Columns (and rows) are orthonormal vectors.
 - **Singular matrix**: A square matrix that does not have an inverse (its determinant is 0).
-- **Diagonalizable matrix**: A matrix that can be written as $A=PDP^-1$ where $D$ is a diagonal matrix.  
+- **Diagonalizable matrix**: A matrix that can be written as $A = P D P^{-1}$ where $D$ is a diagonal matrix.  
 *More on inverses, determinants and diagonalizable matrices soon.*
 
 ```python
@@ -468,13 +468,13 @@ $D = \begin{bmatrix} 5&0\\0&2 \end{bmatrix}$.
 
 *More on variance in the statistics section.*
 
-- Orthonormal sets (or orthornomal bases, though these do not mean the exact same thing) and diagonalising matrices are heavily used in PCA.
+- Orthonormal sets (or orthonormal bases, though these do not mean the exact same thing) and diagonalizing matrices are heavily used in PCA.
 
 - A simple example in 3D would be a set of data that lies almost in one plane (almost flat) with some tiny variation in one direction. PCA would find:  
   - PC1 - the direction of greatest variance (lying in the plane)
   - PC2 - the direction of second greatest variance (also lying in the plane)
   - PC3 - the direction of least variance (perpendicular to the plane and pointing "out" from it)  
-- These components are all perpendicular to eachother (they form an orthogonal/orthonormal basis).
+- These components are all perpendicular to each other (they form an orthogonal/orthonormal basis).
 
 ```python
 import numpy as np

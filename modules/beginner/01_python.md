@@ -702,11 +702,11 @@ print(f"Mean CV accuracy: {scores.mean():.2%}")
 
 ---
 
-## Scipy
+## SciPy
 
-Scientific computing: stats, optimization, signal/image processing. Scipy extends numpy with a vast library of high-level scientific algorithms and utilities for statistics, optimization, integration, interpolation, and more.
+Scientific computing: stats, optimization, signal/image processing. SciPy extends NumPy with a vast library of high-level scientific algorithms and utilities for statistics, optimization, integration, interpolation, and more.
 
-Scipy is organized into key submodules such as `scipy.optimize` (optimization and curve fitting), `scipy.stats` (statistical tests and distributions), `scipy.integrate` (numerical integration), `scipy.signal` (signal processing), and `scipy.sparse` (sparse matrices). Typical uses include fitting models to data, running hypothesis tests, integrating functions, or working with large, sparse datasets.
+SciPy is organized into key submodules such as `scipy.optimize` (optimization and curve fitting), `scipy.stats` (statistical tests and distributions), `scipy.integrate` (numerical integration), `scipy.signal` (signal processing), and `scipy.sparse` (sparse matrices). Typical uses include fitting models to data, running hypothesis tests, integrating functions, or working with large, sparse datasets.
 
 ```python
 from scipy import stats
@@ -748,7 +748,7 @@ When working in a notebook, you execute code cells individually, and the results
 
 - Data science with Python builds on solid core language skills—review as needed!
 - Mastering lists, dicts, comprehensions, generators, and classes is essential for readable, high-performance code.
-- Key ecosystem libraries like numpy, pandas, matplotlib, and scikit-learn are foundational—learn their idioms and APIs.
+- Key ecosystem libraries like NumPy, pandas, Matplotlib, and scikit-learn are foundational—learn their idioms and APIs.
 - Robust workflow includes using virtual environments, testing, logging, and performance-aware coding.
 
 ### Exercise
