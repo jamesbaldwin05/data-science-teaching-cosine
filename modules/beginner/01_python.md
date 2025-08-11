@@ -2,7 +2,7 @@
 
 ## Who is This Course For?
 
-This course is designed for intermediate to experienced Python programmers who are comfortable with core syntax and programming concepts but are new to data science. If you know your way around functions, classes, and built-in types, this module will help you bridge the gap to data-science-specific Python usage, highlighting language features and ecosystem tools (including libraries) you'll encounter in real-world pipelines.
+This course is designed for intermediate to experienced Python programmers who are comfortable with core syntax and programming concepts but are new to data science. If you know your way around functions, classes, and built-in types, this course will help you bridge the gap to Python usage within data science, highlighting language features and ecosystem tools (including libraries) you'll encounter in real-world pipelines.
 
 ---
 
@@ -19,14 +19,7 @@ Before proceeding, ensure you can confidently answer "yes" to the following:
 - Can you use built-in data structures (lists, dicts, sets, tuples) effectively?
 - Have you written or understood basic unit tests?
 
-If you answered "no" to any, consider reviewing Python fundamentals first.
-
----
-
-### Where to Brush Up
-
-Need to refresh your Python basics? Here are some excellent resources:
-
+If you answered "no" to any, consider reviewing Python fundamentals first:
 - [Python Official Tutorial](https://docs.python.org/3/tutorial/)
 - [Harvard CS50’s Introduction to Programming with Python](https://cs50.harvard.edu/python/)
 - [Automate the Boring Stuff with Python](https://automatetheboringstuff.com/)
@@ -35,9 +28,25 @@ Need to refresh your Python basics? Here are some excellent resources:
 
 ---
 
-# Essential Python Features & Practices for Data Science
-
-A successful data scientist in Python needs fluency with the following language features:
+## Table of Contents
+1. [Lists & List Comprehensions](#1-lists--list-comprehensions)
+2. [Dictionaries & Nested Dicts](#2-dictionaries--nested-dicts)
+3. [Tuples & Unpacking](#3-tuples--unpacking)
+4. [Sets](#4-sets)
+5. [Slicing & Indexing](#5-slicing--indexing)
+6. [Comprehensions & Generator Expressions](#6-comprehensions-and-generator-expressions)
+7. [Functions (including Lambdas)](#7-functions-including-lambdas)
+8. [iterools & functools](#8-itertools--functools)
+9. [Classes & DataClasses](#9-classes--dataclasses)
+10. [Context Managers](#10-context-managers)
+11. [Error Handling](#11-error-handling)
+12. [Type Hints & the typing Module](#12-type-hints--the-typing-module)
+13. [Virtual Environments & Dependency Management](#13-virtual-environments--dependency-management)
+14. [Unit Testing (pytest)](#14-unit-testing-pytest)
+15. [Logging](#15-logging)
+16. [Performance Tips](#16-performance-tips)
+17. [Debugging](#17-debugging)
+18. [Jupyter Notebooks](#18-jupyter-notebooks)
 
 ---
 
@@ -201,7 +210,7 @@ reversed_data = data[::-1] # reversed_data = [5, 4, 3, 2, 1]
 
 ---
 
-## 6. Comprehensions vs. Generator Expressions
+## 6. Comprehensions and Generator Expressions
 
 **What:** Comprehensions (list/dict/set) eagerly build collections in memory; generator expressions produce items lazily.
 
@@ -535,7 +544,7 @@ logging.warning("Missing value encountered in column 'age'")
 
 ---
 
-## 16. Performance Tips (Vectorization, Generators, Memory Views)
+## 16. Performance Tips
 
 **Vectorization:**  
 Perform operations on whole collections (arrays) at once using numpy/pandas. This avoids slow Python loops and leverages fast, compiled code underneath.
@@ -590,151 +599,7 @@ print(view[2:5].tobytes())
 
 ---
 
-# Python Ecosystem for Data Science
-
-These libraries are introduced briefly here — dedicated modules later will dive deep.
-
-Mastering Python for data science also means knowing the landscape of essential libraries. Each will be covered in-depth later, but here are the must-knows:
-
----
-
-## Numpy
-
-NumPy is the foundational package for numerical computing in Python, providing fast, efficient arrays and a wealth of mathematical functions. It’s essential for scientific and data-intensive work, powering the core of nearly every other data science library in the Python ecosystem.
-
-NumPy’s ndarrays enable vectorized, element-wise operations and support broadcasting, making them far more powerful and efficient than native Python lists. Key submodules include `numpy.linalg` for linear algebra, `numpy.random` for random sampling, and `numpy.fft` for signal processing. Common use-cases include numerical simulations, matrix operations, and rapid prototyping of algorithms.
-
-```python
-import numpy as np
-
-# Create a 2D array and perform vectorized operations
-data = np.arange(6).reshape(2, 3)
-mean_by_column = data.mean(axis=0)
-centered = data - mean_by_column
-print(centered)
-```
-
----
-
-## Pandas
-
-Pandas is the go-to library for working with structured (tabular) data in Python, offering intuitive and powerful tools for data wrangling, cleaning, and analysis. Its DataFrame and Series objects make it easy to handle everything from small datasets to large-scale data manipulations.
-
-Key capabilities include data alignment, grouping (via `groupby`), time series support, merging/joining datasets, and seamless reading/writing to formats like CSV, Excel, and SQL. Typical use-cases involve cleaning messy data, summarizing statistics, reshaping tables (pivot, melt), and preparing features for machine learning.
-
-```python
-import pandas as pd
-
-data = {
-    'Name': ['Alice', 'Bob', 'Charlie', 'David'],
-    'Age': [24, 30, 22, 35],
-    'City': ['New York', 'Los Angeles', 'Chicago', 'Houston']
-}
-
-df = pd.DataFrame(data)
-
-print("Original DataFrame:")
-print(df)
-
-# Filter rows where Age is greater than 25
-filtered_df = df[df['Age'] > 25]
-
-print("\nFiltered DataFrame (Age > 25):")
-print(filtered_df)
-```
-
----
-
-## Matplotlib & Seaborn
-
-Matplotlib and Seaborn are the cornerstones of data visualization in Python. Matplotlib provides granular control over every aspect of a figure, suitable for both quick plots and publication-quality graphics. Seaborn builds on Matplotlib with a high-level API and attractive default styles, making statistical plots and data exploration faster and more intuitive.
-
-With these libraries, you can create a wide range of visualizations: scatter plots, line charts, barplots, heatmaps, and regression plots. Seaborn’s integration with pandas DataFrames enables rapid EDA (exploratory data analysis), while Matplotlib’s flexibility allows for custom layouts, annotations, and advanced figures.
-
-```python
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pandas as pd
-
-# Use a small offline DataFrame to visualize relationships
-df = pd.DataFrame({
-    "total_bill": [10, 20, 30, 40, 50],
-    "tip": [1.5, 3.0, 4.0, 5.5, 8.0],
-    "time": ["Lunch", "Dinner", "Dinner", "Lunch", "Dinner"],
-})
-
-sns.scatterplot(data=df, x="total_bill", y="tip", hue="time")
-sns.regplot(data=df, x="total_bill", y="tip", scatter=False, color="red")
-
-plt.title("Tip vs. Total Bill")
-plt.xlabel("Total Bill ($)")
-plt.ylabel("Tip ($)")
-plt.tight_layout()
-plt.show()
-```
-
----
-
-## Scikit-learn
-
-Scikit-learn is the standard library for machine learning in Python, offering accessible APIs for a wide range of models and tools. It empowers you to quickly build, train, and evaluate machine learning pipelines, covering tasks from simple regression to complex classification and clustering.
-
-The library includes modules for preprocessing (scaling, encoding), feature selection, model selection (train/test split, cross-validation), and metrics. Pipelines make it easy to chain transformations and estimators, ensuring reproducible ML workflows. Common use-cases include rapid prototyping, automated model tuning, and benchmarking algorithms on standard datasets.
-
-```python
-from sklearn.datasets import load_breast_cancer
-from sklearn.model_selection import cross_val_score
-from sklearn.preprocessing import StandardScaler
-from sklearn.pipeline import make_pipeline
-from sklearn.ensemble import RandomForestClassifier
-
-# Load data and build a pipeline: scale → fit model
-X, y = load_breast_cancer(return_X_y=True)
-pipeline = make_pipeline(StandardScaler(), RandomForestClassifier(n_estimators=100, random_state=0))
-scores = cross_val_score(pipeline, X, y, cv=5)
-
-print(f"Mean CV accuracy: {scores.mean():.2%}")
-```
-
----
-
-## SciPy
-
-Scientific computing: stats, optimization, signal/image processing. SciPy extends NumPy with a vast library of high-level scientific algorithms and utilities for statistics, optimization, integration, interpolation, and more.
-
-SciPy is organized into key submodules such as `scipy.optimize` (optimization and curve fitting), `scipy.stats` (statistical tests and distributions), `scipy.integrate` (numerical integration), `scipy.signal` (signal processing), and `scipy.sparse` (sparse matrices). Typical uses include fitting models to data, running hypothesis tests, integrating functions, or working with large, sparse datasets.
-
-```python
-from scipy import stats
-print(stats.norm.cdf(0))
-
-# Example: Student's t-test for independent samples
-a = [1.1, 2.5, 3.3]
-b = [0.9, 2.1, 3.0]
-t_stat, p_value = stats.ttest_ind(a, b)
-print(f"t={t_stat:.3f}, p={p_value:.3g}")
-```
-
----
-
-## Statsmodels
-
-Advanced statistical modeling (regression, time series, hypothesis tests). Statsmodels bridges the gap between pure machine learning and statistical inference, providing deep tools for classical statistics and model diagnostics.
-
-Statsmodels features a user-friendly formula API (like R's formulas) for specifying models with symbolic syntax (e.g., `"y ~ x1 + x2"`), as well as advanced tools for time-series analysis (ARIMA, SARIMAX, state space models). Its emphasis on statistical inference means you get p-values, confidence intervals, and detailed summaries—ideal for understanding model significance and diagnostics.
-
-```python
-import statsmodels.formula.api as smf
-import pandas as pd
-
-df = pd.DataFrame({"y": [2, 4, 6], "x": [1, 2, 3]})
-model = smf.ols("y ~ x", data=df).fit()
-print(model.summary())
-```
-
----
-
-## Jupyter Notebooks
+## 18. Jupyter Notebooks
 
 Jupyter Notebooks are powerful, interactive documents that combine live code, visualizations, and explanatory text. Widely used in data science, teaching, and research, notebooks allow you to interleave executable code (Python or other languages), formatted notes (Markdown), equations, and rich outputs (plots, tables, images) in a single, shareable file. Each notebook consists of "cells"—the two most common types are **code cells** (which you run to produce output) and **Markdown cells** (for formatted text, math, or instructions).
 
