@@ -1,8 +1,17 @@
 # Calculus
-
 Calculus is the branch of mathematics that deals with continuous change through derivatives and integrals.
 In machine learning, many algorithms focus on optimization—adjusting model parameters to minimize a loss (or error) function.
 Calculus gives us the tools to measure how small changes in these parameters affect the loss, helping us update them efficiently to improve model performance.
+
+---
+
+## Table of Contents
+1. [Differentiation](#differentation)
+2. [Partial Differentiation](#partial-differentiation)
+3. [Gradient Vectors](#gradient-vectors)
+4. [Integration](#integration)
+
+---
 
 ### Differentation
 
@@ -26,10 +35,11 @@ $f'(x) = \displaystyle\lim_{h \to 0} \frac{f(x + h) - f(x)}{h}$
 | Sine                  | $\sin{x}$                  | $\cos{x}$                     | $4\sin{x}$                 | $4\cos{x}$               |
 | Cosine                | $\cos{x}$                  | $-\sin{x}$                    | $6\cos{x}$                | $ -6\sin{x}$       |
 
+- Functions such as $\frac{1}{x}$ can be differentiated by rewritting them as polynomials ($\frac{1}{x} = x^{-1}$) and using the above rule.
 
 - For example, for $f(x) = 3x^4 + \dfrac{1}{x^2} + 2e^x - ln(x) - 2sin(x),\;$ the derivative is $f'(x) = 12x^3 - \dfrac{2}{x^3}+ 2e^x - \dfrac{1}{x} -2 cos(x)$.  
 
-- Note there are different notations for derivatives, if a function is declared as $y= 3x^4 + 2e^x - ln(x),\;$ the derivative is commonly written as $\frac{dy}{dx} = 12x^3 + 2e^x - \dfrac{1}{x}$ and this means the same thing as $f'(x)$.
+- Note there are different notations for derivatives, if a function is declared as $y= 3x^4 + 2e^x - ln(x),\;$ the derivative is commonly written as $\frac{dy}{dx} = 12x^3 + 2e^x - \dfrac{1}{x}$ and this means the same thing as $f'(x)$
 
 - We can take derivatives with respect to any variable, if we had a function $x = t^2 + 2t + 1$, the derivative with respect to t, $\frac{dx}{dt} = 2t + 2$.
 
@@ -113,7 +123,7 @@ $\frac{\partial f}{\partial y} = 2x^3y + 4x \;\\[4pt]
 \frac{\partial^2 f}{\partial x \partial y} = 6x^2y + 4 \; =\frac{\partial}{\partial x}(\frac{\partial f}{\partial y})\;\\[4pt]
 \frac{\partial^3 f}{\partial x^2 \partial y} = 12xy \; =\frac{\partial}{\partial x}(\frac{\partial^2 f}{\partial x \partial y}) \;$ ($=f_{yxx}$ in other notation, notice the difference in order).
 
-### Gradient Vector
+### Gradient Vectors
 - The gradient vector of a function $f(x_1, x_2, ..., x_n)$ is a vector that points in the direction of the greatest rate of increase of the function.
 - It is made up of all the partial derivatives of the function with respect to each variable.
 - For a function $f$, the gradient vector $\nabla f$ is:  
