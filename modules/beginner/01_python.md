@@ -605,14 +605,18 @@ Jupyter Notebooks are powerful, interactive documents that combine live code, vi
 
 When working in a notebook, you execute code cells individually, and the results—such as printed output, plots, or error messages—appear immediately below the cell. The underlying process that runs your code is called a **kernel**, which maintains the execution state and variables across cells (so earlier results can be reused later). Restarting the kernel clears this state. Notebooks are ideal for exploratory data analysis (EDA), rapid prototyping, teaching, and sharing reproducible reports or data workflows.
 
+---
+
 # Key Takeaways
 
-- Data science with Python builds on solid core language skills—review as needed!
+- Data science with Python builds on solid core language skills
 - Mastering lists, dicts, comprehensions, generators, and classes is essential for readable, high-performance code.
 - Key ecosystem libraries like NumPy, pandas, Matplotlib, and scikit-learn are foundational—learn their idioms and APIs.
 - Robust workflow includes using virtual environments, testing, logging, and performance-aware coding.
 
-### Exercise
+---
+
+# Exercise
 """
 Generate a list `squares` containing the squares of numbers 1-10 using a list comprehension, then print the result.
 """
