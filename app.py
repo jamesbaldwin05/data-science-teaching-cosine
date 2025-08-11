@@ -6,7 +6,7 @@ from pathlib import Path
 from streamlit.components.v1 import html as st_html
 
 # Lessons that should have interactive Python code snippet execution
-PY_SNIPPET_LESSONS = {"01_python", "02_maths_for_data_science"}
+PY_SNIPPET_LESSONS = {"01_python", "02_linear_algebra"}
 
 def scroll_to_bottom():
     """Scroll browser viewport to page bottom (smooth, retried for Streamlit rerender timing)."""
@@ -378,7 +378,7 @@ def main():
             st.markdown(post_md + "\n")
         # Do NOT output after_exercise markdown (no duplication)
 
-    elif selected_mod.stem =="03_r":
+    elif selected_mod.stem =="05_r":
         # Inline parse and render: markdown up to ### Exercise, with code block runners for R
         code_block_pattern = re.compile(r"```r(.*?)```", re.DOTALL | re.IGNORECASE)
         exercise_idx = md_text.find("### Exercise")
