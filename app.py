@@ -331,7 +331,11 @@ def main():
                     globals_dict = {}
                     try:
                         with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
-                            exec(code, globals_dict)
+                            if selected_mod.stem == '05_numpy':
+                                exec_code = 'import numpy as np\n' + code
+                            else:
+                                exec_code = code
+                            exec(exec_code, globals_dict)
                     except Exception:
                         st.error(traceback.format_exc())
                         return
