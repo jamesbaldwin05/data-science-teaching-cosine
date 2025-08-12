@@ -23,8 +23,7 @@ import numpy as np
 It is de-facto standard to use `np` as a alias for numpy. Every example beyond this point will not show this code but it still needs to be there to work correctly.
 
 ### Creating an array
-
-- From a list:  
+To create a NumPy array from a list, you can call `np.array`.
 ```python
 arr = np.array([1, 2, 3])
 print(arr)
