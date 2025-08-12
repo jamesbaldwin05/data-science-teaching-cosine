@@ -48,7 +48,6 @@ print(arr)
 - These components are all perpendicular to each other (they form an orthogonal/orthonormal basis).
 
 ```python
-import numpy as np
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 
