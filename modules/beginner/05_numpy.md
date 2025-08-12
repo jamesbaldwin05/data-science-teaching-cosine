@@ -18,14 +18,10 @@ NumPy arrays are powerful tools designed for efficient numerical computing. Unli
 
 To import the NumPy library, use the code below:
 ```python
+# no-run
 import numpy as np
 ```
-It is de-facto standard to use `np` as a alias for numpy. Every example beyond this point will not show this code but it still needs to be there to work correctly.
-
-```python
-# Hidden import
-import numpy as np
-```
+It is de-facto standard to use `np` as an alias for NumPy. Every example beyond this point will not show this code but it still needs to be there to work correctly.
 
 ### Creating an array
 
