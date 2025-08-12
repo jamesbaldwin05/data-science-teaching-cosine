@@ -22,6 +22,11 @@ import numpy as np
 ```
 It is de-facto standard to use `np` as a alias for numpy. Every example beyond this point will not show this code but it still needs to be there to work correctly.
 
+```python
+# Hidden import
+import numpy as np
+```
+
 ### Creating an array
 
 - From a list:  
