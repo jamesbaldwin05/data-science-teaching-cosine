@@ -1,19 +1,38 @@
-### Broadcasting
-- Broadcasting in NumPy is a way to perform operations on arrays of different shapes by automatically expanding the smaller array to match the shape of the larger one without actually copying data. For example, adding a scalar to a matrix adds the scalar to every element.
-
-- This is **not** mathematically valid in strict linear algebra because operations like addition are only defined for arrays (or matrices/vectors) of the same shape. Broadcasting relaxes that rule for programming convenience, but it's a computational shortcut, not a formal mathematical operation. Broadcasting corresponds to implicitly repeating a vector across rows or columns as needed for the operation (a programming convenience), even though classical linear algebra only defines addition for same-shaped arrays.
-
-
-```python
-import numpy as np
-
-# Add a vector to each row of a matrix
-B = np.array([[1, 2], [3, 4], [5, 6]])
-v = np.array([10, 100])
-print(B + v)
-```
+# NumPy (Numerical Python)
+NumPy (Numerical Python) is a fundamental Python library used for numerical computing and data manipulation. It provides a powerful, flexible, n-dimensional array object `ndarray` that allows efficient storage and operations on large datasets of homogeneous data (typically numbers). It allows for:
+- Fast, vectorised operations on arrays due to elementwise maths without slow python loops.
+- A large set of mathematical functions including linear algebra, statistics, Fourier transforms and random number generation.
+- Tools for reshaping, indexing and slicing data
+- Efficient memory management
+- Seamless integration with many other scientific libraries including Pandas, SciPy and Matplotlib
 
 ---
+
+## Table of Contents
+1. [NumPy Basics](#numpy-basics)
+
+---
+
+## NumPy Basics
+NumPy arrays are powerful tools designed for efficient numerical computing. Unlike regular Python lists, which can hold mixed data types and are slower for math operations, NumPy arrays store elements of the same type in a compact way and support fast, element-wise calculations without needing loops. They also handle multi-dimensional data and offer many built-in mathematical functions, making them ideal for scientific and data-intensive tasks.
+
+To import the NumPy library, use the code below:
+```python
+import numpy as np
+```
+It is de-facto standard to use `np` as a alias for numpy. Every example beyond this point will not show this code but it still needs to be there to work correctly.
+
+### Creating an array
+
+- From a list:  
+```python
+arr = np.array([1, 2, 3])
+print(arr)
+```
+
+
+
+
 
 ## PCA Example: Principal Component Analysis (Dimensionality Reduction)
 - Principal Component Analysis (PCA) is a method for dimensionality reduction. It takes high-dimensional data and finds new axes (called principal components) that capture the most variance in the data and are uncorrelated (perpendicular to each other). It simplifies datasets while keeping most information and makes patterns easier to see.  

@@ -56,7 +56,7 @@ If you answered "no" to any, consider reviewing Python fundamentals first:
 
 **Why:** List comprehensions provide a clear and compact way to create or transform these lists, making data manipulation tasks faster and more readable—an essential part of data wrangling.
 
-**Python lists vs. C-style arrays:** Unlike C arrays, Python lists can store elements of any type and can grow or shrink dynamically. For large numerical arrays, consider using the `array` module (for numbers) or, more commonly in data science, `numpy` arrays for efficiency and extra functionality.
+**Python lists vs. C-style arrays:** Unlike C arrays, Python lists can store elements of any type and can grow or shrink dynamically. For large numerical arrays, use`numpy` arrays for efficiency and extra functionality.
 
 **Example:**
 

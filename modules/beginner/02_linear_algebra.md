@@ -329,7 +329,8 @@ print(A @ v)
 - **Zero matrix**: A matrix where all elements are zero.  
 For any matrix $A$, $\;A + 0 = A$ and $A \times 0 = 0$ (assuming the dimensions are compatible).
 - **Square matrix**: A matrix with the same number of rows and columns (e.g. a $3\times 3$ matrix).
-- **Identity matrix**: A square matrix with 1s on the diagonal (top left to bottom right) and 0s elsewhere. For any matrix $A$, $\; AI = IA = A$ (assuming the dimensions are compatible).  
+- **Identity matrix**: A square matrix with 1s on the diagonal (top left to bottom right) and 0s elsewhere.  
+For any matrix $A$, $\; AI = IA = A$ (assuming the dimensions are compatible).  
 For example, the $3\times 3$ identity matrix is:  
 $I_3 = \begin{bmatrix}
 1 & 0 & 0\\

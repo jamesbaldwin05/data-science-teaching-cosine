@@ -7,6 +7,10 @@ Calculus gives us the tools to measure how small changes in these parameters aff
 
 ## Table of Contents
 1. [Differentiation](#differentation)
+    - [Derivatives](#derivatives)
+    - [Chain Rule](#chain-rule)
+    - [Product and Quotient Rules](#product-and-quotient-rules)
+    - [Higher Order Derivatives](#higher-order-derivatives)
 2. [Partial Differentiation](#partial-differentiation)
 3. [Gradient Vectors](#gradient-vectors)
 4. [Integration](#integration)
@@ -16,63 +20,123 @@ Calculus gives us the tools to measure how small changes in these parameters aff
 ### Differentation
 
 #### Derivatives 
-- Measure instantaneous rate of change of a function at a point. For a function $f(x)$, the derivative $f'(x)$ tells us how $f(x)$ changes at $x$.
+- The derivative measures the instantaneous rate of change of a function at a point. For a function $f(x)$, the derivative $f'(x)$ tells us how $f(x)$ changes at $x$.
 - It is defined by a limit:  
-$f'(x) = \displaystyle\lim_{h \to 0} \frac{f(x + h) - f(x)}{h}$  
+$$
+f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h}
+$$
 
 - Some common derivatives which can be used instead of using the limit definition are:  
 
 | Function Name          | Function $f(x)$              | Derivative $f'(x)$                 | Example Function            | Example Derivative           |
 |-----------------------|-----------------------------|----------------------------------|----------------------------|-----------------------------|
 | Constant              | $c$                         | $0$                              | $5$                        | $0$                         |
-| Polynomials           | $x^n$                      | $n x^{n-1}$                     | $x^3$                      | $3x^2$                      |
-| Constant multiple     | $c \cdot f(x)$             | $c \cdot f'(x)$                 | $4x^3$                     | $4 \cdot 3x^2 = 12x^2$      |
-| Sum / Difference      | $f \pm g$                  | $f' \pm g'$                     | $x^3 + x^2$                | $3x^2 + 2x$                 |
-| Exponential natural   | $e^x$                      | $e^x$                          | $3e^x$                     | $3e^x$                      |
-| Exponential base a    | $a^x$                      | $a^x \ln(a)$                   | $2^x$                      | $2^x \ln(2)$                |
-| Natural logarithm     | $\ln(x)$                   | $\frac{1}{x}$                  | $3\ln(x)$                   | $\frac{3}{x}$               |
-| Logarithm base a      | $\log_a(x)$                | $\frac{1}{x \ln(a)}$           | $\log_2(x)$                | $\frac{1}{x \ln(2)}$        |
-| Sine                  | $\sin{x}$                  | $\cos{x}$                     | $4\sin{x}$                 | $4\cos{x}$               |
-| Cosine                | $\cos{x}$                  | $-\sin{x}$                    | $6\cos{x}$                | $ -6\sin{x}$       |
+| Polynomials           | $x^n$                        | $n x^{n-1}$                       | $x^3$                      | $3x^2$                      |
+| Constant multiple     | $c \cdot f(x)$               | $c \cdot f'(x)$                   | $4x^3$                     | $4 \cdot 3x^2 = 12x^2$      |
+| Sum / Difference      | $f \pm g$                    | $f' \pm g'$                       | $x^3 + x^2$                | $3x^2 + 2x$                 |
+| Exponential natural   | $e^x$                        | $e^x$                             | $3e^x$                     | $3e^x$                      |
+| Exponential base a    | $a^x$                        | $a^x \ln(a)$                      | $2^x$                      | $2^x \ln(2)$                |
+| Natural logarithm     | $\ln(x)$                     | $\frac{1}{x}$                     | $3\ln(x)$                   | $\frac{3}{x}$               |
+| Logarithm base a      | $\log_a(x)$                  | $\frac{1}{x \ln(a)}$               | $\log_2(x)$                | $\frac{1}{x \ln(2)}$        |
+| Sine                  | $\sin(x)$                    | $\cos(x)$                         | $4\sin(x)$                  | $4\cos(x)$                  |
+| Cosine                | $\cos(x)$                    | $-\sin(x)$                        | $6\cos(x)$                  | $-6\sin(x)$                 |
 
-- Functions such as $\frac{1}{x}$ can be differentiated by rewritting them as polynomials ($\frac{1}{x} = x^{-1}$) and using the above rule.
+- Functions such as $\frac{1}{x}$ can be differentiated by rewriting them as polynomials ($\frac{1}{x} = x^{-1}$) and using the above rule.
 
-- For example, for $f(x) = 3x^4 + \dfrac{1}{x^2} + 2e^x - ln(x) - 2sin(x),\;$ the derivative is $f'(x) = 12x^3 - \dfrac{2}{x^3}+ 2e^x - \dfrac{1}{x} -2 cos(x)$.  
+- Example:  
+$$
+\begin{aligned}
+f(x)   &= 3x^4 + \frac{1}{x^2} + 2e^x - \ln(x) - 2\sin(x) \\
+f'(x) &= 12x^3 - \frac{2}{x^3} + 2e^x - \frac{1}{x} - 2\cos(x)
+\end{aligned}
+$$ 
 
-- Note there are different notations for derivatives, if a function is declared as $y= 3x^4 + 2e^x - ln(x),\;$ the derivative is commonly written as $\frac{dy}{dx} = 12x^3 + 2e^x - \dfrac{1}{x}$ and this means the same thing as $f'(x)$
+- Note there are different notations for derivatives: if a function is declared as $y = x^2$, the derivative is commonly written as $\frac{dy}{dx} = 2x$ and this means the same thing as $f'(x)$.
 
-- We can take derivatives with respect to any variable, if we had a function $x = t^2 + 2t + 1$, the derivative with respect to t, $\frac{dx}{dt} = 2t + 2$.
+- We can take derivatives with respect to any variable. For example, if we had a function $x = t^2 + 2t + 1$, then by taking the derivative with respect to $t$ we get $\frac{dx}{dt} = 2t + 2$.
 
 #### Chain Rule
-- The chain rule can be used to differentiate more complicated functions. It is defined as follows:  
-For $y=f(x)$ and $z=g(y)$,  
-$\frac{dz}{dx} = \frac{dz}{dy} \cdot \frac{dy}{dx}$  
+- The chain rule is used to differentiate composite functions (a function inside another function). It is defined as follows:  
+For $y = f(x)$ and $z = g(y)$ — or in other terms, $z = g(f(x))$,  
+$$
+\frac{dz}{dx} = \frac{dz}{dy} \cdot \frac{dy}{dx}
+$$  
 
-- This can be thought of as the "$dy$" cancelling but is nothing more than this (derivatives are not fractions). It is commonly used when we have a function 
-within a function.  
+- This can be thought of as the "$dy$" cancelling, but in reality derivatives are limits, not fractions. The chain rule is commonly used when we have a function within a function, or when variables are linked through other relationships (e.g., parametric equations).  
 
-- For example:  
-$z=(3x+2)^5$  
-$let \; y=3x+2\; => z=y^5$  
-$\frac{dy}{dx} = 3$ and $\frac{dz}{dy} = 5y^4$  
-$\frac{dz}{dx} = \frac{dz}{dy} \cdot \frac{dy}{dx}$  
-${\frac{dz}{dx}} = 3 \cdot 5y^4$  
-${\frac{dz}{dx}} = 15(3x+2)^4$
+- Example:  
+$$
+\begin{aligned}
+y &= (3x+2)^5 \\
+\text{Let } z &= 3x+2 \quad\Rightarrow\quad y = z^5 \\
+\frac{dz}{dx} &= 3 \\
+\frac{dy}{dz} &= 5y^4 \\
+\frac{dy}{dx} &= \frac{dy}{dz} \cdot \frac{dz}{dx} \\
+\frac{dy}{dx} &= 3 \cdot 5y^4 \\
+\frac{dy}{dx} &= 15(3x+2)^4
+\end{aligned}
+$$
 
-- Instead of having to declare a new variable every time, many cases of the chain rule can be thought of as multiplying the derivative of the embedded function with the derivative of the outside function.  
+- In many cases, the chain rule can be applied directly by multiplying the derivative of the outer function (with the inner function unchanged) by the derivative of the inner function—without introducing a new variable each time.  
 
-- For example:
-$f(x) = 4\sin(3x)$  
-The derivative of the inside function is $3$ so $f'(x) = 4 \cdot 3 \cdot cos(3x)$ = $12\cos(3x)$
+- Quick example:  
+$$
+\begin{aligned}
+f(x) &= 4\sin(3x) \\
+f'(x) &= 4 \cdot 3 \cdot \cos(3x) \\
+f'(x) &= 12\cos(3x)
+\end{aligned}
+$$
 
-- A more complicated example:
-$f(x) = 4\cos((2x+1)^3)$  
-$f'(x) = 4 \cdot 2 \cdot 3(2x+1)^2 \cdot -\sin((2x+1)^3) = -24(2x+1)^2\sin((2x+1)^3)$
+- A more complex example:  
+$$
+\begin{aligned}
+f(x) &= 4\cos\big((2x+1)^3\big) \\
+f'(x) &= 4 \cdot \big[-\sin\big((2x+1)^3\big)\big] \cdot \big[3(2x+1)^2 \cdot 2\big] \\
+&= -24(2x+1)^2 \sin\big((2x+1)^3\big)
+\end{aligned}
+$$
+
+#### Product and Quotient Rules
+- If a function is the product of two other functions, we use the **product rule**:  
+If $f(x) = g(x)h(x)$,
+$$
+f'(x) = g'(x)h(x) + g(x)h'(x)
+$$
+
+- Example:  
+$$
+\begin{aligned}
+f(x) &= x^3\sin(4x) \\
+g(x) &= x^3, \quad g'(x) = 3x^2 \\
+h(x) &= \sin(4x), \quad h'(x) = 4\cos(4x) \\
+f'(x) &= 3x^2\sin(4x) + 4x^3\cos(4x)
+\end{aligned}
+$$
+
+- If a function is the quotient of two other functions, we use the **quotient rule**:  
+If $f(x) = \dfrac{g(x)}{h(x)}$, then  
+$$
+f'(x) = \frac{g'(x)h(x) - g(x)h'(x)}{\big(h(x)\big)^2}
+$$
+
+- Example:  
+$$
+\begin{aligned}
+f(x) &= \frac{(2x+1)^{3\vphantom{^2}}}{\ln(x)} \\
+g(x) &= (2x+1)^3, \quad g'(x) = 6(2x+1)^2 \\
+h(x) &= \ln(x), \quad h'(x) = \frac{1}{x} \\
+f'(x) &= \frac{6(2x+1)^2\ln(x) - \frac{(2x+1)^3}{x}}{(\ln(x))^2} \\
+&= \frac{6x(2x+1)^2\ln(x) - (2x+1)^3}{x(\ln(x))^2}
+\end{aligned}
+$$
+
+
 
 #### Higher-Order Derivatives
 - We can take the derivative multiple times to give us further expressions how the rate of change itself changes.
 - A higher-order derivative is found by taking the derivative of a derivative.
--They are written as $f''(x)$ or $\frac{d^{\;2}y}{dx^{\;2}}$ for the second derivative, $f'''(x)$ or $\frac{d^{\;3}y}{dx^{\;3}}$ for the third derivative and $f^{(n)}(x)$ or $\frac{d^{\;n}y}{dx^{\;n}}$ for the n-th derivative (once it becomes impractical to use dashes next to the function).  
+- They are written as $f''(x)$ or $\frac{d^{\;2}y}{dx^{\;2}}$ for the second derivative, $f'''(x)$ or $\frac{d^{\;3}y}{dx^{\;3}}$ for the third derivative and $f^{(n)}(x)$ or $\frac{d^{\;n}y}{dx^{\;n}}$ for the n-th derivative (once it becomes impractical to use dashes next to the function).  
 - For example,  
 $f(x) = 3x^4 + 2e^x,\;$  
 $f'(x) = 12x^3 + 2e^x - \dfrac{1}{x}$  
