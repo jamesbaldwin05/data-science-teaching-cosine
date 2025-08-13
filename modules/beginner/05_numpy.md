@@ -18,6 +18,14 @@ NumPy (Numerical Python) is a fundamental Python library used for numerical comp
     - [Array Properties](#array-properties)
     - [Reshaping Arrays](#reshaping-arrays)
     - [Changing Dimensions](#changing-dimensions)
+3. [Basic Operations](#basic-operations)
+    - [Elementwise Arithmetic](#elementwise-arithmetic)
+    - [Elementwise Functions](#elementwise-functions)
+    - [Comparison Operators](#comparison-operators)
+    - [Aggregations](#aggregations)
+4. [Random Numbers](#random-numbers)
+    - [Random Distributions](#random-distributions)
+    - [Shuffling](#shuffling)
 
 ---
 
@@ -239,53 +247,199 @@ expanded1 = np.expand_dims(arr, axis=1)  # adds axis at position 1
 print(expanded1)
 ```
 
-## PCA Example: Principal Component Analysis (Dimensionality Reduction)
-- Principal Component Analysis (PCA) is a method for dimensionality reduction. It takes high-dimensional data and finds new axes (called principal components) that capture the most variance in the data and are uncorrelated (perpendicular to each other). It simplifies datasets while keeping most information and makes patterns easier to see.  
+---
 
-*More on variance in the statistics section.*
+## Basic Operations
 
-- Orthonormal sets (or orthonormal bases, though these do not mean the exact same thing) and diagonalizing matrices are heavily used in PCA.
+NumPy arrays support **vectorised operations** meaning operations are applied **elementwise**, without the need for loops.
 
-- A simple example in 3D would be a set of data that lies almost in one plane (almost flat) with some tiny variation in one direction. PCA would find:  
-  - PC1 - the direction of greatest variance (lying in the plane)
-  - PC2 - the direction of second greatest variance (also lying in the plane)
-  - PC3 - the direction of least variance (perpendicular to the plane and pointing "out" from it)  
-- These components are all perpendicular to each other (they form an orthogonal/orthonormal basis).
+### Elementwise Arithmetic
+
+- `+` and `-` or `np.add()` and `np.subtract()` perform addition/subtraction elementwise.
 
 ```python
-import matplotlib.pyplot as plt
-from sklearn.decomposition import PCA
+arr1 = np.array([1, 2, 3])
+arr2 = np.array([4, 5, 6])
 
-np.random.seed(42)
-n = 20
-x = np.random.normal(0, 1, n)
-y = 1.5 * x + 0.5 + np.random.normal(0, 0.4, n)
-data = np.column_stack((x, y))
+print(arr1 + arr2)            # or np.add(arr1, arr2)
+print(np.subtract(arr1, 1))   # subtracts 1 from every element
 
-pca = PCA(n_components=2)
-pca.fit(data)
-components = pca.components_                    #unit vectors
-explained = pca.explained_variance_ratio_
-mean = pca.mean_
-
-plt.figure(figsize=(6, 6))
-plt.scatter(data[:, 0], data[:, 1], color='skyblue', s=50, label='Data points')
-
-plt.scatter(mean[0], mean[1], color='red', marker='x', s=80, label='Mean')
-
-scale = 3
-for i, (comp, var) in enumerate(zip(components, explained)):
-    line = np.vstack([mean - comp * scale, mean + comp * scale])
-    plt.plot(line[:, 0], line[:, 1],
-             linewidth=2,
-             label=f'PC{i+1} ({var:.2f} var)')
-
-plt.axis('equal')
-plt.xlabel('Feature 1')
-plt.ylabel('Feature 2')
-plt.title('PCA on 2D Correlated Data')
-plt.legend()
-plt.show()
 ```
 
----
+- `*` and `/` or `np.multiply()` and `np.divide()` perform multiplication/division elementwise.
+
+```python
+arr1 = np.array([1, 2, 3])
+arr2 = np.array([4, 5, 6])
+
+print(arr1 * arr2)            # or np.multiply(arr1, arr2)
+print(np.divide(arr1, 2))     # divides every element by 2
+
+```
+
+- `**` or `np.power()` raises each element to a power elementwise.
+
+```python
+arr1 = np.array([1, 2, 3])
+arr2 = np.array([4, 5, 6])
+
+print(arr1 ** arr2)           # each element in arr1 is raised to the corresponding power in arr2
+print(np.power(arr1, 2))      # squares every element
+```
+
+### Elementwise Functions
+- `np.sqrt()` takes the square root of each element in the array
+
+```python
+arr = np.array([1, 2, 3])
+print(np.sqrt(arr))
+```
+
+- `np.log()` takes the natural logarithm of each element in the array
+
+```python
+arr = np.array([1, 2, 3])
+print(np.log(arr))
+```
+
+- `np.exp()` takes the exponential of each element in the array
+
+```python
+arr = np.array([1, 2, 3])
+print(np.exp(arr))
+```
+
+### Comparison Operators
+We can use comparison operators elementwise in NumPy, which will return an array of the same shape with `True` and `False` values.
+
+```python
+arr = np.array([[1, 5, 9],
+                [4, 7, 2]])
+
+print(arr > 4)
+```
+
+```python
+arr = np.array([[1, 5, 9],
+                [4, 7, 2]])
+
+print(arr == 1)
+```
+
+It can be used with boolean indexing but this will flatten the array to 1D.
+
+```python
+arr = np.array([[1, 5, 9],
+                [4, 7, 2]])
+
+arr2 = arr[arr < 3]
+print(arr2)
+```
+
+### Aggregations
+These are a group of methods that compute a single value over the whole array
+
+- `.sum()` returns the sum of every element in the array
+
+```python
+arr = np.array([1, 2, 3, 4, 5, 6])
+print(arr.sum())
+```
+
+- `.mean()` returns the mean of the array
+
+```python
+arr = np.array([1, 2, 3, 4, 5, 6])
+print(arr.mean())
+```
+
+- `.max()` returns the maximum value in the array
+
+```python
+arr = np.array([1, 2, 3, 4, 5, 6])
+print(arr.max())
+```
+
+- `.min()` returns the minimum value in the array
+
+```python
+arr = np.array([1, 2, 3, 4, 5, 6])
+print(arr.min())
+```
+
+- `.std()` returns the standard deviation of the array
+
+```python
+arr = np.array([1, 2, 3, 4, 5, 6])
+print(arr.std())
+```
+
+- `.var()` returns the variance of the array
+
+```python
+arr = np.array([1, 2, 3, 4, 5, 6])
+print(arr.var())
+```
+
+## Random Numbers
+NumPy’s `np.random` module provides tools for generating random numbers, sampling from distributions, and shuffling data.
+
+### Random Distributions
+
+- `np.random.rand(shape)` fills an array of the given shape with random floats in [0, 1]
+
+```python
+print(np.random.rand(2,2)) 
+```
+
+- `np.random.randn(shape)` fills an array of the given shape with random samples from a standardised normal distribution (mean 0, std 1)
+
+```python
+print(np.random.randn(2,2,2)) 
+```
+
+- `np.random.randint(low, high, size)` fills an array of the given shape (`size`) with random integers between low (inclusive) and high (exclusive) 
+
+```python
+print(np.random.randint(1, 10, (2,2)))
+```
+
+- `np.random.seed(value)` sets a seed for the random generation so results are reproducible. Each integer will give a constant set of random numbers.
+
+```python
+np.random.seed(0)
+print(np.random.rand(2,2))
+```
+
+- `np.random.uniform(low, high, size)` fills an array of the given shape (`size`) with random samples from a given uniform distribution (between low and high).
+
+```python
+print(np.random.uniform(100, 120, (2,2)))
+```
+
+- `np.random.normal(mean, std, size)` fills an array of the given shape (`size`) with random samples from a given normal (Gaussian) distribution.
+
+```python
+print(np.random.normal(5, 2, (2,2)))
+```
+
+### Shuffling
+
+- `np.random.shuffle(arr)` shuffles an array **in place**. It has no return value and directly affects the original array.
+
+```python
+arr = np.array([1, 2, 3, 4])
+print(arr)
+
+np.random.shuffle(arr)
+print(arr)
+```
+
+- `np.random.permutation()` returns a new shuffled array, leaving the original unchanged.
+
+```python
+arr1 = np.array([1, 2, 3, 4])
+arr2 = np.random.permutation(arr1)
+print(arr1)
+print(arr2s)
+```
