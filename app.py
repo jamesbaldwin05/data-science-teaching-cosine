@@ -189,6 +189,58 @@ def main():
     st.set_page_config(page_title="Data Science for Developers", layout="wide")
     handle_auth()  # Require login/register before showing rest of UI
     st.title("🧑‍💻 Data Science for Developers")
+
+    # --- (1) Inject anchor scroll JS once per page load ---
+    st_html(
+        """
+        <script>
+        // Anchor smooth scroll for [href^="#"] links
+        (function() {
+            function slugify(text) {
+                return text.toLowerCase()
+                    .replace(/[^a-z0-9 ]/g, '')
+                    .replace(/\\s+/g, '-');
+            }
+            function findHeadingByHash(hash) {
+                // Try to find a heading whose id or text slug matches the hash
+                var targetId = hash.replace(/^#/, '');
+                // Try id match first
+                var elem = document.getElementById(targetId);
+                if (elem) return elem;
+                // Try to match text content slug (e.g. for heading "Linear Algebra with NumPy" => "linear-algebra-with-numpy")
+                var headings = document.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                for (var i = 0; i < headings.length; i++) {
+                    var slug = slugify(headings[i].textContent.trim());
+                    if (slug === targetId) return headings[i];
+                }
+                return null;
+            }
+            document.addEventListener('DOMContentLoaded', function() {
+                document.querySelectorAll('a[href^="#"]').forEach(function(link) {
+                    link.addEventListener('click', function(e) {
+                        var hash = this.getAttribute('href');
+                        if (hash.length > 1) {
+                            var target = findHeadingByHash(hash);
+                            if (target) {
+                                e.preventDefault();
+                                target.scrollIntoView({behavior:'smooth', block:'start', inline:'nearest'});
+                                // Optionally update the URL hash in the address bar:
+                                if (history.pushState) {
+                                    history.pushState(null, null, hash);
+                                } else {
+                                    location.hash = hash;
+                                }
+                            }
+                        }
+                    });
+                });
+            });
+        })();
+        </script>
+        """,
+        height=0,
+    )
+
     # Top-of-page one-shot flash message (cleared after display)
     top_flash = st.session_state.pop('top_flash', None)
     if top_flash:
@@ -227,6 +279,15 @@ def main():
     if "selected_module" not in st.session_state:
         st.session_state["selected_module"] = get_default_selection(categories, category_to_modules)
     selected_path = st.session_state["selected_module"]
+
+    # --- (2) Scroll to top when lesson/module changes ---
+    prev_module = st.session_state.get("prev_module")
+    if prev_module != selected_path:
+        st_html(
+            "<script>window.scrollTo({top:0,behavior:'smooth'});</script>",
+            height=0,
+        )
+        st.session_state["prev_module"] = selected_path
 
     # --- Sidebar tree UI ---
     st.sidebar.title("Curriculum")
