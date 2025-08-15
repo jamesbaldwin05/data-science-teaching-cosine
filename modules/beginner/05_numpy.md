@@ -18,6 +18,8 @@ NumPy (Numerical Python) is a fundamental Python library used for numerical comp
     - [Array Properties](#array-properties)
     - [Reshaping Arrays](#reshaping-arrays)
     - [Changing Dimensions](#changing-dimensions)
+    - [Stacking Arrays](#stacking-arrays)
+    - [Splitting Arrays](#splitting-arrays)
 3. [Basic Operations](#basic-operations)
     - [Elementwise Arithmetic](#elementwise-arithmetic)
     - [Elementwise Functions](#elementwise-functions)
@@ -32,6 +34,10 @@ NumPy (Numerical Python) is a fundamental Python library used for numerical comp
     - [Fancy Indexing](#fancy-indexing)
     - [Conditional Selection](#conditional-selection)
 7. [Linear Algebra with NumPy](#linear-algebra-with-numpy)
+8. [Statistics with NumPy](#statistics-with-numpy)
+    - [Single Variable Statistics](#single-variable-statistics)
+    - [Multi Variable Statistics](#multi-variable-statistics)
+9. [Saving and Loading Data](#saving-and-loading-data)
 
 ---
 
@@ -224,6 +230,48 @@ print(expanded0)
 
 expanded1 = np.expand_dims(arr, axis=1)  # adds axis at position 1
 print(expanded1)
+```
+
+### Stacking Arrays
+Stacking arrays is the process of combining them along different axes:
+
+- `np.hstack([a, b])` (or `np.concatenate([a, b], axis=1)`) stack arrays horizontally.
+
+```python
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+print(np.hstack([a, b]))
+```
+
+- `np.vstack([a,b])` (or `np.concatenate([a, b], axis=0)`) stack arrays vertically.
+
+```python
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+print(np.vstack([a, b]))
+```
+
+### Splitting Arrays
+Splitting arrays the process of dividing them into multiple sub-arrays.
+
+- `np.split(arr, sections)` splits the array into equal-sized or specified sections (must divide evenly if integer).
+
+```python
+a = np.array([1, 2, 3, 4, 5, 6])
+
+a1, a2, a3 = np.split(a, 3)
+a4, a5, a6 = np.split(a, [3, 5])      # splits the array into arr[:3], arr[3:5], arr[5:]
+print(a1, a2, a3)
+print(a4, a5, a6)
+```
+
+- `np.array_split(arr, sections)` splits an array into unequal sections.
+
+```python
+a = np.array([1, 2, 3, 4, 5, 6])
+
+a1, a2, a3, a4 = np.array_split(a, 4)
+print(a1, a2, a3, a4)
 ```
 
 ---
@@ -631,10 +679,10 @@ v = np.array([3, -4])
 A = np.array([[2, 4],
               [5, 1]])
 
-print("Euclidean/L2 norm", np.linalg.norm(v))                               # = sqrt(3^2 + (-4)^2)
-print("Manhattan/L1 norm", np.linalg.norm(v, 1))                            # = |3| + |-4|
-print("Infinity norm (max absolute value):", np.linalg.norm(v, np.inf) )    # = max(|3|, |-4|)
-print("Frobenius norm/L2 norm for matrices:", np.linalg.norm(A))            # = sqrt(2^2 + 4^2 + 5^2 + 1^2)
+print("Euclidean/L2 norm: ", np.linalg.norm(v))                              # = sqrt(3^2 + (-4)^2)
+print("Manhattan/L1 norm: " , np.linalg.norm(v, 1))                          # = |3| + |-4|
+print("Infinity norm (max absolute value): ", np.linalg.norm(v, np.inf) )    # = max(|3|, |-4|)
+print("Frobenius norm/L2 norm for matrices: ", np.linalg.norm(A))            # = sqrt(2^2 + 4^2 + 5^2 + 1^2)
 ```
 
 - **SVD (Single Value Decomposition)**:  
@@ -658,6 +706,144 @@ A = np.array([[1, 2],
               [3, 4], 
               [5, 6]])
 print(np.linalg.pinv(A))
+```
+
+---
+
+## Statistics with NumPy
+
+### Single Variable Statistics
+
+NumPy provides various tools for common statistical operations.  
+You have already seen how for an `np.array`, we can call methods such as `mean()` or `sum()` in [Aggregations](#aggregations). These also exist as functions:
+
+```python
+arr = np.array([1, 2, 3, 4, 5, 6])
+
+print("Sum: ", np.sum(arr))
+print("Mean:", np.mean(arr))
+print("Maximum ", np.max(arr))
+print("Minimum: ", np.min(arr))
+print("Standard Deviation: ", np.std(arr))
+print("Variance: ", np.var(arr))
+```
+
+We can also also find further statistical data, not available as methods:
+
+- `np.median(arr)` returns the median value in the array.
+
+```python
+arr = np.array([1, 2, 3, 4, 5, 6])
+print(np.median(arr))
+```
+
+- `np.quantile(arr, q)` returns the value below which the fraction `q` of the data lies, interpolating if necessary.
+- `np.percentile(arr, p)` returns the value below which the percentage `p` of the data lies, interpolating if necessary.
+
+```python
+arr = np.array([1, 2, 3, 4, 5, 6])
+print(np.quantile(arr, 0.1))                # 10% of the data lies below this value
+print(np.percentile(arr, 50))              # 50% of the data lies below this value = median
+```
+
+### Multi Variable Statistics
+
+- `np.corrcoef(x,y)` will return the correlation coefficient matrix, which measures linear relationships between variables (`-1` meaning perfectly negatively correlated to `1` perfectly positively correlated)
+
+```python
+x = np.array([1, 2, 3, 4])
+y = np.array([2, 3, -2, 1])
+print(np.corrcoef(x, y))
+print("r =", np.corrcoef(x, y)[0, 1])       # if the data is two 1D arrays, this will return the single value for the correlation coefficient
+```
+
+*Note that the correlation coefficient matrix is of the form $\begin{bmatrix} 1 && r \\ r && 1 \end{bmatrix}$ so either `[0, 1]` or `[1, 0]` gets the single value.*
+
+- `np.cov(x,y)` will return the covariance matrix of two arrays, which measures how two variables vary together (positive meaning they increase/decrease together, negative meaning while one increases the other decreases)
+
+```python
+x = np.array([1, 2, 3, 4])
+y = np.array([2, 3, -2, 1])
+print(np.cov(x, y))
+print("cov(x, y) = ", np.cov(x, y)[0, 1])
+```
+
+*Note that the correlation coefficient matrix is of the form $\begin{bmatrix} var(x) && cov(x,y) \\ cov(y,x) && var(y) \end{bmatrix}$ so either `[0, 1]` or `[1, 0]` gets the single value.*
+
+*Note also that the variance here is the sample variance (dividing by n-1) not the population variance (dividing by n, calculated by `x.var()` or `np.var(x)`). To get the population variance, use `np.cov(x, y, bias=True)`.*
+
+---
+
+## Saving and Loading Data
+There are multiple ways to save and load data in NumPy, each with their own strengths and weaknesses.
+
+- Saving and loading data using `.npy`:  
+NumPy has its own binary format. It is very fast and recommended if you are only using NumPy, however often incompatible with other things.
+
+```python
+# no-run
+arr = np.array([[1, 2, 3],
+                [4, 5, 6]])
+
+np.save("arr.npy", arr)
+
+...
+
+loaded_arr = np.load("arr.npy")
+```
+
+- Saving and loading multiple arrays using `.npz`:  
+Another native format is `.npz` which is a zipped collection of `.npy` files, useful for storing multiple arrays.
+
+```python
+# no-run
+arr1 = np.array([[1, 2, 3],
+                 [4, 5, 6]])
+
+arr2 = np.array([[100, 1000],
+                 [200, 2000]])
+
+np.savez("arr.npz", array1=arr1, array2=arr2)
+np.savez_compressed("arr_compressed.npz", array1=arr1, array2=arr2)   # same as np.savez() but with compression, smaller file size but slower to load/save
+
+...
+
+loaded_data = np.load("arr.npz")
+
+arr1 = loaded_data["array1"]
+```
+
+- Saving and Loading Text `.txt` or `.csv`:  
+These file types are more compatible with other software (e.g. Microsoft Excel) but lose some NumPy specific metadata.
+
+```python
+# no-run
+arr = np.array([[1, 2, 3],
+                [4, 5, 6]])
+
+np.savetxt(
+    "data.csv", 
+    arr, 
+    delimiter=",", 
+    fmt="%d", 
+    header="Col1,Col2,Col3", 
+    comments=""  # removes the default '#' before the header
+)
+```
+
+This results in the file `data.csv` as:
+
+```csv
+Col1,Col2,Col3
+1,2,3
+4,5,6
+```
+
+Loading the file back into a NumPy array:
+
+```python
+# no-run
+loaded_arr = np.loadtxt("data.csv", delimiter=",", skiprows=1)   # skiprows=1 ignores the header line
 ```
 
 ---
