@@ -1,17 +1,17 @@
 # NumPy (Numerical Python)
 NumPy (Numerical Python) is a fundamental Python library used for numerical computing and data manipulation. It provides a powerful, flexible, n-dimensional array object `ndarray` that allows efficient storage and operations on large datasets of homogeneous data (typically numbers). It allows for:
-- Fast, vectorised operations on arrays due to elementwise maths without slow python loops.
-- A large set of mathematical functions including linear algebra, statistics, Fourier transforms and random number generation.
-- Tools for reshaping, indexing and slicing data
-- Efficient memory management
-- Seamless integration with many other scientific libraries including Pandas, SciPy and Matplotlib
+- Fast, vectorized operations on arrays due to elementwise maths without slow Python loops.
+- A large set of mathematical functions including linear algebra, statistics, Fourier transforms, and random number generation.
+- Tools for reshaping, indexing, and slicing data.
+- Efficient memory management.
+- Seamless integration with many other scientific libraries including Pandas, SciPy, and Matplotlib.
 
 ---
 
 ## Table of Contents
 1. [NumPy Basics](#numpy-basics)
     - [Importing NumPy](#importing-numpy)
-    - [Creating an array](#creating-an-array)
+    - [Creating an Array](#creating-an-array)
     - [Array Data Types](#array-data-types)
     - [Indexing & Slicing](#indexing--slicing)
     - [Views vs Copies](#views-vs-copies)
@@ -26,9 +26,14 @@ NumPy (Numerical Python) is a fundamental Python library used for numerical comp
     - [Elementwise Functions](#elementwise-functions)
     - [Comparison Operators](#comparison-operators)
     - [Aggregations](#aggregations)
+    - [Reductions with Axis and Keepdims](#reductions-with-axis-and-keepdims)
+    - [Arg and Index Utilities](#arg-and-index-utilities)
+    - [NaN-aware Statistics](#nan-aware-statistics)
+    - [Universal Function Parameters](#universal-function-parameters)
 4. [Random Numbers](#random-numbers)
     - [NumPy Random Distributions](#numpy-random-distributions)
     - [Random Numbers using a Generator Object](#random-numbers-using-a-generator-object)
+    - [Modern RNG Extras](#modern-rng-extras)
     - [Shuffling](#shuffling)
 5. [Broadcasting](#broadcasting)
 6. [Advanced Indexing](#advanced-indexing)
@@ -38,14 +43,14 @@ NumPy (Numerical Python) is a fundamental Python library used for numerical comp
 7. [Linear Algebra with NumPy](#linear-algebra-with-numpy)
 8. [Statistics with NumPy](#statistics-with-numpy)
     - [Single Variable Statistics](#single-variable-statistics)
-    - [Multi Variable Statistics](#multi-variable-statistics)
+    - [Multivariate Statistics](#multivariate-statistics)
 9. [Saving and Loading Data](#saving-and-loading-data)
 10. [Polynomials](#polynomials)
 
 ---
 
 ## NumPy Basics
-NumPy arrays are powerful tools designed for efficient numerical computing. Unlike regular Python lists, which can hold mixed data types and are slower for math operations, NumPy arrays store elements of the same type in a compact way and support fast, element-wise calculations without needing loops. They also handle multi-dimensional data and offer many built-in mathematical functions, making them ideal for scientific and data-intensive tasks.
+NumPy arrays are powerful tools designed for efficient numerical computing. Unlike regular Python lists, which can hold mixed data types and are slower for math operations, NumPy arrays store elements of the same type in a compact way and support fast, elementwise calculations without needing loops. They also handle multi-dimensional data and offer many built-in mathematical functions, making them ideal for scientific and data-intensive tasks.
 
 ### Importing NumPy
 To import the NumPy library, use the code below:
@@ -53,11 +58,11 @@ To import the NumPy library, use the code below:
 # no-run
 import numpy as np
 ```
-It is de-facto standard to use `np` as an alias for NumPy.
+It is de facto standard to use `np` as an alias for NumPy.
 
 Every example beyond this point will not show the code to import but it still needs to be there to work correctly.
 
-### Creating an array
+### Creating an Array
 To create a NumPy array from a list, you can call `np.array`.
 
 ```python
@@ -65,7 +70,7 @@ arr = np.array([1, 2, 3])
 print(arr)
 ```
 
-There are also a number of built in generators:
+There are also a number of built-in generators:
 
 - `np.zeros(shape)` creates an array filled with zeros.
 
@@ -110,14 +115,14 @@ print(arr)
 ```
 
 ### Array Data Types
-When using `np.array()` the data type of the array is inferred from the list. However, the default data types for generators (such as `np.zeros()` or   `np.full()`) is a `float` (you may have already noticed this in previous examples). To change this data type, we need to pass `dtype` as an argument.
+When using `np.array()` the data type of the array is inferred from the list. However, the default data type for built-in generators (such as `np.zeros()` or `np.full()`) is `float64` (you may have already noticed this in previous examples). To change this data type, we need to pass `dtype` as an argument.
 
 ```python
 arr = np.zeros(5, dtype=int)
 print(arr)
 ```
 
-To change an arrays data type once it has been defined, we can use the `astype()` method.
+To change an array’s data type once it has been defined, we can use the `astype()` method.
 
 ```python
 arr = np.zeros(5)         # [0. 0. 0. 0. 0.]
@@ -127,7 +132,7 @@ print(arr)
 
 ### Indexing & Slicing
 
-NumPy arrays support multiple ways to access and manipulate elements, similar to python lists:
+NumPy arrays support multiple ways to access and manipulate elements, similar to Python lists:
 
 - **1D & 2D slicing**: use `start:stop:step` syntax.  
 - **Negative indexing**: counts from the end.  
@@ -150,7 +155,7 @@ arr[-1, -2]  # 8
 ### Views vs Copies
 NumPy arrays can either share memory (views) or have independent memory (copies):
 
-- Views do not allocate new memory meaning changes to the view affect the original array:
+- Views do not allocate new memory, meaning changes to the view affect the original array:
 
 ```python
 a = np.array([1, 2, 3, 4])
@@ -216,7 +221,7 @@ print(arr.itemsize)
 
 ### Reshaping Arrays
 
-- `.reshape(new_shape)` returns a new view of the array with the given shape (must have the same number of total elements).
+- `.reshape(new_shape)` returns a view when possible; may return a copy. The total number of elements must remain the same.
 
 ```python
 arr = np.arange(6)                # [0 1 2 3 4 5]
@@ -224,7 +229,7 @@ reshaped = arr.reshape((2, 3))
 print(reshaped)
 ```
 
-- `.ravel()` and `.flatten()` both change an array to 1D (if possible). `.ravel()` returns a view of the array in 1D (modifying the contents will change the original) whereas `.flatten()` returns a copy of the array in 1D (modifying the contents will not change the original but takes more time).
+- `.ravel()` and `.flatten()` both change an array to 1D (if possible). `.ravel()` returns a view when possible; may return a copy (e.g., for non-contiguous arrays), whereas `.flatten()` always returns a copy of the array in 1D.
 
 ```python
 arr = np.array([[1, 2],
@@ -232,7 +237,7 @@ arr = np.array([[1, 2],
 
 ravel = arr.ravel()               #[1 2 3 4]
 ravel[0] = 99
-print(arr)                        # original array is changed
+print(arr)                        # original array is changed if ravel is a view
 
 arr = np.array([[1, 2], 
                 [3, 4]])
@@ -253,7 +258,7 @@ print(arr)
 print(arr.shape)
 ```
 
-- `np.expand_dims(a. axis)` adds a new axis at a specified position, increasing the number of dimensions by 1.
+- `np.expand_dims(arr, axis)` adds a new axis at a specified position, increasing the number of dimensions by 1.
 
 ```python
 arr = np.array([1, 2, 3])
@@ -267,7 +272,7 @@ print(expanded1)
 ### Stacking Arrays
 Stacking arrays is the process of combining them along different axes:
 
-- `np.hstack([a, b])` (or `np.concatenate([a, b], axis=1)`) stack arrays horizontally.
+- `np.hstack([a, b])` (or `np.concatenate([a, b], axis=1)`) stacks arrays horizontally.
 
 ```python
 a = np.array([1, 2, 3])
@@ -275,7 +280,7 @@ b = np.array([4, 5, 6])
 print(np.hstack([a, b]))
 ```
 
-- `np.vstack([a,b])` (or `np.concatenate([a, b], axis=0)`) stack arrays vertically.
+- `np.vstack([a, b])` (or `np.concatenate([a, b], axis=0)`) stacks arrays vertically.
 
 ```python
 a = np.array([1, 2, 3])
@@ -284,7 +289,7 @@ print(np.vstack([a, b]))
 ```
 
 ### Splitting Arrays
-Splitting arrays the process of dividing them into multiple sub-arrays.
+Splitting arrays is the process of dividing them into multiple sub-arrays.
 
 - `np.split(arr, sections)` splits the array into equal-sized or specified sections (must divide evenly if integer).
 
@@ -310,7 +315,7 @@ print(a1, a2, a3, a4)
 
 ## Basic Operations
 
-NumPy arrays support **vectorised operations** meaning operations are applied **elementwise**, without the need for loops.
+NumPy arrays support **vectorized operations** meaning operations are applied **elementwise**, without the need for loops.
 
 ### Elementwise Arithmetic
 
@@ -385,7 +390,7 @@ arr = np.array([[1, 5, 9],
 print(arr == 1)
 ```
 
-It can be used with boolean indexing but this will flatten the array to 1D.
+It can be used with boolean indexing, but this will flatten the array to 1D if you use a single mask of the same shape (e.g., arr[arr < 3]). However, if you use per-axis boolean masks (e.g., arr[row_mask, :] or arr[:, col_mask]), dimensions can be preserved.
 
 ```python
 arr = np.array([[1, 5, 9],
@@ -396,13 +401,15 @@ print(arr2)
 ```
 
 ### Aggregations
-These are a group of methods that compute a single value over the whole array
+These are a group of methods that compute a single value over the whole array, or along a given axis.
 
 - `.sum()` returns the sum of every element in the array
 
 ```python
 arr = np.array([1, 2, 3, 4, 5, 6])
 print(arr.sum())
+print(arr.sum(axis=0))  # sum along columns (if 2D or higher)
+print(arr.sum(axis=1))  # sum along rows (if 2D or higher)
 ```
 
 - `.mean()` returns the mean of the array
@@ -410,6 +417,8 @@ print(arr.sum())
 ```python
 arr = np.array([1, 2, 3, 4, 5, 6])
 print(arr.mean())
+print(arr.mean(axis=0))
+print(arr.mean(axis=1))
 ```
 
 - `.max()` returns the maximum value in the array
@@ -417,6 +426,8 @@ print(arr.mean())
 ```python
 arr = np.array([1, 2, 3, 4, 5, 6])
 print(arr.max())
+print(arr.max(axis=0))
+print(arr.max(axis=1))
 ```
 
 - `.min()` returns the minimum value in the array
@@ -424,6 +435,8 @@ print(arr.max())
 ```python
 arr = np.array([1, 2, 3, 4, 5, 6])
 print(arr.min())
+print(arr.min(axis=0))
+print(arr.min(axis=1))
 ```
 
 - `.std()` returns the standard deviation of the array
@@ -431,6 +444,8 @@ print(arr.min())
 ```python
 arr = np.array([1, 2, 3, 4, 5, 6])
 print(arr.std())
+print(arr.std(axis=0))
+print(arr.std(axis=1))
 ```
 
 - `.var()` returns the variance of the array
@@ -438,32 +453,119 @@ print(arr.std())
 ```python
 arr = np.array([1, 2, 3, 4, 5, 6])
 print(arr.var())
+print(arr.var(axis=0))
+print(arr.var(axis=1))
 ```
+
+---
+
+### Reductions with Axis and Keepdims
+
+Many aggregation functions (sum, mean, min, max, std, var, etc.) support the `axis` parameter to compute results along a specific axis, and the `keepdims` parameter to retain the reduced dimension as size 1. This is often useful for broadcasting.
+
+```python
+arr = np.array([[1, 2, 3],
+                [4, 5, 6]])
+
+col_means = arr.mean(axis=0)  # shape (3,)
+row_means = arr.mean(axis=1)  # shape (2,)
+
+# With keepdims=True, shapes are preserved for broadcasting
+col_means_b = arr.mean(axis=0, keepdims=True)  # shape (1, 3)
+row_means_b = arr.mean(axis=1, keepdims=True)  # shape (2, 1)
+
+# Example: center columns by subtracting the mean of each column
+centered = arr - arr.mean(axis=0, keepdims=True)
+print(centered)
+```
+
+---
+
+### Arg and Index Utilities
+
+NumPy provides several functions to find the positions of maximum/minimum values, sort/order arrays, and extract uniqueness/counts:
+
+- `np.argmax(arr, axis=None)` / `np.argmin(arr, axis=None)`: Index of the maximum/minimum value.
+- `np.argsort(arr, axis=-1)`: Indices that would sort the array.
+- `np.unique(arr, return_counts=False)`: Sorted unique values (optionally counts).
+- `np.count_nonzero(arr, axis=None)`: Count of non-zero (or True) elements.
+- `np.nonzero(arr)`: Indices where the array is non-zero (or True).
+- `np.argwhere(arr)`: Indices where the condition is True (as an array).
+- `np.bincount(arr)`: Count of occurrences of each integer value in an array of non-negative ints.
+
+```python
+arr = np.array([1, 3, 2, 3, 5, 1, 2])
+print(np.argmax(arr))
+print(np.argsort(arr))
+print(np.unique(arr))
+print(np.unique(arr, return_counts=True))
+print(np.count_nonzero(arr > 2))
+print(np.nonzero(arr == 3))
+print(np.argwhere(arr > 2))
+print(np.bincount(arr))
+```
+
+---
+
+### NaN-aware Statistics
+
+NumPy provides special versions of many statistical functions that ignore NaN (Not a Number) values.
+
+- `np.nanmean(arr)`, `np.nanstd(arr)`, `np.nanmax(arr)`, `np.nanmin(arr)` ignore NaNs.
+- `np.isnan(arr)` identifies NaNs in an array.
+- `np.isfinite(arr)` identifies finite values (not NaN or ±inf).
+
+```python
+arr = np.array([1, np.nan, 3])
+print(np.nanmean(arr))
+print(np.isnan(arr))
+print(np.isfinite(arr))
+```
+
+---
+
+### Universal Function Parameters: out=, where=
+
+Most universal functions (ufuncs, e.g., np.add, np.multiply) support the `out=` parameter (to write the result to a pre-allocated array) and `where=` (to mask where the operation applies):
+
+```python
+a = np.array([1, 2, 3])
+b = np.array([4, 5, 6])
+out = np.empty_like(a)
+np.add(a, b, out=out)            # result stored in 'out'
+print(out)
+
+# Only add where b > 4
+result = np.add(a, b, where=b>4)
+print(result)  # [1+4, 2+5, 3+6] but only where b>4; elsewhere original a is kept
+```
+
+---
 
 ## Random Numbers
 NumPy’s `np.random` module provides tools for generating random numbers, sampling from distributions, and shuffling data.
 
 ### NumPy Random Distributions
 
-- `np.random.rand(shape)` fills an array of the given shape with random floats in [0, 1]
+- `np.random.rand(d0, d1, ...)` fills an array of the given dimensions with random floats in [0.0, 1.0).
 
 ```python
 print(np.random.rand(2,2)) 
 ```
 
-- `np.random.randn(shape)` fills an array of the given shape with random samples from a standardised normal distribution (mean 0, std 1)
+- `np.random.randn(d0, d1, ...)` fills an array of the given dimensions with random samples from a standard normal distribution (mean 0, std 1).
 
 ```python
 print(np.random.randn(2,2,2)) 
 ```
 
-- `np.random.randint(low, high, size)` fills an array of the given shape (`size`) with random integers between low (inclusive) and high (exclusive) 
+- `np.random.randint(low, high, size)` fills an array of the given shape (`size`) with random integers between low (inclusive) and high (exclusive). 
 
 ```python
 print(np.random.randint(1, 10, (2,2)))
 ```
 
-- `np.random.seed(value)` sets a seed for the random generation so results are reproducible. Each integer will give a constant set of random numbers.
+- `np.random.seed(value)` sets a seed for the legacy random number generator so results are reproducible. Each integer will give a constant set of random numbers. For modern, safer workflows, use the Generator approach below.
 
 ```python
 np.random.seed(0)
@@ -476,7 +578,7 @@ print(np.random.rand(2,2))
 print(np.random.uniform(100, 120, (2,2)))
 ```
 
-- `np.random.normal(mean, std, size)` fills an array of the given shape (`size`) with random samples from a given normal (Gaussian) distribution.
+- `np.random.normal(loc, scale, size)` fills an array of the given shape (`size`) with random samples from a given normal (Gaussian) distribution (mean `loc`, standard deviation `scale`).
 
 ```python
 print(np.random.normal(5, 2, (2,2)))
@@ -484,13 +586,13 @@ print(np.random.normal(5, 2, (2,2)))
 
 ### Random Numbers using a Generator Object
 
-The modern approach to generating random numbers is using a generator object, and this is recommended over the legacy `np.random.*`. This can also use a seed for reproducibility.
+The modern approach to generating random numbers is using a Generator object, which is recommended over the legacy `np.random.*`. This can also use a seed for reproducibility.
 
 ```python
 rng = np.random.default_rng(seed=0)
-print(rng.random(5))                        # 5 random floats between 0 and 1
+print(rng.random(5))                        # 5 random floats in [0.0, 1.0)
 
-arr = rng.random((2,2))                     # a 2x2 array filled with random floats between 0 and 1
+arr = rng.random((2,2))                     # a 2x2 array filled with random floats in [0.0, 1.0)
 ```
 
 The generator object supports a variety of distributions:
@@ -499,7 +601,7 @@ The generator object supports a variety of distributions:
 # no-run
 rng = np.random.default_rng()
 
-rng.random()                          # uniform distribution between 0 and 1
+rng.random()                          # uniform distribution in [0.0, 1.0)
 rng.uniform(low, high)                 # uniform distribution between low and high
 rng.integers(low, high)                # integers between low (inclusive) and high (exclusive)
 rng.normal(loc=mean, scale=std)        # normal/Gaussian distribution with mean and standard deviation
@@ -531,9 +633,39 @@ beta = rng.beta(2, 5, (3, 3))
 print(beta)
 ```
 
+---
+
+### Modern RNG Extras
+
+The Generator object also has convenient methods for sampling and shuffling:
+
+- `rng.choice(a, size=None, replace=True, p=None)`: Randomly sample elements from array `a`, with or without replacement, and (optionally) with probabilities.
+- `rng.permutation(a)`: Returns a new randomly permuted array, leaving original unchanged.
+- `rng.shuffle(a)`: Shuffles array `a` in-place along the first axis (rows for 2D arrays).
+
+```python
+rng = np.random.default_rng(42)
+arr = np.arange(10)
+
+sample = rng.choice(arr, size=5, replace=False)  # 5 unique elements, no replacement
+print(sample)
+
+weighted_sample = rng.choice(arr, size=5, p=np.linspace(0, 1, 10)/np.linspace(0, 1, 10).sum())
+print(weighted_sample)
+
+shuffled = rng.permutation(arr)
+print(shuffled)
+
+arr2 = np.arange(10)
+rng.shuffle(arr2)
+print(arr2)
+```
+
+---
+
 ### Shuffling
 
-- `np.random.shuffle(arr)` shuffles an array **in place**. It has no return value and directly affects the original array.
+- `np.random.shuffle(arr)` shuffles an array **in place**. It has no return value and directly affects the original array. For modern code, prefer `rng.shuffle(arr)` as shown above.
 
 ```python
 arr = np.array([1, 2, 3, 4])
@@ -549,6 +681,10 @@ arr2 = np.random.permutation(arr1)
 print(arr1)
 print(arr2)
 ```
+
+Note: Shuffling a 2D array shuffles rows by default. To shuffle columns, use the transpose or modern Generator methods.
+
+---
 
 ## Broadcasting
 Broadcasting is NumPy’s way of performing elementwise operations on arrays with **different shapes** by virtually expanding (stretching) arrays with a dimension of 1 to match the other array, without actually copying data. This allows operations that standard linear algebra rules wouldn’t normally permit, avoiding explicit loops and making calculations faster and more memory-efficient.
@@ -619,6 +755,8 @@ result = col_vec + row_vec         # shape (3, 3)
 print(result)
 ```
 
+Reductions with `keepdims=True` can be especially helpful for broadcasting. For instance, see [Reductions with Axis and Keepdims](#reductions-with-axis-and-keepdims).
+
 ---
 
 ## Advanced Indexing
@@ -626,7 +764,7 @@ print(result)
 NumPy also supports more advanced indexing methods, such as boolean indexing and fancy indexing, which would require more verbose approaches like list comprehensions with native Python lists.
 
 ### Boolean Indexing
-Selects elements from an array based on a condition, returning a 1D array of the elements that satisfy it.
+Selects elements from an array based on a condition, returning a 1D array of the elements that satisfy it (when using a mask of the same shape). Per-axis boolean masks (e.g., arr[row_mask, :]) can preserve dimensions.
 
 ```python
 arr = np.array([[1, 2, 3],
@@ -778,7 +916,7 @@ print("Infinity norm (max absolute value): ", np.linalg.norm(v, np.inf) )    # =
 print("Frobenius norm/L2 norm for matrices: ", np.linalg.norm(A))            # = sqrt(2^2 + 4^2 + 5^2 + 1^2)
 ```
 
-- **SVD (Single Value Decomposition)**:  
+- **SVD (Singular Value Decomposition)**:  
 `np.linalg.svd(A)` will return (as a tuple) an array decomposed into the form $U \Sigma V^T$.
 
 ```python
@@ -821,7 +959,7 @@ print("Standard Deviation: ", np.std(arr))
 print("Variance: ", np.var(arr))
 ```
 
-We can also also find further statistical data, not available as methods:
+We can also find further statistical data, not available as methods:
 
 - `np.median(arr)` returns the median value in the array.
 
@@ -839,7 +977,7 @@ print(np.quantile(arr, 0.1))                # 10% of the data lies below this va
 print(np.percentile(arr, 50))              # 50% of the data lies below this value = median
 ```
 
-### Multi Variable Statistics
+### Multivariate Statistics
 
 - `np.corrcoef(x,y)` will return the correlation coefficient matrix, which measures linear relationships between variables (`-1` meaning perfectly negatively correlated to `1` perfectly positively correlated)
 
@@ -861,7 +999,7 @@ print(np.cov(x, y))
 print("cov(x, y) = ", np.cov(x, y)[0, 1])
 ```
 
-*Note that the correlation coefficient matrix is of the form $\begin{bmatrix} var(x) && cov(x,y) \\ cov(y,x) && var(y) \end{bmatrix}$ so either `[0, 1]` or `[1, 0]` gets the single value.*
+*Note that the covariance matrix is of the form $\begin{bmatrix} var(x) && cov(x,y) \\ cov(y,x) && var(y) \end{bmatrix}$ so either `[0, 1]` or `[1, 0]` gets the single value.*
 
 *Note also that the variance here is the sample variance (dividing by n-1) not the population variance (dividing by n, calculated by `x.var()` or `np.var(x)`). To get the population variance, use `np.cov(x, y, bias=True)`.*
 
@@ -907,7 +1045,7 @@ arr1 = loaded_data["array1"]
 ```
 
 - Saving and Loading Text `.txt` or `.csv`:  
-These file types are more compatible with other software (e.g. Microsoft Excel) but lose some NumPy specific metadata.
+These file types are more compatible with other software (e.g. Microsoft Excel) but lose some NumPy-specific metadata.
 
 ```python
 # no-run
@@ -939,6 +1077,9 @@ Loading the file back into a NumPy array:
 loaded_arr = np.loadtxt("data.csv", delimiter=",", skiprows=1)   # skiprows=1 ignores the header line
 ```
 
+- `np.genfromtxt()` is similar to `np.loadtxt` but can handle missing data and more complex formats.
+- For very large arrays, consider using `np.memmap` to memory-map array data from disk without loading it all into RAM.
+
 ---
 
 ## Polynomials
@@ -951,7 +1092,7 @@ p = np.poly1d([2, 3, 4])    # 2x^2 + 3x + 4
 print(p(2))                 # evaluate at x=2
 print(p.deriv())
 
-q = p*2                     # q = 4x^2 + 6x 8
+q = p*2                     # q = 4x^2 + 6x + 8
 ```
 
 - `np.polyfit(x, y, deg)` finds the least-squares polynomial of degree `deg` that fits the data `(x, y)`, returning the coefficients in descending powers.
