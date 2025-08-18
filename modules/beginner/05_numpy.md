@@ -14,6 +14,7 @@ NumPy (Numerical Python) is a fundamental Python library used for numerical comp
     - [Creating an array](#creating-an-array)
     - [Array Data Types](#array-data-types)
     - [Indexing & Slicing](#indexing--slicing)
+    - [Views vs Copies](#views-vs-copies)
 2. [Array Attributes](#array-attributes)
     - [Array Properties](#array-properties)
     - [Reshaping Arrays](#reshaping-arrays)
@@ -26,7 +27,8 @@ NumPy (Numerical Python) is a fundamental Python library used for numerical comp
     - [Comparison Operators](#comparison-operators)
     - [Aggregations](#aggregations)
 4. [Random Numbers](#random-numbers)
-    - [Random Distributions](#random-distributions)
+    - [NumPy Random Distributions](#numpy-random-distributions)
+    - [Random Numbers using a Generator Object](#random-numbers-using-a-generator-object)
     - [Shuffling](#shuffling)
 5. [Broadcasting](#broadcasting)
 6. [Advanced Indexing](#advanced-indexing)
@@ -38,6 +40,7 @@ NumPy (Numerical Python) is a fundamental Python library used for numerical comp
     - [Single Variable Statistics](#single-variable-statistics)
     - [Multi Variable Statistics](#multi-variable-statistics)
 9. [Saving and Loading Data](#saving-and-loading-data)
+10. [Polynomials](#polynomials)
 
 ---
 
@@ -144,6 +147,27 @@ arr[0:2, 1:3]
 arr[-1, -2]  # 8
 ```
 
+### Views vs Copies
+NumPy arrays can either share memory (views) or have independent memory (copies):
+
+- Views do not allocate new memory meaning changes to the view affect the original array:
+
+```python
+a = np.array([1, 2, 3, 4])
+v = a[1:3]  # view
+v[0] = 20
+print(a)
+```
+
+- Copies are created with `.copy()` and changes to a copy do not affect the original array:
+
+```python
+a = np.array([1, 2, 3, 4])
+v = a[1:3].copy()
+v[0] = 20
+print(a)
+```
+
 ---
 
 ## Array Attributes
@@ -153,34 +177,40 @@ arr[-1, -2]  # 8
 - `.shape` returns a tuple representing the dimensions of the array.
 
 ```python
-arr = np.array([[1, 2, 3], [4, 5, 6]])
+arr = np.array([[1, 2, 3],
+                [4, 5, 6]])
 print(arr.shape)
 ```
 
 - `.ndim` returns the number of dimensions (axes) in the array.
 
 ```python
-arr = np.array([[[1, 1], [2, 2], [3, 3]]])
+arr = np.array([[[1, 1],
+                 [2, 2],
+                 [3, 3]]])
 print(arr.ndim)
 ```
 
 - `.size` returns the total number of elements in the array.
 
 ```python
-arr = np.array([[1, 2, 3], [4, 5, 6]])
+arr = np.array([[1, 2, 3], 
+                [4, 5, 6]])
 print(arr.size)
 ```
 
 - `.dtype` returns the data type of the elements.
 
 ```python
-arr = np.array([[1, 2, 3], [4, 5, 6]])
+arr = np.array([[1, 2, 3],
+                [4, 5, 6]])
 print(arr.dtype)
 ```
 
 - `.itemsize` returns the size (in bytes) of each element.
 ```python
-arr = np.array([[1, 2, 3], [4, 5, 6]])
+arr = np.array([[1, 2, 3],
+                [4, 5, 6]])
 print(arr.itemsize)
 ```
 
@@ -189,21 +219,23 @@ print(arr.itemsize)
 - `.reshape(new_shape)` returns a new view of the array with the given shape (must have the same number of total elements).
 
 ```python
-arr = np.arange(6)
+arr = np.arange(6)                # [0 1 2 3 4 5]
 reshaped = arr.reshape((2, 3))
 print(reshaped)
 ```
 
-- `.ravel()` and `.flatten()` both change an array to 1D (if possible) but `.ravel()` returns a view of the array in 1D, modifying the contents will change the original whereas `.flatten()` returns a copy of the array in 1D, modifying the contents will not change the original but it is slower.
+- `.ravel()` and `.flatten()` both change an array to 1D (if possible). `.ravel()` returns a view of the array in 1D (modifying the contents will change the original) whereas `.flatten()` returns a copy of the array in 1D (modifying the contents will not change the original but takes more time).
 
 ```python
-arr = np.array([[1, 2], [3, 4]])
+arr = np.array([[1, 2],
+                [3, 4]])
 
 ravel = arr.ravel()               #[1 2 3 4]
 ravel[0] = 99
 print(arr)                        # original array is changed
 
-arr = np.array([[1, 2], [3, 4]])
+arr = np.array([[1, 2], 
+                [3, 4]])
 flatten = arr.flatten()           # [1 2 3 4]
 flatten[1] = 100
 print(arr)                        # original array is unchanged
@@ -411,7 +443,7 @@ print(arr.var())
 ## Random Numbers
 NumPy’s `np.random` module provides tools for generating random numbers, sampling from distributions, and shuffling data.
 
-### Random Distributions
+### NumPy Random Distributions
 
 - `np.random.rand(shape)` fills an array of the given shape with random floats in [0, 1]
 
@@ -448,6 +480,55 @@ print(np.random.uniform(100, 120, (2,2)))
 
 ```python
 print(np.random.normal(5, 2, (2,2)))
+```
+
+### Random Numbers using a Generator Object
+
+The modern approach to generating random numbers is using a generator object, and this is recommended over the legacy `np.random.*`. This can also use a seed for reproducibility.
+
+```python
+rng = np.random.default_rng(seed=0)
+print(rng.random(5))                        # 5 random floats between 0 and 1
+
+arr = rng.random((2,2))                     # a 2x2 array filled with random floats between 0 and 1
+```
+
+The generator object supports a variety of distributions:
+
+```python
+# no-run
+rng = np.random.default_rng()
+
+rng.random()                          # uniform distribution between 0 and 1
+rng.uniform(low, high)                 # uniform distribution between low and high
+rng.integers(low, high)                # integers between low (inclusive) and high (exclusive)
+rng.normal(loc=mean, scale=std)        # normal/Gaussian distribution with mean and standard deviation
+rng.binomial(n, p)                     # binomial distribution with n trials and probability p
+rng.poisson(lam)                       # Poisson distribution with expected value lambda
+rng.exponential(scale=1/rate)          # exponential distribution with given rate (lambda = 1/scale)
+rng.gamma(shape, scale)                # gamma distribution with shape (k) and scale (theta)
+rng.beta(a, b)                         # beta distribution with parameters a and b
+rng.multivariate_normal(mean, cov)     # multivariate normal distribution with mean vector and covariance matrix
+```
+
+If we add a `size` parameter to any of these, we can create an array with these distributions:
+
+```python
+rng = np.random.default_rng()
+ints = rng.integers(1, 10, (2, 2))
+print(ints)
+```
+
+```python
+rng = np.random.default_rng()
+normal = rng.normal(0, 1, 10)
+print(normal)
+```
+
+```python
+rng = np.random.default_rng()
+beta = rng.beta(2, 5, (3, 3))
+print(beta)
 ```
 
 ### Shuffling
@@ -524,6 +605,18 @@ B = np.array([[10],
               [20]])
 
 print(A + B)
+```
+
+If you want to align two arrays so they can be broadcast, we can use `None` or `np.newaxis` to add a new axis.
+
+```python
+arr = np.array([1, 2, 3])  # shape (3,)
+
+col_vec = arr[:, None]     # shape (3, 1)
+
+row_vec = np.array([10, 20, 30])  # shape (3,)
+result = col_vec + row_vec         # shape (3, 3)
+print(result)
 ```
 
 ---
@@ -844,6 +937,41 @@ Loading the file back into a NumPy array:
 ```python
 # no-run
 loaded_arr = np.loadtxt("data.csv", delimiter=",", skiprows=1)   # skiprows=1 ignores the header line
+```
+
+---
+
+## Polynomials
+Moving beyond arrays, NumPy also has tools for working with polynomials.
+
+- `np.poly1d(coefficients)` creates a polynomial object from a list of coefficients (in descending order of powers). These objects can be evaluated, added, multiplied or differentiated easily.
+
+```python
+p = np.poly1d([2, 3, 4])    # 2x^2 + 3x + 4
+print(p(2))                 # evaluate at x=2
+print(p.deriv())
+
+q = p*2                     # q = 4x^2 + 6x 8
+```
+
+- `np.polyfit(x, y, deg)` finds the least-squares polynomial of degree `deg` that fits the data `(x, y)`, returning the coefficients in descending powers.
+
+```python
+x = np.array([0, 1, 2, 3])
+y = np.array([1, 3, 7, 13])
+
+coeffs = np.polyfit(x, y, 2)   # finds a quadratic (degree 2) polynomial that best fits this data
+print(coeffs)                  # x^2 + x + 1 fits this data best
+```
+
+- `np.polyval(p, x)` evaluates a polynomial `p` (as either a `poly1d` object or a list of coefficients) at given values of `x`.
+
+```python
+coeffs = [2, 3, 4]  # 2x^2 + 3x + 4
+x = np.array([0, 1, 2, 3])
+
+y = np.polyval(coeffs, x)
+print(y)
 ```
 
 ---
