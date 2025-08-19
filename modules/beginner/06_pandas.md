@@ -1,4 +1,4 @@
-# Pandas for Beginners
+# Pandas
 
 Pandas is a powerful and flexible open-source data analysis and manipulation library for Python. It is built on top of NumPy and is designed for working with structured data, such as tabular, time series, and matrix data. Pandas makes it easy to clean, analyze, and visualize data, making it an essential tool for data scientists and analysts.
 
@@ -47,12 +47,6 @@ Pandas is a powerful and flexible open-source data analysis and manipulation lib
 
 ---
 
-## Introduction to Pandas
-
-Pandas is the go-to library for data manipulation and analysis in Python. With its intuitive data structures and functions, you can efficiently read, clean, process, and analyze large datasets.
-
----
-
 ## Pandas Basics
 
 ### Importing pandas
@@ -60,8 +54,11 @@ Pandas is the go-to library for data manipulation and analysis in Python. With i
 Pandas is conventionally imported as `pd`:
 
 ```python
+# no-run
 import pandas as pd
 ```
+
+It is de facto standard to use `pd` as an alias for Pandas. As with the last lesson, examples beyond this point will not show this.
 
 ---
 
