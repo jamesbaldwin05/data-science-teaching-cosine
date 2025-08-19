@@ -124,7 +124,7 @@ df = pd.read_json('data.json')
 ### Basic Attributes
 
 ```python
-# no-run
+# hidden
 data = {
     "Name": ["Alice", "Bob", "Charlie", "Diana"],
     "Age": [24, 30, 22, 28],

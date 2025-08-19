@@ -323,14 +323,52 @@ def main():
                     lines.append(f"{k} = {val_repr}")
                 return "\n".join(lines)
 
+            code_lines = code.lstrip().splitlines()
+            is_hidden = code_lines and code_lines[0].strip().startswith("# hidden")
             display_code = code
-            st.code(display_code, language="python")
-            if st.button("Run", key=key):
-                with st.spinner("Running..."):
-                    stdout, stderr = io.StringIO(), io.StringIO()
-                    globals_dict = {}
-                    try:
-                        with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
+
+            if is_hidden:
+                # Don't display code, only button
+                if st.button("Run", key=key):
+                    with st.spinner("Running..."):
+                        stdout, stderr = io.StringIO(), io.StringIO()
+                        globals_dict = {}
+                        try:
+                            # Remove # hidden line before execution
+                            exec_code_body = "\n".join(code_lines[1:]).lstrip()
+                            if selected_mod.stem == '05_numpy':
+                                exec_code = 'import numpy as np\n' + exec_code_body
+                            elif selected_mod.stem == '06_pandas':
+                                exec_code = 'import pandas as pd\n' + exec_code_body
+                            else:
+                                exec_code = exec_code_body
+                            exec(exec_code, globals_dict)
+                        except Exception:
+                            st.error(traceback.format_exc())
+                            return
+                        # Display matplotlib figure if present
+                        if plt.get_fignums():
+                            st.pyplot(plt.gcf())
+                            plt.close("all")
+                        out = stdout.getvalue()
+                        err = stderr.getvalue()
+                        # Remove non-problematic Matplotlib Agg warning
+                        err = "".join([line for line in err.splitlines(keepends=True)
+                                       if "FigureCanvasAgg is non-interactive" not in line])
+                        # Fallback: if nothing to show, display variable state
+                        if (not out.strip()) and (not err.strip()):
+                            fallback = get_fallback_vars(globals_dict)
+                            if fallback.strip():
+                                st.text_area("Output", fallback, height=150, key=f"out_{key}")
+                        elif out or err:
+                            st.text_area("Output", out + err, height=150, key=f"out_{key}")
+            else:
+                st.code(display_code, language="python")
+                if st.button("Run", key=key):
+                    with st.spinner("Running..."):
+                        stdout, stderr = io.StringIO(), io.StringIO()
+                        globals_dict = {}
+                        try:
                             if selected_mod.stem == '05_numpy':
                                 exec_code = 'import numpy as np\n' + code
                             elif selected_mod.stem == '06_pandas':
@@ -338,25 +376,25 @@ def main():
                             else:
                                 exec_code = code
                             exec(exec_code, globals_dict)
-                    except Exception:
-                        st.error(traceback.format_exc())
-                        return
-                    # Display matplotlib figure if present
-                    if plt.get_fignums():
-                        st.pyplot(plt.gcf())
-                        plt.close("all")
-                    out = stdout.getvalue()
-                    err = stderr.getvalue()
-                    # Remove non-problematic Matplotlib Agg warning
-                    err = "".join([line for line in err.splitlines(keepends=True)
-                                   if "FigureCanvasAgg is non-interactive" not in line])
-                    # Fallback: if nothing to show, display variable state
-                    if (not out.strip()) and (not err.strip()):
-                        fallback = get_fallback_vars(globals_dict)
-                        if fallback.strip():
-                            st.text_area("Output", fallback, height=150, key=f"out_{key}")
-                    elif out or err:
-                        st.text_area("Output", out + err, height=150, key=f"out_{key}")
+                        except Exception:
+                            st.error(traceback.format_exc())
+                            return
+                        # Display matplotlib figure if present
+                        if plt.get_fignums():
+                            st.pyplot(plt.gcf())
+                            plt.close("all")
+                        out = stdout.getvalue()
+                        err = stderr.getvalue()
+                        # Remove non-problematic Matplotlib Agg warning
+                        err = "".join([line for line in err.splitlines(keepends=True)
+                                       if "FigureCanvasAgg is non-interactive" not in line])
+                        # Fallback: if nothing to show, display variable state
+                        if (not out.strip()) and (not err.strip()):
+                            fallback = get_fallback_vars(globals_dict)
+                            if fallback.strip():
+                                st.text_area("Output", fallback, height=150, key=f"out_{key}")
+                        elif out or err:
+                            st.text_area("Output", out + err, height=150, key=f"out_{key}")
 
         last_pos = 0
         runner_idx = 0
