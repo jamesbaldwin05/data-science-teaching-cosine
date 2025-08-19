@@ -1,10 +1,12 @@
-# Pandas (Python Data Analysis Library)
+# Pandas
 Pandas is a powerful Python library for data manipulation, analysis, and cleaning. It provides easy-to-use data structures—**Series** and **DataFrame**—designed for working with structured, tabular data. Pandas is widely used for:
 - Importing/exporting data (CSV, Excel, SQL, etc.)
 - Filtering, selecting, and transforming data
 - Handling missing data
 - Aggregation and group operations
 - Merging and joining datasets
+
+[Official Documentation](https://pandas.pydata.org/docs/)
 
 ---
 
@@ -42,16 +44,17 @@ Pandas is built on top of NumPy and provides high-level data structures for tabu
 ### Importing Pandas
 
 ```python
+# no-run
 import pandas as pd
 ```
-The convention is to import pandas as `pd`.
+It is de facto standard to use `pd` as an alias for Pandas. Similar to last lesson, every example beyond this point will not show the code to import.
 
 ### Series and DataFrames
 
 - **Series**: a one-dimensional labeled array (like a column of a spreadsheet).
 - **DataFrame**: a two-dimensional table with labeled axes (rows and columns).
 
-#### Creating a Series
+### Creating a series:
 
 ```python
 s = pd.Series([10, 20, 30, 40])
@@ -64,7 +67,7 @@ s = pd.Series([10, 20, 30, 40], index=['a', 'b', 'c', 'd'])
 print(s)
 ```
 
-#### Creating a DataFrame
+### Creating a DataFrame:
 
 From a dictionary:
 ```python
@@ -88,14 +91,19 @@ print(df)
 
 Pandas makes it easy to read from and write to many formats.
 
+To read:
+
 ```python
+# no-run
 df = pd.read_csv('data.csv')      # Read CSV
 df = pd.read_excel('data.xlsx')   # Read Excel
 df = pd.read_json('data.json')    # Read JSON
 ```
 
 To write:
+
 ```python
+# no-run
 df.to_csv('output.csv', index=False)      # Write CSV
 df.to_excel('output.xlsx', index=False)   # Write Excel
 df.to_json('output.json')                 # Write JSON
@@ -103,20 +111,73 @@ df.to_json('output.json')                 # Write JSON
 
 ---
 
-## Viewing and Inspecting Data
+## Basic Attributes and Methods
 
-- `.head(n)` shows the first n rows (default 5)
-- `.tail(n)` shows the last n rows
-- `.shape` returns tuple (rows, columns)
-- `.info()` summary of DataFrame
-- `.describe()` basic statistics
+- `.shape` returns the number of rows and columns in the DataFrame, in the form `(rows, columns)`.
+
+- `.size` returns the total number of elements.
+
+- `.columns` returns the labels of all columns.
+
+- `.dtypes` returns the data type of each column.
+
+- `.head(n)` or `.tail(n)` shows the first or last `n` rows (default is 5).
+
+- `.sample(n)` returns a random sample of rows.
+
+- `.info()`returns a summary of DataFrame.
+
+- `.describe()` returns basic statistics for columns.
+
+- `.sort_values(by="col")` sorts the data by the given column.
+
+- `.sort_index()` sorts the data by index.
 
 ```python
-print(df.head())
-print(df.shape)
-print(df.info())
-print(df.describe())
+data = {
+    "ID": range(1, 11),
+    "Name": ["Alice", "Bob", "Charlie", "Diana", "Ethan",
+             "Fiona", "George", "Hannah", "Ian", "Julia"],
+    "Age": [24, 30, 22, 28, 35, 27, 31, 29, 26, 32],
+    "City": ["London", "Paris", "Berlin", "Madrid", "Rome",
+             "Lisbon", "Vienna", "Prague", "Athens", "Dublin"]
+}
+
+df = pd.DataFrame(data)
+
+print(df.dtypes)
 ```
+
+```python
+data = {
+    "ID": range(1, 11),
+    "Name": ["Alice", "Bob", "Charlie", "Diana", "Ethan",
+             "Fiona", "George", "Hannah", "Ian", "Julia"],
+    "Age": [24, 30, 22, 28, 35, 27, 31, 29, 26, 32],
+    "City": ["London", "Paris", "Berlin", "Madrid", "Rome",
+             "Lisbon", "Vienna", "Prague", "Athens", "Dublin"]
+}
+
+df = pd.DataFrame(data)
+
+print(df.head())
+```
+
+```python
+data = {
+    "ID": range(1, 11),
+    "Name": ["Alice", "Bob", "Charlie", "Diana", "Ethan",
+             "Fiona", "George", "Hannah", "Ian", "Julia"],
+    "Age": [24, 30, 22, 28, 35, 27, 31, 29, 26, 32],
+    "City": ["London", "Paris", "Berlin", "Madrid", "Rome",
+             "Lisbon", "Vienna", "Prague", "Athens", "Dublin"]
+}
+
+df = pd.DataFrame(data)
+
+print(df.sort_values(by="Age"))
+```
+
 
 ---
 
