@@ -6,7 +6,7 @@ from pathlib import Path
 from streamlit.components.v1 import html as st_html
 
 # Lessons that should have interactive Python code snippet execution
-PY_SNIPPET_LESSONS = {"01_python", "02_linear_algebra", "05_numpy"}
+PY_SNIPPET_LESSONS = {"01_python", "02_linear_algebra", "05_numpy", "06_pandas"}
 
 def scroll_to_bottom():
     """Scroll browser viewport to page bottom (smooth, retried for Streamlit rerender timing)."""
