@@ -142,14 +142,6 @@ print(df.columns)
 print(df.dtypes)
 ```
 
-Here are some basic DataFrame attributes:
-
-```python
-print(df.shape)
-print(df.columns)
-print(df.dtypes)
-```
-
 ### Info, Head, Tail, Describe
 
 ```python
