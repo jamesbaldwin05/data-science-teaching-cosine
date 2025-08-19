@@ -142,21 +142,11 @@ print(df.columns)
 print(df.dtypes)
 ```
 
-Shape:
+Here are some basic DataFrame attributes:
 
 ```python
 print(df.shape)
-```
-
-Columns:
-
-```python
 print(df.columns)
-```
-
-Data Types:
-
-```python
 print(df.dtypes)
 ```
 
