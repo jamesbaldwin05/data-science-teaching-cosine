@@ -142,6 +142,24 @@ print(df.columns)
 print(df.dtypes)
 ```
 
+Shape:
+
+```python
+print(df.shape)
+```
+
+Columns:
+
+```python
+print(df.columns)
+```
+
+Data Types:
+
+```python
+print(df.dtypes)
+```
+
 ### Info, Head, Tail, Describe
 
 ```python
