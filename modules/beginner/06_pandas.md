@@ -67,7 +67,7 @@ It is de facto standard to use `pd` as an alias for Pandas. As with the last les
 
 ### Creating Series and DataFrames
 
-#### From Lists
+From lists:
 
 ```python
 # Series from a list
@@ -81,7 +81,7 @@ df = pd.DataFrame([[1, 2], [3, 4]], columns=['A', 'B'])
 print(df)
 ```
 
-#### From Dictionaries
+From dictionaries:
 
 ```python
 # Series from a dictionary
@@ -95,7 +95,7 @@ df = pd.DataFrame({'name': ['Alice', 'Bob'], 'age': [25, 30]})
 print(df)
 ```
 
-#### From Arrays
+From arrays:
 
 ```python
 import numpy as np
@@ -103,14 +103,6 @@ arr = np.array([[1, 2], [3, 4]])
 df = pd.DataFrame(arr, columns=['Col1', 'Col2'])
 print(df)
 ```
-
-#### Built-in Constructors
-
-- `pd.Series(data, index=...)`
-- `pd.DataFrame(data, columns=..., index=...)`
-- `pd.read_csv('file.csv')`
-- `pd.read_excel('file.xlsx')`
-- `pd.read_json('file.json')`
 
 ### Reading Data from Files
 
@@ -129,12 +121,35 @@ df = pd.read_json('data.json')
 
 ## DataFrame Attributes and Methods
 
-### Shape, Columns, Dtypes
+### Basic Attributes
 
 ```python
-print(df.shape)        # (rows, columns)
-print(df.columns)      # Column names (Index object)
-print(df.dtypes)       # Data types of columns
+# no-run
+data = {
+    "Name": ["Alice", "Bob", "Charlie", "Diana"],
+    "Age": [24, 30, 22, 28],
+    "City": ["London", "Paris", "Berlin", "Madrid"],
+    "Score": [88.5, 92.0, 79.5, 85.0]
+}
+df = pd.DataFrame(data)
+```
+
+Shape:
+
+```python
+print(df.shape)
+```
+
+Columns:
+
+```python
+print(df.columns)
+```
+
+Data Types:
+
+```python
+print(df.dtypes)
 ```
 
 ### Info, Head, Tail, Describe
