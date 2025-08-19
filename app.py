@@ -333,6 +333,8 @@ def main():
                         with contextlib.redirect_stdout(stdout), contextlib.redirect_stderr(stderr):
                             if selected_mod.stem == '05_numpy':
                                 exec_code = 'import numpy as np\n' + code
+                            elif selected_mod.stem == '06_pandas':
+                                exec_code = 'import pandas as pd\n' + code
                             else:
                                 exec_code = code
                             exec(exec_code, globals_dict)
