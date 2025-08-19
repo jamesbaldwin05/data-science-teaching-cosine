@@ -327,7 +327,48 @@ def main():
             is_hidden = code_lines and code_lines[0].strip().startswith("# hidden")
             display_code = code
 
-            if is_hidden:
+            # Enhanced hidden-block logic: support for two # hidden markers
+            has_two_hidden = (
+                is_hidden
+                and len(code_lines) > 1
+                and any(line.strip() == "# hidden" for line in code_lines[1:])
+            )
+
+            if has_two_hidden:
+                # Find first and second # hidden lines
+                first_idx = 0  # already know code_lines[0] is # hidden
+                second_idx = next(i for i in range(1, len(code_lines)) if code_lines[i].strip() == "# hidden")
+                exec_code_body = "\n".join(code_lines[first_idx + 1 : second_idx]).lstrip()
+                # No display, only button
+                if st.button("Run", key=key):
+                    with st.spinner("Running..."):
+                        stdout, stderr = io.StringIO(), io.StringIO()
+                        globals_dict = {}
+                        try:
+                            if selected_mod.stem == '05_numpy':
+                                exec_code = 'import numpy as np\n' + exec_code_body
+                            elif selected_mod.stem == '06_pandas':
+                                exec_code = 'import pandas as pd\n' + exec_code_body
+                            else:
+                                exec_code = exec_code_body
+                            exec(exec_code, globals_dict)
+                        except Exception:
+                            st.error(traceback.format_exc())
+                            return
+                        if plt.get_fignums():
+                            st.pyplot(plt.gcf())
+                            plt.close("all")
+                        out = stdout.getvalue()
+                        err = stderr.getvalue()
+                        err = "".join([line for line in err.splitlines(keepends=True)
+                                       if "FigureCanvasAgg is non-interactive" not in line])
+                        if (not out.strip()) and (not err.strip()):
+                            fallback = get_fallback_vars(globals_dict)
+                            if fallback.strip():
+                                st.text_area("Output", fallback, height=150, key=f"out_{key}")
+                        elif out or err:
+                            st.text_area("Output", out + err, height=150, key=f"out_{key}")
+            elif is_hidden:
                 # Don't display code, only button
                 if st.button("Run", key=key):
                     with st.spinner("Running..."):
@@ -372,7 +413,7 @@ def main():
                             if selected_mod.stem == '05_numpy':
                                 exec_code = 'import numpy as np\n' + code
                             elif selected_mod.stem == '06_pandas':
-                                exec_code = 'import pandas as pd\n' + code
+...                                exec_code = 'import pandas as pd\n' + code
                             else:
                                 exec_code = code
                             exec(exec_code, globals_dict)
