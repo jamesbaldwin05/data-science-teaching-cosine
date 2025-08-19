@@ -60,14 +60,10 @@ import pandas as pd
 
 It is de facto standard to use `pd` as an alias for Pandas. As with the last lesson, examples beyond this point will not show this.
 
----
-
 ### Series and DataFrame
 
 - **Series**: A one-dimensional labeled array for any data type.
 - **DataFrame**: A two-dimensional, size-mutable, and potentially heterogeneous tabular data structure with labeled axes (rows and columns).
-
----
 
 ### Creating Series and DataFrames
 
@@ -116,8 +112,6 @@ print(df)
 - `pd.read_excel('file.xlsx')`
 - `pd.read_json('file.json')`
 
----
-
 ### Reading Data from Files
 
 ```python
@@ -143,8 +137,6 @@ print(df.columns)      # Column names (Index object)
 print(df.dtypes)       # Data types of columns
 ```
 
----
-
 ### Info, Head, Tail, Describe
 
 ```python
@@ -153,8 +145,6 @@ print(df.head())       # First 5 rows
 print(df.tail(3))      # Last 3 rows
 print(df.describe())   # Summary statistics (numeric columns)
 ```
-
----
 
 ### Value Counts
 
@@ -183,16 +173,12 @@ print(df.loc[2:4])
 print(df.iloc[2:5])
 ```
 
----
-
 ### Boolean Indexing
 
 ```python
 # Rows where column 'age' > 25
 print(df[df['age'] > 25])
 ```
-
----
 
 ### at, iat, and Chained Indexing
 
@@ -221,8 +207,6 @@ df3 = df1 + df2
 # Operations with alignment by index/column
 ```
 
----
-
 ### String Methods
 
 Pandas has vectorized string methods (use `.str` accessor):
@@ -232,8 +216,6 @@ df['name'].str.upper()
 df['email'].str.contains('@gmail.com')
 df['city'].str.replace('York', 'Town')
 ```
-
----
 
 ### Datetime Methods
 
@@ -258,16 +240,12 @@ df.isnull()        # Same as isna()
 df.notna()
 ```
 
----
-
 ### Filling Missing Data
 
 ```python
 df_filled = df.fillna(0)
 df['col'] = df['col'].fillna(df['col'].mean())
 ```
-
----
 
 ### Dropping Missing Data
 
@@ -276,8 +254,6 @@ df_no_na = df.dropna()                  # Drop rows with any missing values
 df_no_na = df.dropna(axis=1)            # Drop columns with any missing values
 df_no_na = df.dropna(subset=['col1'])   # Drop rows where col1 is NA
 ```
-
----
 
 ### Interpolation
 
@@ -296,8 +272,6 @@ grouped = df.groupby('category')
 print(grouped['value'].mean())
 print(grouped.agg({'value': ['mean', 'sum']}))
 ```
-
----
 
 ### Transform and Filter
 
@@ -347,8 +321,6 @@ pd.pivot_table(df, values='value', index='date', columns='city', aggfunc='mean')
 melted = df.melt(id_vars=['id'], value_vars=['A', 'B'])
 ```
 
----
-
 ### Stack and Unstack
 
 ```python
@@ -367,8 +339,6 @@ df['date'] = pd.to_datetime(df['date'])
 df = df.set_index('date')
 print(df.index)
 ```
-
----
 
 ### Resampling, Rolling, and Shifting
 
@@ -396,8 +366,6 @@ df = pd.read_csv('data.csv')
 # Write CSV
 df.to_csv('output.csv', index=False)
 ```
-
----
 
 ### Excel and JSON
 
