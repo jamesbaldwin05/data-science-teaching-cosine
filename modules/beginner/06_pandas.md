@@ -497,12 +497,14 @@ df = pd.DataFrame({
     "Height": [170, 180, 175, 178]
 })
 
-print(df.agg({"Age": lambda x: x.max() - x.min()}))
+print(df.agg({"Age": lambda x: x.max() - x.min()}))       # range of ages
 ```
 
 ---
 
 ## Sorting and Ranking
+
+### Sorting
 
 Sorting is often used before plotting or aggregating results to make data more readable.
 
@@ -543,7 +545,9 @@ df = pd.DataFrame({
 })
 df.set_index("ID", inplace=True)
 
-print(df.sort_index())
+df = df.sort_index()
+
+print(df)
 ```
 
 ```python
@@ -554,11 +558,12 @@ df = pd.DataFrame({
     "Score": [88, 92, 85, 90]
 })
 
-print(df.sort_index(axis=1))                             # sorts the columns by name
+print(df.sort_index(axis=1))                             # sorts the columns alphabetically
 ```
 
+### Ranking
 
-- `.rank()` assigns ordinal positions to values and can handle ties in multiple ways. Ranks are 1-based by default, meaning the smallest value gets rank 1 (unless `ascending=False`).
+- `.rank()` assigns ordinal positions to values. It can handle ties in multiple ways and are 1-based by default, meaning the smallest value gets rank 1 (unless `ascending=False`).
 
 ```python
 df = pd.DataFrame({
@@ -580,43 +585,96 @@ df = pd.DataFrame({
     "Score": [88, 92, 85, 92]
 })
 
-print(df.nlargest(2, "Score"))                        # returns the two rows with the highest score
+print(df.nlargest(3, "Score"))                        # returns the three rows with the highest score
 ```
 
 ---
 
-## GroupBy: Split-Apply-Combine
+## GroupBy
 
-Group rows by a column and aggregate.
+### Basic GroupBy
 
-```python
-df = pd.DataFrame({'A': ['foo', 'foo', 'bar', 'bar'],
-                   'B': [1, 2, 3, 4]})
-
-grouped = df.groupby('A').sum()
-print(grouped)
-```
-
-You can also use multiple aggregations:
+GroupBy is an operation that sorts columns and rows by an aggregate. It follows the pattern split-apply-combine:
+- Split: Divide the data into groups based on values in one or more columns called grouping keys.
+- Apply: Apply a function (like `sum` or `max`, or even a custom one) to each group.
+- Combine: Return the results as a new DataFrame or Series.
 
 ```python
-df.groupby('A').agg({'B': ['mean', 'max']})
+df = pd.DataFrame({
+    "Name": ["Alice", "Bob", "Charlie", "Diana", "Bob", "Alice"],
+    "Score": [88, 92, 85, 92, 75, 95]
+})
+
+print(df.groupby("Name").mean())
 ```
+
+```python
+df = pd.DataFrame({
+    "Name": ["Alice", "Bob", "Alice", "Charlie", "Bob", "Alice"],
+    "Course": ["Math", "Math", "English", "Science", "History", "Science"]
+})
+
+print(df.groupby(["Name"])["Course"].count())                                # count how many courses each person is registered for
+```
+
+Using the aggregate function we can use multiple aggregations on the same column or use custom functions:
+
+```python
+df = pd.DataFrame({
+    "Name": ["Alice", "Bob", "Charlie", "Diana", "Bob", "Alice"],
+    "Score": [88, 92, 85, 92, 75, 95]
+})
+
+print(df.groupby("Name").agg({"Score": ["mean", "max"]}))
+```
+
+```python
+df = pd.DataFrame({
+    "Name": ["Alice", "Bob", "Charlie", "Diana", "Bob", "Alice"],
+    "Score": [88, 92, 85, 92, 75, 95]
+})
+
+print(df.groupby("Name")["Score"].agg(lambda x: x.max() - x.min()))    # range of scores
+```
+
+### Dummy Columns
+
+Dummy columns are sometimes used to categorise data if we want to group by a column that doesn't exist.
+
+```python
+df = pd.DataFrame({
+    "Name": ["Alice", "Bob", "Charlie", "Diana"],
+    "Score": [88, 92, 85, 92]
+})
+
+df["Class"] = ["Math", "Math", "History", "History"]        # dummy column to include the class where each score was achieved
+
+print(df.groupby("Class").mean(numeric_only=True))
+```
+
+We can also use them if we want to use every column in the DataFrame as a grouping key.
+
+```python
+df = pd.DataFrame({
+    "Name": ["Alice", "Bob", "Alice", "Bob"],
+    "Score": [88, 92, 88, 91]
+})
+
+df["Dummy"] = 1                                    # every value in this new column is 1
+
+print(df.groupby(["Name", "Score"]).count())       # how many times each person got that specific score
+```
+
+If we tried to run the above code without the dummy column, the return would be an empty DataFrame since both original columns are used as grouping keys so there are so columns left to apply a method on.
 
 ---
 
 ## Merging and Joining DataFrames
 
-- `pd.merge(left, right, on, how)` merges DataFrames (like SQL joins)
-- `.join()` joins on indexes
+### Merge
+`pd.merge()` is an SQL-style join between two DataFrames.
 
-```python
-df1 = pd.DataFrame({'key': ['a', 'b', 'c'], 'val1': [1, 2, 3]})
-df2 = pd.DataFrame({'key': ['a', 'b', 'd'], 'val2': [4, 5, 6]})
 
-merged = pd.merge(df1, df2, on='key', how='inner')
-print(merged)
-```
 
 ---
 
