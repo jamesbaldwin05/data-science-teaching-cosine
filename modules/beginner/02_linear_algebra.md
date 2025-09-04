@@ -15,8 +15,8 @@ Linear algebra covers vectors, matrices, and linear transformations. It's essent
     - [Matrix Multiplication](#matrix-multiplication)
     - [Special Matrices](#special-matrices)
     - [Determinant & Inverse](#determinant--inverse)
-3. [Vector Spaces]()
-4. [Linear Systems]()
+3. [Vector Spaces](#vector-spaces)
+4. [Linear Systems](#linear-systems)
 5. [Eigenvalues and Eigenvectors](#eigenvalues--eigenvectors)
 
 ---
@@ -36,7 +36,7 @@ Linear algebra covers vectors, matrices, and linear transformations. It's essent
 import numpy as np
 
 v = np.array([2, 1, 8])
-print("Vector v:", v)
+print('Vector v:', v)
 ```
 
 ---
@@ -62,14 +62,14 @@ a = np.array([1, 2, 6])
 b = np.array([3, 7, 2])
 
 # Vector addition
-print("a + b =", a + b)        # [1+3, 2+7, 6+2]
+print('a + b =', a + b)        # [1+3, 2+7, 6+2]
 
 # Scalar multiplication
-print("2 * a =", 2 * a)        # [2*1, 2*2, 2*6]
+print('2 * a =', 2 * a)        # [2*1, 2*2, 2*6]
 
 # Dot product
 dot = np.dot(a, b)             # 1*3 + 2*7 + 6*2
-print("Dot product:", dot)
+print('Dot product:', dot)
 
 ```
 
@@ -84,7 +84,7 @@ For $\vec{a} = [a_1, a_2, a_3]$, the norm $\left\|\vec{a}\right\| = \sqrt{{a_1}^
 import numpy as np
 
 a = np.array([1, 2, 6])
-print("Norm: ", np.linalg.norm(a))
+print('Norm: ', np.linalg.norm(a))
 ```
 
 - **Unit vectors**: By dividing a vector by its norm (length), we can scale it to have a length of 1
@@ -96,19 +96,19 @@ import numpy as np
 a = np.array([1, 2, 6])
 a_norm = np.linalg.norm(a)
 a_unit = a / a_norm
-print("Unit vector of a: ", a_unit)                # The norm of this vector is 1
+print('Unit vector of a: ', a_unit)                # The norm of this vector is 1
 ```
 
 - **Cosine Similarity**: Using the formula below, we can derive a relationship between the dot product and the angle between two vectors.  
 For $\vec{a} = [a_1, a_2, a_3],\;\vec{b} = [b_1, b_2, b_3]$ and $\theta$ being the angle between $\vec{a}$ and $\vec{b}$  
-$$
+$
 \vec{a}\cdot\vec{b} = \left\|\vec{a}\right\|\left\|\smash{\vec{b}}\right\|\cos{\theta}
-$$
+$
 
 This can be rearranged to solve for the angle between two vectors:  
-$$
+$
 \theta = \arccos{\left(\dfrac{\vec{a}\cdot\vec{b}}{\left\|\vec{a}\right\|\left\|\smash{\vec{b}}\right\|}\right)}
-$$
+$
 
 ```python
 import numpy as np
@@ -121,16 +121,16 @@ b_norm = np.linalg.norm(b)
 dot_product = np.dot(a, b)
 
 theta = np.arccos(dot_product/(a_norm * b_norm))
-print("Angle between a and b (radians): ", theta)
+print('Angle between a and b (radians): ', theta)
 ```
 
 *Radians are another way of measuring angles and there are $2\pi$ radians in $360^\circ$. The above angle is about $54.9^\circ$.*
 
 - **Linear Independence**: A set of vectors {$\vec{v_1}, \vec{v_2}, ...., \vec{v_n}$} is linearly independent if no vector in the set can be written as a linear combination of the others.  
 Formally, this is if the equation below only holds when all scalars $c_1,c_2,...,c_n=0$.
-$$
+$
 c_1\vec{v_1} + c_2\vec{v_2} + ... + c_n\vec{v_n}= \vec{0}
-$$
+$
 
 *The zero vector is written as $\vec{0}$ and is a n-th dimensional vector with every element in it 0*
 
@@ -141,9 +141,9 @@ A set of vectors {$\vec{v_1}, \vec{v_2}, ...., \vec{v_n}$} is called an orthogon
 
 - **Projection**: The projection of a vector onto another vector tells us how much of the first vector lies in the direction of the second.  
 For $\vec{a} = [a_1, a_2, a_3]$ and $\vec{b} = [b_1, b_2, b_3]$, the projection of $\vec{a}$ onto $\vec{b}$ is calculated by the formula:  
-$$
+$
 \mathrm{proj}_{\vec{b}}\vec{a} = \left( \frac{\vec{a} \cdot \vec{b}}{\left\|\smash{\vec{b}}\right\|^2} \right) \vec{b}
-$$
+$
 
 ```python
 import numpy as np
@@ -155,7 +155,7 @@ dot_product = np.dot(a, b)
 b_norm_squared = np.dot(b, b)
 
 projection = (dot_product / b_norm_squared) * b
-print("Projection of a onto b:", projection)
+print('Projection of a onto b:', projection)
 ```
 
 - **Element-wise Operations**: This group of operations apply a function independently to each element of a vector. An example is the Hadamard product (element wise multiplication):  
@@ -168,7 +168,7 @@ a = np.array([1, 2, 6])
 b = np.array([3, 7, 2])
 
 elementwise_product = a * b
-print("Element-wise product:", elementwise_product)
+print('Element-wise product:', elementwise_product)
 ```
 
 *In linear algebra theory, element-wise operations are often emphasized less since they are not linear transformations (they cannot be represented as a matrix) and do not preserve vector space structure. They do have practical applications to data science, especially under the hood.*
@@ -195,7 +195,7 @@ A = np.array([[1, 2],
               [3, 4],
               [5, 6]])
 
-print("Shape:", A.shape)
+print('Shape:', A.shape)
 ```
 
 ---
@@ -214,7 +214,7 @@ B = np.array([[7, 1, 2],
               [3, 6, 8],
               [5, 5, 1]])
 
-print("A-B:")
+print('A-B:')
 print(A-B)
 ```
 
@@ -228,7 +228,7 @@ A = np.array([[3, 5, 2],
               [1, 8, 3],
               [4, 4, 7]])
 
-print("3A:")
+print('3A:')
 print(3*A)
 ```
 
@@ -240,7 +240,7 @@ A = np.array([[3, 5, 2],
               [1, 8, 3],
               [4, 4, 7]])
 
-print("Transpose of A:")
+print('Transpose of A:')
 print(A.T)
 ```
 
@@ -261,7 +261,7 @@ B = np.random.random((2, 1))
 
 C = A @ B                         # @ is used for matrix multiplication although np.dot(A, B) or np.matmul(A, B) also work
 
-print("Shape of result: ", C.shape)
+print('Shape of result: ', C.shape)
 
 ```
 
@@ -280,9 +280,9 @@ B = np.array([[7, 1, 2],
               [3, 6, 8],
               [5, 5, 1]])
 
-print("AB:")
+print('AB:')
 print(A @ B)
-print("BA:")
+print('BA:')
 print(B @ A)
 ```
 
@@ -317,7 +317,7 @@ A = np.array([[3, 5, 2],
 
 v = np.array([1, 2, 3])
 
-print("Multiplying A and v: ")
+print('Multiplying A and v: ')
 print(A @ v)
 
 ```
@@ -398,10 +398,10 @@ A = np.array([[3, 5, 2],
               [1, 8, 3],
               [4, 4, 7]])
 
-print("Determinant of A:", np.linalg.det(A))
+print('Determinant of A:', np.linalg.det(A))
 ```
 
-- **Inverse**: $A^{-1}$ "undoes" $A$ (if it exists) i.e. $A A^{-1} = I$. Used for solving systems of equations.
+- **Inverse**: $A^{-1}$ 'undoes' $A$ (if it exists) i.e. $A A^{-1} = I$. Used for solving systems of equations.
 
 ```python
 import numpy as np
@@ -410,9 +410,21 @@ A = np.array([[3, 5, 2],
               [1, 8, 3],
               [4, 4, 7]])
 
-print("Inverse of A:")
+print('Inverse of A:')
 print(np.linalg.inv(A))
 ```
+
+---
+
+## Vector Spaces
+
+Vector spaces generalize vectors beyond simple lists of numbers. A vector space over a field (like the real numbers) is a set equipped with vector addition and scalar multiplication satisfying standard axioms (associativity, distributivity, existence of a zero vector, etc.). Concepts like span, basis and dimension are fundamental in data science (e.g., understanding feature spaces).
+
+---
+
+## Linear Systems
+
+A linear system consists of linear equations in unknowns. They can be written compactly as $A\vec{x}=\vec{b}$. Solutions can be found via elimination or with NumPy using `np.linalg.solve` when $A$ is square and invertible; least-squares solutions use `np.linalg.lstsq` for over/underdetermined systems.
 
 ---
 
