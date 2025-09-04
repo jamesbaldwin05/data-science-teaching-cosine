@@ -672,28 +672,126 @@ If we tried to run the above code without the dummy column, the return would be 
 ## Merging and Joining DataFrames
 
 ### Merge
-`pd.merge()` is an SQL-style join between two DataFrames.
+`pd.merge()` is an SQL-style join between two DataFrames and returns a new merged DataFrame.
 
+- SQL Inner Join
 
+```python
+df1 = pd.DataFrame({'key': ['a', 'b', 'c'], 'val1': [1, 2, 3]})
+df2 = pd.DataFrame({'key': ['a', 'b', 'd'], 'val2': [4, 5, 6]})
+
+merged_inner = pd.merge(df1, df2, on='key', how='inner')
+print(merged_inner)
+```
+
+- SQL Outer Join (replaces missing with NaN)
+
+```python
+df1 = pd.DataFrame({'key': ['a', 'b', 'c'], 'val1': [1, 2, 3]})
+df2 = pd.DataFrame({'key': ['a', 'b', 'd'], 'val2': [4, 5, 6]})
+
+merged_outer = pd.merge(df1, df2, on='key', how='outer')
+print(merged_outer)
+```
+
+- SQL Left Join
+
+```python
+df1 = pd.DataFrame({'key': ['a', 'b', 'c'], 'val1': [1, 2, 3]})
+df2 = pd.DataFrame({'key': ['a', 'b', 'd'], 'val2': [4, 5, 6]})
+
+merged_left = pd.merge(df1, df2, on='key', how='left')
+print(merged_left)
+```
+
+- SQL Right Join
+
+```python
+df1 = pd.DataFrame({'key': ['a', 'b', 'c'], 'val1': [1, 2, 3]})
+df2 = pd.DataFrame({'key': ['a', 'b', 'd'], 'val2': [4, 5, 6]})
+
+merged_right = pd.merge(df1, df2, on='key', how='right')
+print(merged_right)
+```
+
+We can merge with multiple keys using a list of columns.
+
+```python
+df1 = pd.DataFrame({
+    'key1': ['a', 'a', 'b', 'c'],
+    'key2': [1, 2, 1, 2],
+    'val1': [10, 20, 30, 40]
+})
+
+df2 = pd.DataFrame({
+    'key1': ['a', 'b', 'b', 'd'],
+    'key2': [1, 1, 2, 2],
+    'val2': [100, 200, 300, 400]
+})
+
+merged = pd.merge(df1, df2, on=['key1', 'key2'], how='inner')
+print(merged)
+```
+
+`pd.merge()` reserves column names so if names overlap, they are assigned the default suffixes of `'_x'` and `'_y'`. These can be customised by passing the suffix argument.
+
+```python
+df1 = pd.DataFrame({'key': ['a', 'b', 'c'], 'value': [1, 2, 3]})
+
+df2 = pd.DataFrame({'key': ['a', 'b', 'd'], 'value': [4, 5, 6]})
+
+merged = pd.merge(df1, df2, on='key', how='outer', suffixes=('_left', '_right'))
+print(merged)
+```
+
+### Join
+
+`.join()` joins rows based on indices instead of a key column. We can use inner, outer, left or right in a similar way to before (but based on indices this time).
+
+```python
+df1 = pd.DataFrame({'key1': ['a', 'b', 'c'], 'val1': [1, 2, 3]})
+df2 = pd.DataFrame({'key2': ['a', 'b', 'd'], 'val2': [4, 5, 6]})
+
+joined = df1.join(df2)
+print(joined)
+```
+
+Another difference between `pd.merge()` and `.join()` is the way they treat clashing column names. As discussed previously, `pd.merge()` will apply default suffixes if there is a clash between column names. `.join()` does not do this, it will raise a `ValueError` unless the suffixes are passed as parameters `lsuffix` and `rsuffix`.
+
+```python
+df1 = pd.DataFrame({'key': ['a', 'b', 'c'], 'val1': [1, 2, 3]})
+df2 = pd.DataFrame({'key': ['a', 'b', 'd'], 'val2': [4, 5, 6]})
+
+joined = df1.join(df2, lsuffix='_left', rsuffix='_right')
+print(joined)
+```
 
 ---
 
 ## Reshaping Data
 
+Pandas comes with tools to change the shape of the DataFrame without changing the underlying data.
+
 ### Pivot
 
-```python
-df = pd.DataFrame({'A': ['foo', 'foo', 'bar'],
-                   'B': ['one', 'two', 'one'],
-                   'C': [1, 2, 3]})
+`pd.pivot()` turns unique values in a column into new columns.
 
-pivoted = df.pivot(index='A', columns='B', values='C')
+```python
+df = pd.DataFrame({
+    'Month': ['Jan', 'Jan', 'Feb', 'Feb'],
+    'Product': ['Apples', 'Bananas', 'Apples', 'Bananas'],
+    'Sales': [100, 150, 200, 180]
+})
+
+pivoted = df.pivot(index='Month', columns='Product', values='Sales')
 print(pivoted)
 ```
 
+In the above example, rows are grouped by `Month`, any unique `Product` names become a column and the table entires are filled with `Sales`.
+
 ### Melt
 
-Unpivot a DataFrame from wide to long format.
+`pd.melt()` does the opposite of pivot, it coverts wide format DataFrames into long format.
 
 ```python
 df = pd.DataFrame({'A': [1, 2], 'B': [3, 4]})
@@ -703,14 +801,17 @@ print(melted)
 
 ### Stack/Unstack
 
-Change between "long" and "wide" formats.
+`.stack()` and `.unstack()` change DataFrames between "long" and "wide" formats.
 
 ```python
-df = pd.DataFrame({'A': ['foo', 'bar'], 'B': [1, 2]})
-stacked = df.stack()
+df = pd.DataFrame({
+    "Student": ["Alice", "Bob"],
+    "Math": [90, 80],
+    "English": [85, 95]
+})
+
+stacked = df.set_index("Student").stack()
 print(stacked)
-unstacked = stacked.unstack()
-print(unstacked)
 ```
 
 ---
