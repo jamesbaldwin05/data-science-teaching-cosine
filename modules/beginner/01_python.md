@@ -8,7 +8,7 @@ This course is designed for intermediate to experienced Python programmers who a
 
 ## Prerequisite Python Skills: Self-Assessment Checklist
 
-Before proceeding, ensure you can confidently answer "yes" to the following:
+Before proceeding, ensure you can confidently answer 'yes' to the following:
 
 - Can you write and use functions, including with default and keyword arguments?
 - Are you comfortable with for/while loops and list/dict/set comprehensions?
@@ -19,7 +19,7 @@ Before proceeding, ensure you can confidently answer "yes" to the following:
 - Can you use built-in data structures (lists, dicts, sets, tuples) effectively?
 - Have you written or understood basic unit tests?
 
-If you answered "no" to any, consider reviewing Python fundamentals first:
+If you answered 'no' to any, consider reviewing Python fundamentals first:
 - [Python Official Tutorial](https://docs.python.org/3/tutorial/)
 - [Harvard CS50’s Introduction to Programming with Python](https://cs50.harvard.edu/python/)
 - [Automate the Boring Stuff with Python](https://automatetheboringstuff.com/)
@@ -36,7 +36,7 @@ If you answered "no" to any, consider reviewing Python fundamentals first:
 5. [Slicing & Indexing](#5-slicing--indexing)
 6. [Comprehensions & Generator Expressions](#6-comprehensions-and-generator-expressions)
 7. [Functions (including Lambdas)](#7-functions-including-lambdas)
-8. [iterools & functools](#8-itertools--functools)
+8. [itertools & functools](#8-itertools--functools)
 9. [Classes & DataClasses](#9-classes--dataclasses)
 10. [Context Managers](#10-context-managers)
 11. [Error Handling](#11-error-handling)
@@ -56,7 +56,7 @@ If you answered "no" to any, consider reviewing Python fundamentals first:
 
 **Why:** List comprehensions provide a clear and compact way to create or transform these lists, making data manipulation tasks faster and more readable—an essential part of data wrangling.
 
-**Python lists vs. C-style arrays:** Unlike C arrays, Python lists can store elements of any type and can grow or shrink dynamically. For large numerical arrays, use`numpy` arrays for efficiency and extra functionality.
+**Python lists vs. C-style arrays:** Unlike C arrays, Python lists can store elements of any type and can grow or shrink dynamically. For large numerical arrays, use `numpy` arrays for efficiency and extra functionality.
 
 **Example:**
 
@@ -82,27 +82,27 @@ print(temperatures_f)
 **Example:**
 
 ```python
-record = {"name": "Alice", "scores": {"math": 90, "bio": 87}}
-mean_score = sum(record["scores"].values()) / len(record["scores"])
+record = {'name': 'Alice', 'scores': {'math': 90, 'bio': 87}}
+mean_score = sum(record['scores'].values()) / len(record['scores'])
 print(mean_score)
 ```
 
 **Nested dictionary manipulation:**
 
 ```python
-record = {"name": "Alice", "scores": {"math": 90, "bio": 87}}
+record = {'name': 'Alice', 'scores': {'math': 90, 'bio': 87}}
 
 # Add a new subject score
-record["scores"]["chem"] = 85
+record['scores']['chem'] = 85
 
 # Update a value
-record["scores"]["math"] += 5
+record['scores']['math'] += 5
 
 # Iterate over nested dictionary
-for subject, score in record["scores"].items():
-    print(f"{subject}: {score}")
+for subject, score in record['scores'].items():
+    print(f'{subject}: {score}')
 
-print(record["scores"])
+print(record['scores'])
 ```
 *This pattern is common when processing JSON data or configuring experiments.*
 
@@ -117,7 +117,7 @@ print(record["scores"])
 
 **What:** Tuples are immutable sequences — once created, their contents cannot be changed.
 
-**Why:** They’re ideal for fixed-size, heterogeneous data (e.g. coordinate pairs, function returns). Tuples support multiple assignment and “starred unpacking” for flexible splitting.
+**Why:** They’re ideal for fixed-size, heterogeneous data (e.g. coordinate pairs, function returns). Tuples support multiple assignment and ‘starred unpacking’ for flexible splitting.
 
 **Tuple immutability:**  
 Once a tuple is created, you cannot change its contents:
@@ -166,7 +166,7 @@ lo, hi = min_max([2, 8, 3])
 **Example:**
 
 ```python
-labels = ["cat", "dog", "cat", "mouse"]
+labels = ['cat', 'dog', 'cat', 'mouse']
 unique_labels = set(labels)
 print(unique_labels)
 ```
@@ -190,7 +190,7 @@ matrix = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
 row = matrix[1]      # row = [4, 5, 6]
 submatrix = [r[1:] for r in matrix[:2]]  # submatrix = [[2, 3], [5, 6]]
 
-text = "data science"
+text = 'data science'
 print(text[5:12])
 ```
 
@@ -253,16 +253,16 @@ squares_generator = (x**2 for x in range(10))
 **Example:**
 
 ```python
-def greet(name, msg="Hello"):
-    return f"{msg}, {name}!"
+def greet(name, msg='Hello'):
+    return f'{msg}, {name}!'
 
-print(greet("Data Scientist"))  # uses default msg
-print(greet("Data Scientist", msg="Welcome"))
+print(greet('Data Scientist'))  # uses default msg
+print(greet('Data Scientist', msg='Welcome'))
 ```
 
 **Lambda functions:**
 ```python
-data = ["apple", "pear", "banana"]
+data = ['apple', 'pear', 'banana']
 data.sort(key=lambda word: len(word))
 print(data)
 ```
@@ -297,7 +297,7 @@ print(product)
 
 ```python
 from itertools import groupby
-data = ["a", "aa", "b", "bb", "b"]
+data = ['a', 'aa', 'b', 'bb', 'b']
 groups = {k: list(g) for k, g in groupby(sorted(data), key=lambda x: x[0])}
 print(groups)
 ```
@@ -362,7 +362,7 @@ Context managers implement the `__enter__` and `__exit__` methods, which set up 
 ```python
 # no-run
 with open('results.txt', 'w') as f:
-    f.write("Experiment complete.") # This will overwrite the contents of results.txt with one line: Experiment complete
+    f.write('Experiment complete.') # This will overwrite the contents of results.txt with one line: Experiment complete
 ```
 
 **Custom context manager with contextlib:**
@@ -378,10 +378,10 @@ def timer(task_name: str):
         yield
     finally:
         elapsed = time.perf_counter() - start
-        print(f"{task_name} finished in {elapsed:.4f}s")
+        print(f'{task_name} finished in {elapsed:.4f}s')
 
 # Usage
-with timer("Heavy computation"):
+with timer('Heavy computation'):
     total = sum(i * i for i in range(10_000_000))
 ```
 
@@ -402,14 +402,14 @@ with timer("Heavy computation"):
 
 ```python
 try:
-    val = float("not a number")
+    val = float('not a number')
 except ValueError as e:
-    print(f"Conversion failed: {e}")
-    # raise RuntimeError("Parsing error") from e
+    print(f'Conversion failed: {e}')
+    # raise RuntimeError('Parsing error') from e
 else:
-    print("Conversion succeeded!")
+    print('Conversion succeeded!')
 finally:
-    print("This will print no matter what!")
+    print('This will print no matter what!')
 ```
 
 - `except` can catch specific exceptions for targeted error handling.
@@ -531,8 +531,8 @@ def test_add():
 import logging
 
 logging.basicConfig(level=logging.INFO)
-logging.info("Data pipeline started")
-logging.warning("Missing value encountered in column 'age'")
+logging.info('Data pipeline started')
+logging.warning('Missing value encountered in column \'age\'')
 ```
 
 - Logging is configurable, can be captured to files, and is essential for traceability in production and research code.
@@ -575,7 +575,7 @@ for val in gen():
 Memory views allow you to work efficiently with large binary data (e.g., images or raw byte buffers), avoiding unnecessary copying.
 
 ```python
-buf = bytearray(b"abcdefgh")
+buf = bytearray(b'abcdefgh')
 view = memoryview(buf)
 print(view[2:5].tobytes())
 ```
@@ -601,7 +601,7 @@ print(view[2:5].tobytes())
 
 ## 18. Jupyter Notebooks
 
-Jupyter Notebooks are powerful, interactive documents that combine live code, visualizations, and explanatory text. Widely used in data science, teaching, and research, notebooks allow you to interleave executable code (Python or other languages), formatted notes (Markdown), equations, and rich outputs (plots, tables, images) in a single, shareable file. Each notebook consists of "cells"—the two most common types are **code cells** (which you run to produce output) and **Markdown cells** (for formatted text, math, or instructions).
+Jupyter Notebooks are powerful, interactive documents that combine live code, visualizations, and explanatory text. Widely used in data science, teaching, and research, notebooks allow you to interleave executable code (Python or other languages), formatted notes (Markdown), equations, and rich outputs (plots, tables, images) in a single, shareable file. Each notebook consists of 'cells'—the two most common types are **code cells** (which you run to produce output) and **Markdown cells** (for formatted text, math, or instructions).
 
 When working in a notebook, you execute code cells individually, and the results—such as printed output, plots, or error messages—appear immediately below the cell. The underlying process that runs your code is called a **kernel**, which maintains the execution state and variables across cells (so earlier results can be reused later). Restarting the kernel clears this state. Notebooks are ideal for exploratory data analysis (EDA), rapid prototyping, teaching, and sharing reproducible reports or data workflows.
 
@@ -617,9 +617,9 @@ When working in a notebook, you execute code cells individually, and the results
 ---
 
 # Exercise
-"""
+'''
 Generate a list `squares` containing the squares of numbers 1-10 using a list comprehension, then print the result.
-"""
+'''
 ```python
 squares = [n**2 for n in range(1, 11)]
 print(squares)
