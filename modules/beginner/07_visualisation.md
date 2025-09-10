@@ -1,6 +1,6 @@
-# Visualisation with MatPlotLib
+# Visualisation with Matplotlib
 
-Matplotlib is the standard Python library for creating basic plots, charts, and graphs. It is highly customisable and integrates well with NumPy arrays and Pandas DataFrames.
+Matplotlib is the widely used Python library for creating basic plots, charts, and graphs. It is highly customisable and integrates well with NumPy arrays and Pandas DataFrames.
 
 [Official Documentation](https://matplotlib.org/stable/contents.html)
 
@@ -95,7 +95,7 @@ plt.show()
 
 ### Histograms
 
-`plt.hist()` creates a histogram, used for showing the distribution of data.
+`plt.hist()` creates a histogram, used to show the distribution of data.
 
 ```python
 import numpy as np
@@ -119,7 +119,7 @@ plt.show()
 
 ### Box Plots
 
-`plt.boxplot()` creates a boxplot, used for showing statistical features of data.
+`plt.boxplot()` creates a boxplot, used to show statistical features of data.
 
 ```python
 import numpy as np
@@ -161,7 +161,7 @@ plt.show()
 
 ### Legends
 
-A legend is a little box with information about a graph, allowing multiple graphs to be displayed at once without confusion. To use it, add the `label` argument to your plots and call the function `plt.legend()`.
+A legend is a little box with information about a graph, allowing multiple lines to be displayed at once without confusion. To use it, add the `label` argument to your plots and call the function `plt.legend()`.
 
 ```python
 import numpy as np
@@ -256,8 +256,8 @@ plt.savefig('my_figure.pdf')    # Saves as PDF
 
 You can create multiple plots in one figure using `plt.subplot()`. It takes 3 parameters:
 - Rows (how many plots should be displayed alongside each other vertically).
-- Columns (how many plots should be displayed alongside each other horizontally)
-- Plot number (index assigned row-wise to each subplot)
+- Columns (how many plots should be displayed alongside each other horizontally).
+- Plot number (index assigned row-wise to each subplot).
 
 ```python
 plt.subplot(2, 1, 1)   # 2 rows, 1 column, first plot
