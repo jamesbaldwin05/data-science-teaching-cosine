@@ -38,7 +38,7 @@ Matplotlib is the widely used Python library for creating basic plots, charts, a
 import matplotlib.pyplot as plt
 ```
 
-It is de facto standard to use `plt` for Matplotlib.
+It is de facto standard to use `plt` for `matplotlib.pyplot`.
 
 ### The Figure and Axes
 
